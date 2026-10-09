@@ -1,0 +1,303 @@
+{
+ "specs": {
+  "IDX_NDX": {
+   "kind": "yahoo",
+   "ticker": "^NDX",
+   "products": [
+    "TQQQ",
+    "TQQQ"
+   ]
+  },
+  "IDX_DJI": {
+   "kind": "yahoo",
+   "ticker": "^DJI",
+   "products": [
+    "UDOW",
+    "UDOW"
+   ]
+  },
+  "IDX_RUT": {
+   "kind": "yahoo",
+   "ticker": "^RUT",
+   "products": [
+    "TNA",
+    "TNA",
+    "URTY"
+   ]
+  },
+  "IDX_MID": {
+   "kind": "yahoo",
+   "ticker": "^MID",
+   "products": [
+    "MIDU",
+    "MIDU",
+    "UMDD"
+   ]
+  },
+  "TPOR_1X": {
+   "kind": "splice",
+   "pre": "data/ext/TPOR_1X.csv",
+   "pre_until": "2022-07-29",
+   "then": {
+    "kind": "etf",
+    "ticker": "IYT"
+   },
+   "products": [
+    "TPOR"
+   ]
+  },
+  "IDX_NYFANGT": {
+   "kind": "official",
+   "symbol": "nyfangt",
+   "official_start": "2017-09-26",
+   "pre": "data/ext/IDX_NYFANGT.csv",
+   "tail": {
+    "kind": "yahoo",
+    "ticker": "^NYFANG"
+   },
+   "products": [
+    "FNGU"
+   ]
+  },
+  "IDX_SOLFANGT": {
+   "kind": "official",
+   "symbol": "solfangt",
+   "official_start": "2021-06-08",
+   "pre": "data/ext/IDX_SOLFANGT.csv",
+   "tail": {
+    "kind": "sg",
+    "ticker": "DE000SL0DF12.SG"
+   },
+   "products": [
+    "BULZ"
+   ]
+  },
+  "IDX_SOLUSBBT": {
+   "kind": "official",
+   "symbol": "solusbbt",
+   "official_start": "2019-01-25",
+   "pre": "data/ext/IDX_SOLUSBBT.csv",
+   "tail": {
+    "kind": "sg",
+    "ticker": "DE000SLA7WC8.SG"
+   },
+   "products": [
+    "BNKU"
+   ]
+  },
+  "IDX_SOLUSBOT": {
+   "kind": "official",
+   "symbol": "solusbot",
+   "official_start": "2019-03-12",
+   "pre": "data/ext/IDX_SOLUSBOT.csv",
+   "tail": {
+    "kind": "sg",
+    "ticker": "DE000SLA7WX4.SG"
+   },
+   "products": [
+    "NRGU"
+   ]
+  },
+  "IDX_SOLOILT": {
+   "kind": "official",
+   "symbol": "soloilt",
+   "official_start": "2021-10-20",
+   "pre": "data/ext/IDX_SOLOILT.csv",
+   "tail": {
+    "kind": "sg",
+    "ticker": "DE000SL0EDX2.SG"
+   },
+   "products": [
+    "OILU"
+   ]
+  },
+  "IDX_MINERS": {
+   "kind": "official",
+   "symbol": "miners",
+   "official_start": "2020-08-20",
+   "pre": "data/ext/IDX_MINERS.csv",
+   "tail": {
+    "kind": "replica",
+    "name": "GDXU"
+   },
+   "products": [
+    "GDXU"
+   ]
+  },
+  "IDX_MQUSTRAV": {
+   "kind": "official",
+   "symbol": "mqustrav",
+   "official_start": "2021-11-01",
+   "pre": "data/ext/IDX_MQUSTRAV.csv",
+   "tail": {
+    "kind": "replica",
+    "name": "FLYU"
+   },
+   "products": [
+    "FLYU"
+   ]
+  },
+  "IDX_BAILSN": {
+   "kind": "official",
+   "symbol": "bailsn",
+   "official_start": "2026-05-15",
+   "pre": "data/ext/IDX_BAILSN.csv",
+   "tail": {
+    "kind": "replica",
+    "name": "AIQU"
+   },
+   "products": [
+    "AIQU"
+   ]
+  },
+  "IDX_MANGOSN": {
+   "kind": "official",
+   "symbol": "mangosn",
+   "official_start": "2026-08-19",
+   "pre": "data/ext/IDX_MANGOSN.csv",
+   "tail": {
+    "kind": "replica",
+    "name": "MNGU"
+   },
+   "products": [
+    "MNGU"
+   ]
+  },
+  "IDX_SEMIS": {
+   "kind": "official",
+   "symbol": "semis",
+   "official_start": "2026-07-13",
+   "pre": "data/ext/IDX_SEMIS.csv",
+   "tail": {
+    "kind": "etf_tr",
+    "ticker": "SMH"
+   },
+   "products": [
+    "SMHU"
+   ]
+  },
+  "IDX_VXLCF": {
+   "kind": "official",
+   "symbol": "vxlcf",
+   "official_start": "2026-07-13",
+   "pre": "data/ext/IDX_VXLCF.csv",
+   "tail": {
+    "kind": "etf_tr",
+    "ticker": "XLC"
+   },
+   "products": [
+    "XLCU"
+   ]
+  },
+  "IDX_VXLPF": {
+   "kind": "official",
+   "symbol": "vxlpf",
+   "official_start": "2026-07-13",
+   "pre": "data/ext/IDX_VXLPF.csv",
+   "tail": {
+    "kind": "etf_tr",
+    "ticker": "XLP"
+   },
+   "products": [
+    "XLPU"
+   ]
+  }
+ },
+ "replicas": {
+  "GDXU": {
+   "freq": "Q",
+   "w": {
+    "GDX": 76.2,
+    "GDXJ": 23.8
+   },
+   "eq": false
+  },
+  "FLYU": {
+   "freq": "M",
+   "w": {
+    "UBER": 10.73,
+    "BKNG": 9.57,
+    "DIS": 8.09,
+    "AAL": 7.59,
+    "RCL": 5.83,
+    "CCL": 5.7,
+    "UAL": 4.59,
+    "DAL": 4.55,
+    "HLT": 4.35,
+    "ABNB": 4.28,
+    "MAR": 3.94,
+    "EXPE": 3.3,
+    "NCLH": 3.02,
+    "JOBY": 2.67,
+    "LUV": 2.52,
+    "TOST": 2.42,
+    "LYFT": 2.06,
+    "CAR": 1.92,
+    "LVS": 1.84,
+    "VIK": 1.47,
+    "CZR": 1.21,
+    "ALK": 1.18,
+    "WYNN": 1.18,
+    "H": 1.05,
+    "MGM": 0.97,
+    "MTN": 0.87,
+    "WH": 0.78,
+    "BYD": 0.54,
+    "CHDN": 0.54,
+    "TNL": 0.36,
+    "VAC": 0.3,
+    "SKYW": 0.25,
+    "AGYS": 0.21,
+    "JOE": 0.1
+   },
+   "eq": false
+  },
+  "MNGU": {
+   "freq": "Q",
+   "w": {
+    "AMD": 11.27,
+    "MU": 10.5,
+    "TSM": 10.11,
+    "PLTR": 9.96,
+    "SPCX": 9.93,
+    "NVDA": 9.93,
+    "AVGO": 9.92,
+    "MSFT": 9.66,
+    "META": 9.58,
+    "GOOGL": 9.14
+   },
+   "eq": true
+  },
+  "AIQU": {
+   "freq": "M",
+   "w": {
+    "PLTR": 10.29,
+    "NVDA": 9.52,
+    "MRVL": 8.98,
+    "TSM": 8.45,
+    "AMD": 2.988571428571429,
+    "STX": 2.988571428571429,
+    "LITE": 2.988571428571429,
+    "PANW": 2.988571428571429,
+    "INTC": 2.988571428571429,
+    "META": 2.988571428571429,
+    "TXN": 2.988571428571429,
+    "DELL": 2.988571428571429,
+    "CSCO": 2.988571428571429,
+    "MU": 2.988571428571429,
+    "MSFT": 2.988571428571429,
+    "AAPL": 2.988571428571429,
+    "AVGO": 2.988571428571429,
+    "QCOM": 2.988571428571429,
+    "GOOGL": 2.988571428571429,
+    "AMZN": 2.988571428571429,
+    "NOW": 2.988571428571429,
+    "IBM": 2.988571428571429,
+    "ORCL": 2.988571428571429,
+    "WDC": 2.988571428571429,
+    "CRM": 2.988571428571429
+   },
+   "eq": false
+  }
+ }
+}

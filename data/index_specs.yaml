@@ -1,0 +1,3162 @@
+meta:
+  block: MM-PROXY-FIX-20261014
+  prepared: '2026-10-09'
+  principle: 1x = 발행사가 공시한 공식 지수 하나. 다른 지수·유사 ETF 대용 금지. 1x ETF 는 그 문서에 동일 지수 명시 시에만 채택.
+  sources: spec/threex_etf.yaml(Direxion 497K 2026-02-27 · ProShares 497K 2026-09-28), spec/onex_etf.yaml(1x ETF 발행사 문서), spec/microsectors.yaml(BMO 가격보충서·microsectors.com)
+  validation_criteria: 3x 일간수익률 ~ 1x 일간수익률, 최근 252일 β 2.7~3.3 ∧ R²≥0.95 (n≥60)
+  caveats:
+  - Direxion·ProShares 497K 는 PR/TR 을 명시하지 않음 → return_type [부재]
+  - S&P/Dow Jones/ICE 지수 제공사 페이지는 curl 403 → 지수 이력 URL [확인실패]
+  - Direxion/ProShares 구성종목은 497K 에 미기재 → 1x ETF 상위 보유(yfinance funds_data)로 대체, 지수 구성과 동일 가정 [미검증]
+products:
+  SPXL:
+    issuer: Direxion Funds
+    group: A 미국광역
+    type: ETF
+    index:
+      official_name: S&P 500® Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the S&P 500® Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078624/d230576d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices LLC (SPDJI) - per 497K "Index Information" section
+      ticker: not stated
+      weighting: float-adjusted market-cap weighted ("float-adjusted and market capitalization-weighted index")
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: S&P 500
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: SPY
+      series_source: SPY (동일 지수 1x ETF) — (a) IDX_GSPC 은 R² 0.9925 < SPY 0.9981, 최근 252일 중 지수-ETF 일간 괴리>0.4% 2일(Yahoo 지수 봉 불량 의심)로 (b) 대체
+      onex_index_doc: 'SPY: S&P 500 Index'
+      exact: exact
+      extension: null
+      note: ' | (a) IDX_GSPC 대체: 불량 봉 2일'
+      series_start: '2009-06-01'
+      series_end: '2026-10-08'
+      n_bars: 4367
+      validation:
+        beta_252: 2.996
+        r2_252: 0.9981
+        n_252: 252
+        beta_full: 2.974
+        r2_full: 0.9912
+        n_full: 4366
+        te_ann_252: 0.017
+        lag_r2: '{"-1": 0.0005, "0": 0.9981, "1": 0.0006}'
+        verdict: OK
+      before:
+        proxy: SPY
+        beta_252: 2.996
+        r2_252: 0.9981
+        n_252: 252
+        beta_full: 2.974
+        r2_full: 0.9912
+      top_holdings_proxy:
+        etf: SPY
+        items:
+        - - NVDA
+          - 8.36
+        - - AAPL
+          - 7.35
+        - - MSFT
+          - 5.76
+        - - AMZN
+          - 3.7
+        - - GOOGL
+          - 3.05
+        - - AVGO
+          - 2.53
+        - - GOOG
+          - 2.45
+        - - META
+          - 2.42
+        - - MU
+          - 1.82
+        - - TSLA
+          - 1.51
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: S&P 500 Index
+        url: https://www.sec.gov/Archives/edgar/data/884394/000119312526022316/d77353d485bpos.htm
+        quote: The Trust seeks to provide investment results that, before expenses, correspond generally to the price and yield performance of the S&P 500 ® Index (the “Index”). Fees and Expenses of the
+          Trust This table estimates the fees and expenses that the Trust pays on an annual basis, which you therefore pay
+  UPRO:
+    issuer: ProShares
+    group: A 미국광역
+    type: ETF
+    index:
+      official_name: S&P 500® Index
+      name_quote: ProShares UltraPro S&P500® (the “Fund”) seeks daily investment results, before fees and expenses, that correspond to three times (3x) the daily performance of the S&P 500® Index (the “Index”)
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1174610/000117461026001031/f46114d1.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-09-28'
+        fetched: '2026-10-09'
+      provider: 'S&P Dow Jones Indices LLC - 497K: "The Index is constructed and maintained by S&P Dow Jones Indices LLC."'
+      ticker: Bloomberg ticker symbol "SPX"
+      weighting: '"weighted based on market capitalization" (500 of the largest U.S. companies)'
+      rebalance: '"composition and the assigned weights are reevaluated every September with additional weight adjustments in March, June, and December"'
+      return_type: 'NOT EXPLICITLY STATED for the tracked Index. The doc gives only Bloomberg ticker "SPX" (Bloomberg convention treats this as the price-return series - convention not stated in the doc:
+        INFERENCE, unverified). Footnote on the BENCHMARK rows of the performance table (not the tracked index): "Adjusted to reflect the reinvestment of dividends paid by issuers in the index." The doc
+        also cites "annualized total return performance of the Index" for the 5y to 2026-05-31, but does not say which series the Fund tracks.'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: ''
+      history: https://www.spglobal.com/spdji/en/indices/equity/sp-500/ (403 to curl; unverified); Bloomberg ticker per issuer text (paid terminal)
+      owner_guide_name: n.a. (owner supplied claims only for Direxion funds)
+      matches_owner_guide: n.a.
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: SPY
+      series_source: SPY (동일 지수 1x ETF) — (a) IDX_GSPC 은 R² 0.9940 < SPY 0.9979, 최근 252일 중 지수-ETF 일간 괴리>0.4% 2일(Yahoo 지수 봉 불량 의심)로 (b) 대체
+      onex_index_doc: 'SPY: S&P 500 Index'
+      exact: exact
+      extension: null
+      note: ' | (a) IDX_GSPC 대체: 불량 봉 2일'
+      series_start: '2009-06-01'
+      series_end: '2026-10-08'
+      n_bars: 4367
+      validation:
+        beta_252: 2.985
+        r2_252: 0.9979
+        n_252: 252
+        beta_full: 2.976
+        r2_full: 0.9939
+        n_full: 4348
+        te_ann_252: 0.018
+        lag_r2: '{"-1": 0.0003, "0": 0.9979, "1": 0.0005}'
+        verdict: OK
+      before:
+        proxy: SPY
+        beta_252: 2.985
+        r2_252: 0.9979
+        n_252: 252
+        beta_full: 2.976
+        r2_full: 0.9939
+      top_holdings_proxy:
+        etf: SPY
+        items:
+        - - NVDA
+          - 8.36
+        - - AAPL
+          - 7.35
+        - - MSFT
+          - 5.76
+        - - AMZN
+          - 3.7
+        - - GOOGL
+          - 3.05
+        - - AVGO
+          - 2.53
+        - - GOOG
+          - 2.45
+        - - META
+          - 2.42
+        - - MU
+          - 1.82
+        - - TSLA
+          - 1.51
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: S&P 500 Index
+        url: https://www.sec.gov/Archives/edgar/data/884394/000119312526022316/d77353d485bpos.htm
+        quote: The Trust seeks to provide investment results that, before expenses, correspond generally to the price and yield performance of the S&P 500 ® Index (the “Index”). Fees and Expenses of the
+          Trust This table estimates the fees and expenses that the Trust pays on an annual basis, which you therefore pay
+  TQQQ:
+    issuer: ProShares
+    group: A 미국광역
+    type: ETF
+    index:
+      official_name: Nasdaq-100® Index
+      name_quote: ProShares UltraPro QQQ® (the “Fund”) seeks daily investment results, before fees and expenses, that correspond to three times (3x) the daily performance of the Nasdaq-100® Index (the “Index”)
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1174610/000117461026001035/f46111d1.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-09-28'
+        fetched: '2026-10-09'
+      provider: 'Nasdaq Inc. - 497K: "The Index is constructed and maintained by Nasdaq Inc."'
+      ticker: Bloomberg ticker symbol "NDX"
+      weighting: '"weighted based on market capitalization" (top 100 non-financial Nasdaq-listed companies)'
+      rebalance: '"reevaluated every December, with additional weight adjustments occurring in March, June, and September"'
+      return_type: 'NOT EXPLICITLY STATED for the tracked Index. The doc gives only Bloomberg ticker "NDX" (Bloomberg convention treats this as the price-return series - convention not stated in the doc:
+        INFERENCE, unverified). Footnote on the BENCHMARK rows of the performance table (not the tracked index): "Adjusted to reflect the reinvestment of dividends paid by issuers in the index." The doc
+        also cites "annualized total return performance of the Index" for the 5y to 2026-05-31, but does not say which series the Fund tracks.'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: ''
+      history: https://indexes.nasdaqomx.com/Index/Overview/NDX (HTTP 200; history-download availability not verified); Bloomberg ticker per issuer text (paid terminal)
+      owner_guide_name: n.a. (owner supplied claims only for Direxion funds)
+      matches_owner_guide: n.a.
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_NDX
+      series_source: Yahoo ^NDX (가격수익 지수 레벨)
+      onex_index_doc: 'QQQ: Nasdaq-100 Index'
+      exact: n.a.
+      extension: null
+      note: null
+      series_start: '2000-01-03'
+      series_end: '2026-10-08'
+      n_bars: 6732
+      validation:
+        beta_252: 2.975
+        r2_252: 0.9986
+        n_252: 252
+        beta_full: 2.931
+        r2_full: 0.9972
+        n_full: 4189
+        te_ann_252: 0.023
+        lag_r2: '{"-1": 0.0013, "0": 0.9986, "1": 0.0005}'
+        verdict: OK
+      before:
+        proxy: QQQ
+        beta_252: 2.974
+        r2_252: 0.9993
+        n_252: 252
+        beta_full: 2.956
+        r2_full: 0.9974
+  UDOW:
+    issuer: ProShares
+    group: A 미국광역
+    type: ETF
+    index:
+      official_name: Dow Jones Industrial Average SM
+      name_quote: ProShares UltraPro Dow30 SM (the “Fund”) seeks daily investment results, before fees and expenses, that correspond to three times (3x) the daily performance of the Dow Jones Industrial
+        Average SM (the “Index”)
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1174610/000117461026001038/f46084d1.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-09-28'
+        fetched: '2026-10-09'
+      provider: 'S&P Dow Jones Indices LLC - 497K: "The Index is constructed and maintained by S&P Dow Jones Indices LLC."'
+      ticker: Bloomberg ticker symbol "DJI"
+      weighting: 'PRICE-weighted: the 30 companies "are then weighted based on their price"'
+      rebalance: 'no scheduled rebalance stated: "Companies may be added or removed from the Index at any time"'
+      return_type: 'NOT EXPLICITLY STATED for the tracked Index. The doc gives only Bloomberg ticker "DJI" (Bloomberg convention treats this as the price-return series - convention not stated in the doc:
+        INFERENCE, unverified). Footnote on the BENCHMARK rows of the performance table (not the tracked index): "Adjusted to reflect the reinvestment of dividends paid by issuers in the index." The doc
+        also cites "annualized total return performance of the Index" for the 5y to 2026-05-31, but does not say which series the Fund tracks.'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: ''
+      history: https://www.spglobal.com/spdji/en/indices/equity/dow-jones-industrial-average/ (403 to curl; unverified); Bloomberg ticker per issuer text (paid terminal)
+      owner_guide_name: n.a. (owner supplied claims only for Direxion funds)
+      matches_owner_guide: n.a.
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_DJI
+      series_source: Yahoo ^DJI (가격수익 지수 레벨)
+      onex_index_doc: 'DIA: Dow Jones Industrial Average'
+      exact: n.a.
+      extension: null
+      note: null
+      series_start: '2000-01-03'
+      series_end: '2026-10-08'
+      n_bars: 6732
+      validation:
+        beta_252: 2.961
+        r2_252: 0.9973
+        n_252: 252
+        beta_full: 2.943
+        r2_full: 0.9959
+        n_full: 4189
+        te_ann_252: 0.02
+        lag_r2: '{"-1": 0.0032, "0": 0.9973, "1": 0.0031}'
+        verdict: OK
+      before:
+        proxy: DIA
+        beta_252: 2.98
+        r2_252: 0.9978
+        n_252: 252
+        beta_full: 2.95
+        r2_full: 0.995
+  TNA:
+    issuer: Direxion Funds
+    group: A 미국광역
+    type: ETF
+    index:
+      official_name: Russell 2000® Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the Russell 2000® Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078554/d69000d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: Frank Russell Company ("Russell") named as trademark owner/licensor in "Index Information"; the Direxion 497K does not name FTSE Russell (ProShares URTY 497K says "constructed and maintained
+        by FTSE Russell")
+      ticker: not stated
+      weighting: 'NOT STATED in the Direxion 497K (describes ~2,000 smallest Russell 3000 members by market cap and current membership). Cross-ref only: ProShares URTY 497K says selected companies are weighted
+        based on market capitalization.'
+      rebalance: 'Not a rebalance statement: "reconstituted annually and enhanced by initial public offerings quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner "Russell 2000" = verbatim "Russell 2000® Index".
+      history: Provider site https://www.lseg.com/en/ftse-russell/indices/russell-us (HTTP 200 reachable; history-download availability NOT verified)
+      owner_guide_name: Russell 2000
+      matches_owner_guide: 'True'
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_RUT
+      series_source: Yahoo ^RUT (가격수익 지수 레벨)
+      onex_index_doc: 'IWM: Russell 2000 Index'
+      exact: n.a.
+      extension: null
+      note: null
+      series_start: '2000-01-03'
+      series_end: '2026-10-08'
+      n_bars: 6732
+      validation:
+        beta_252: 2.971
+        r2_252: 0.9967
+        n_252: 252
+        beta_full: 2.887
+        r2_full: 0.9887
+        n_full: 4497
+        te_ann_252: 0.032
+        lag_r2: '{"-1": 0.0078, "0": 0.9967, "1": 0.0059}'
+        verdict: OK
+      before:
+        proxy: IWM
+        beta_252: 2.974
+        r2_252: 0.9965
+        n_252: 252
+        beta_full: 2.961
+        r2_full: 0.9952
+  URTY:
+    issuer: ProShares
+    group: A 미국광역
+    type: ETF
+    index:
+      official_name: Russell 2000® Index
+      name_quote: ProShares UltraPro Russell2000 (the “Fund”) seeks daily investment results, before fees and expenses, that correspond to three times (3x) the daily performance of the Russell 2000® Index
+        (the “Index”)
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1174610/000117461026001039/f46112d1.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-09-28'
+        fetched: '2026-10-09'
+      provider: 'FTSE Russell - 497K: "The Index is constructed and maintained by FTSE Russell."'
+      ticker: Bloomberg ticker symbol "RTY"
+      weighting: '"weighted based on market capitalization" (2000 smallest companies in Russell 3000)'
+      rebalance: '"composition and the assigned weights are reevaluated each June and December"'
+      return_type: 'NOT EXPLICITLY STATED for the tracked Index. The doc gives only Bloomberg ticker "RTY" (Bloomberg convention treats this as the price-return series - convention not stated in the doc:
+        INFERENCE, unverified). Footnote on the BENCHMARK rows of the performance table (not the tracked index): "Adjusted to reflect the reinvestment of dividends paid by issuers in the index." The doc
+        also cites "annualized total return performance of the Index" for the 5y to 2026-05-31, but does not say which series the Fund tracks.'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: ''
+      history: https://www.lseg.com/en/ftse-russell/indices/russell-us (HTTP 200; history-download availability not verified); Bloomberg ticker per issuer text (paid terminal)
+      owner_guide_name: n.a. (owner supplied claims only for Direxion funds)
+      matches_owner_guide: n.a.
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_RUT
+      series_source: Yahoo ^RUT (가격수익 지수 레벨)
+      onex_index_doc: 'IWM: Russell 2000 Index'
+      exact: n.a.
+      extension: null
+      note: null
+      series_start: '2000-01-03'
+      series_end: '2026-10-08'
+      n_bars: 6732
+      validation:
+        beta_252: 2.978
+        r2_252: 0.9958
+        n_252: 252
+        beta_full: 2.935
+        r2_full: 0.9932
+        n_full: 4189
+        te_ann_252: 0.036
+        lag_r2: '{"-1": 0.0077, "0": 0.9958, "1": 0.006}'
+        verdict: OK
+      before:
+        proxy: IWM
+        beta_252: 2.98
+        r2_252: 0.9952
+        n_252: 252
+        beta_full: 2.992
+        r2_full: 0.9963
+  MIDU:
+    issuer: Direxion Funds
+    group: A 미국광역
+    type: ETF
+    index:
+      official_name: S&P MidCap 400® Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the S&P MidCap 400® Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078509/d26681d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices LLC (SPDJI) - per 497K "Index Information" section
+      ticker: not stated
+      weighting: float-adjusted market-cap weighted
+      rebalance: '"The Index rebalances quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: S&P MidCap 400
+      matches_owner_guide: 'True'
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_MID
+      series_source: Yahoo ^MID (가격수익 지수 레벨)
+      onex_index_doc: 'IJH: S&P MidCap 400 Index'
+      exact: n.a.
+      extension: null
+      note: null
+      series_start: '2000-01-03'
+      series_end: '2026-10-08'
+      n_bars: 6732
+      validation:
+        beta_252: 2.996
+        r2_252: 0.9976
+        n_252: 252
+        beta_full: 2.957
+        r2_full: 0.9847
+        n_full: 4464
+        te_ann_252: 0.023
+        lag_r2: '{"-1": 0.0049, "0": 0.9976, "1": 0.0043}'
+        verdict: OK
+      before:
+        proxy: IJH
+        beta_252: 2.968
+        r2_252: 0.9958
+        n_252: 252
+        beta_full: 2.95
+        r2_full: 0.9834
+  UMDD:
+    issuer: ProShares
+    group: A 미국광역
+    type: ETF
+    index:
+      official_name: S&P MidCap 400® Index
+      name_quote: ProShares UltraPro MidCap400 (the “Fund”) seeks daily investment results, before fees and expenses, that correspond to three times (3x) the daily performance of the S&P MidCap 400® Index
+        (the “Index”)
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1174610/000117461026001048/f46095d1.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-09-28'
+        fetched: '2026-10-09'
+      provider: 'S&P Dow Jones Indices LLC - 497K: "The Index is constructed and maintained by S&P Dow Jones Indices LLC."'
+      ticker: Bloomberg ticker symbol "MID"
+      weighting: '"weighted based on market capitalization" (400 mid-cap companies)'
+      rebalance: '"reevaluated every September with additional weight adjustments in March, June, and December"'
+      return_type: 'NOT EXPLICITLY STATED for the tracked Index. The doc gives only Bloomberg ticker "MID" (Bloomberg convention treats this as the price-return series - convention not stated in the doc:
+        INFERENCE, unverified). Footnote on the BENCHMARK rows of the performance table (not the tracked index): "Adjusted to reflect the reinvestment of dividends paid by issuers in the index." The doc
+        also cites "annualized total return performance of the Index" for the 5y to 2026-05-31, but does not say which series the Fund tracks.'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: ''
+      history: https://www.spglobal.com/spdji/en/indices/equity/sp-400/ (403 to curl; unverified); Bloomberg ticker per issuer text (paid terminal)
+      owner_guide_name: n.a. (owner supplied claims only for Direxion funds)
+      matches_owner_guide: n.a.
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_MID
+      series_source: Yahoo ^MID (가격수익 지수 레벨)
+      onex_index_doc: 'IJH: S&P MidCap 400 Index'
+      exact: n.a.
+      extension: null
+      note: null
+      series_start: '2000-01-03'
+      series_end: '2026-10-08'
+      n_bars: 6732
+      validation:
+        beta_252: 3.017
+        r2_252: 0.9947
+        n_252: 252
+        beta_full: 2.953
+        r2_full: 0.9878
+        n_full: 4189
+        te_ann_252: 0.034
+        lag_r2: '{"-1": 0.0057, "0": 0.9947, "1": 0.0049}'
+        verdict: OK
+      before:
+        proxy: IJH
+        beta_252: 2.987
+        r2_252: 0.9918
+        n_252: 252
+        beta_full: 2.933
+        r2_full: 0.9844
+  HIBL:
+    issuer: Direxion Funds
+    group: A 미국광역
+    type: ETF
+    index:
+      official_name: S&P 500® High Beta Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the S&P 500® High Beta Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078493/d99472d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices (the "Index Provider") - 497K strategy text; SPDJI also in "Index Information"
+      ticker: not stated
+      weighting: 'NOT STATED in the 497K (selection: the 100 S&P 500 securities with highest 12-month beta; weighting scheme not given). unverified.'
+      rebalance: '"reviewed and rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: S&P 500 High Beta
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: SPHB
+      series_source: SPHB (동일 지수 1x ETF)
+      onex_index_doc: 'SPHB: S&P 500 High Beta Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '2011-05-05'
+      series_end: '2026-10-08'
+      n_bars: 3880
+      validation:
+        beta_252: 3.016
+        r2_252: 0.9942
+        n_252: 252
+        beta_full: 2.776
+        r2_full: 0.9388
+        n_full: 1737
+        te_ann_252: 0.063
+        lag_r2: '{"-1": 0.0132, "0": 0.9942, "1": 0.0131}'
+        verdict: OK
+      before:
+        proxy: SPHB
+        beta_252: 3.016
+        r2_252: 0.9942
+        n_252: 252
+        beta_full: 2.776
+        r2_full: 0.9388
+      top_holdings_proxy:
+        etf: SPHB
+        items:
+        - - SNDK
+          - 2.88
+        - - MRNA
+          - 2.69
+        - - AMD
+          - 2.06
+        - - MU
+          - 2.05
+        - - SMCI
+          - 2.0
+        - - COIN
+          - 1.97
+        - - MRVL
+          - 1.89
+        - - HOOD
+          - 1.85
+        - - INTC
+          - 1.71
+        - - LRCX
+          - 1.66
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: S&P 500 High Beta Index
+        url: https://www.sec.gov/Archives/edgar/data/1378872/000119312525325656/d54028d497k.htm
+        quote: The Invesco S&P 500 ® High Beta ETF (the “Fund”) seeks to track the investment results (before fees and expenses) of the S&P 500 ® High Beta Index (the “Underlying Index”).
+  SOXL:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: NYSE Semiconductor Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the NYSE Semiconductor Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078540/d50601d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: ICE Data Indices, LLC - per 497K "Index Information" section (strategy text does not name the provider)
+      ticker: not stated
+      weighting: modified float-adjusted market-cap weighted, rules-based, 30 largest U.S.-listed semiconductor companies
+      rebalance: '"rebalanced quarterly and reconstituted annually"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider ICE Data Indices; no verified public history URL (https://www.ice.com/indices/nyse-semiconductor returned 404). unverified.
+      owner_guide_name: NYSE Semiconductor
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: SOXX
+      series_source: SOXX (동일 지수 1x ETF)
+      onex_index_doc: 'SOXX: NYSE Semiconductor Index'
+      exact: exact
+      extension: null
+      note: SOXX 는 2021-06-21 에 PHLX Semiconductor 에서 NYSE Semiconductor 로 변경 — exact 는 그 이후
+      series_start: '2001-07-13'
+      series_end: '2026-10-08'
+      n_bars: 6347
+      validation:
+        beta_252: 2.942
+        r2_252: 0.9984
+        n_252: 252
+        beta_full: 2.961
+        r2_full: 0.9938
+        n_full: 4170
+        te_ann_252: 0.06
+        lag_r2: '{"-1": 0.0079, "0": 0.9984, "1": 0.0053}'
+        verdict: OK
+      before:
+        proxy: SOXX
+        beta_252: 2.942
+        r2_252: 0.9984
+        n_252: 252
+        beta_full: 2.961
+        r2_full: 0.9938
+      top_holdings_proxy:
+        etf: SOXX
+        items:
+        - - INTC
+          - 9.59
+        - - AMD
+          - 9.28
+        - - MU
+          - 7.93
+        - - NVDA
+          - 7.39
+        - - AVGO
+          - 6.77
+        - - MRVL
+          - 4.46
+        - - AMAT
+          - 3.98
+        - - KLAC
+          - 3.97
+        - - ADI
+          - 3.91
+        - - LRCX
+          - 3.89
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: NYSE Semiconductor Index
+        url: https://www.ishares.com/us/products/239705/ishares-phlx-semiconductor-etf
+        quote: 'Key Facts "Benchmark Index": "NYSE Semiconductor Index" | objective: "seeks to track the investment results of an index composed of U.S.-listed equities in the semiconductor sector."'
+  TECL:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: Technology Select Sector Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the Technology Select Sector Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078577/d91203d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices (the "Index Provider")
+      ticker: not stated
+      weighting: 'Select Sector: "modified market capitalization" weights (single-stock weight modifications to conform to Internal Revenue Code requirements); all constituents are S&P 500 members'
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: Technology Select Sector
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: XLK
+      series_source: XLK (동일 지수 1x ETF)
+      onex_index_doc: 'XLK: Technology Select Sector Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '1998-12-22'
+      series_end: '2026-10-08'
+      n_bars: 6991
+      validation:
+        beta_252: 2.986
+        r2_252: 0.9938
+        n_252: 252
+        beta_full: 2.979
+        r2_full: 0.9862
+        n_full: 4470
+        te_ann_252: 0.062
+        lag_r2: '{"-1": 0.0004, "0": 0.9938, "1": 0.0004}'
+        verdict: OK
+      before:
+        proxy: XLK
+        beta_252: 2.986
+        r2_252: 0.9938
+        n_252: 252
+        beta_full: 2.979
+        r2_full: 0.9862
+      top_holdings_proxy:
+        etf: XLK
+        items:
+        - - NVDA
+          - 15.47
+        - - AAPL
+          - 13.6
+        - - MSFT
+          - 10.66
+        - - AMD
+          - 5.06
+        - - AVGO
+          - 4.68
+        - - MU
+          - 4.47
+        - - INTC
+          - 3.38
+        - - PLTR
+          - 2.44
+        - - CSCO
+          - 2.4
+        - - LRCX
+          - 2.33
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: Technology Select Sector Index
+        url: https://www.sec.gov/Archives/edgar/data/1064641/000119312526027312/d15107d485bpos.htm
+        quote: seeks to provide investment results that, before expenses, correspond generally to the price and yield performance of publicly traded equity securities of companies in the Technology Select
+          Sector Index (the “Index”). Fees and Expenses of the Fund The table below describes the fees and expenses that
+  WEBL:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: Dow Jones Internet Composite Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the Dow Jones Internet Composite Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078575/d89000d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices (the "Index Provider") - 497K strategy text; "Index Information" cites only Dow Jones trademarks
+      ticker: not stated
+      weighting: NOT STATED in the 497K (40 stocks ranked by float-adjusted market cap; weighting scheme not given). unverified.
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: Dow Jones Internet Composite
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: FDN
+      series_source: FDN (동일 지수 1x ETF)
+      onex_index_doc: 'FDN: Dow Jones Internet Composite Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '2006-06-23'
+      series_end: '2026-10-08'
+      n_bars: 5105
+      validation:
+        beta_252: 2.981
+        r2_252: 0.9985
+        n_252: 252
+        beta_full: 2.905
+        r2_full: 0.9844
+        n_full: 1737
+        te_ann_252: 0.024
+        lag_r2: '{"-1": 0.0053, "0": 0.9985, "1": 0.0051}'
+        verdict: OK
+      before:
+        proxy: FDN
+        beta_252: 2.981
+        r2_252: 0.9985
+        n_252: 252
+        beta_full: 2.905
+        r2_full: 0.9844
+      top_holdings_proxy:
+        etf: FDN
+        items:
+        - - META
+          - 11.08
+        - - AMZN
+          - 9.86
+        - - CSCO
+          - 8.55
+        - - GOOGL
+          - 5.76
+        - - NFLX
+          - 5.75
+        - - ANET
+          - 4.74
+        - - GOOG
+          - 4.62
+        - - CRM
+          - 4.22
+        - - BKNG
+          - 4.17
+        - - SNOW
+          - 4.01
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: Dow Jones Internet Composite Index
+        url: https://www.sec.gov/Archives/edgar/data/1329377/000144554626003279/etf1_fdn497k.htm
+        quote: The First Trust Dow Jones Internet Index Fund (the “Fund” ) seeks investment results that correspond generally to the price and yield (before the Fund’s fees and expenses) of an equity index
+          called the Dow Jones Internet Composite Index SM (the “Index” ).
+  CURE:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: Health Care Select Sector Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the Health Care Select Sector Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078555/d69307d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices (the "Index Provider")
+      ticker: not stated
+      weighting: 'Select Sector: "modified market capitalization" weights (single-stock weight modifications to conform to Internal Revenue Code requirements); all constituents are S&P 500 members'
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: Health Care Select Sector
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: XLV
+      series_source: XLV (동일 지수 1x ETF)
+      onex_index_doc: 'XLV: Health Care Select Sector Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '1998-12-22'
+      series_end: '2026-10-08'
+      n_bars: 6991
+      validation:
+        beta_252: 2.943
+        r2_252: 0.9941
+        n_252: 252
+        beta_full: 2.901
+        r2_full: 0.9536
+        n_full: 3851
+        te_ann_252: 0.037
+        lag_r2: '{"-1": 0.0016, "0": 0.9941, "1": 0.0026}'
+        verdict: OK
+      before:
+        proxy: XLV
+        beta_252: 2.943
+        r2_252: 0.9941
+        n_252: 252
+        beta_full: 2.901
+        r2_full: 0.9536
+      top_holdings_proxy:
+        etf: XLV
+        items:
+        - - LLY
+          - 15.1
+        - - JNJ
+          - 10.41
+        - - ABBV
+          - 7.54
+        - - MRK
+          - 5.85
+        - - UNH
+          - 5.38
+        - - TMO
+          - 4.07
+        - - AMGN
+          - 3.72
+        - - GILD
+          - 3.01
+        - - ABT
+          - 2.79
+        - - PFE
+          - 2.65
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: Health Care Select Sector Index
+        url: https://www.sec.gov/Archives/edgar/data/1064641/000119312526027312/d15107d485bpos.htm
+        quote: seeks to provide investment results that, before expenses, correspond generally to the price and yield performance of publicly traded equity securities of companies in the Health Care Select
+          Sector Index (the “Index”). Fees and Expenses of the Fund The table below describes the fees and expenses tha
+  PILL:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: S&P Pharmaceuticals Select Industry Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the S&P Pharmaceuticals Select Industry Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078517/d30541d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices LLC (SPDJI) - per 497K "Index Information" section
+      ticker: not stated
+      weighting: modified equal-weighted (the 497K gives only size/liquidity eligibility thresholds, not the weight-modification/cap rules)
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: S&P Pharmaceuticals Select Industry
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: XPH
+      series_source: XPH (동일 지수 1x ETF)
+      onex_index_doc: 'XPH: S&P Pharmaceuticals Select Industry Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '2006-06-22'
+      series_end: '2026-10-08'
+      n_bars: 5106
+      validation:
+        beta_252: 2.885
+        r2_252: 0.9838
+        n_252: 252
+        beta_full: 2.726
+        r2_full: 0.9115
+        n_full: 2234
+        te_ann_252: 0.09
+        lag_r2: '{"-1": 0.0008, "0": 0.9838, "1": 0.0002}'
+        verdict: OK
+      before:
+        proxy: XPH
+        beta_252: 2.885
+        r2_252: 0.9838
+        n_252: 252
+        beta_full: 2.726
+        r2_full: 0.9115
+      top_holdings_proxy:
+        etf: XPH
+        items:
+        - - XERS
+          - 2.46
+        - - MANE
+          - 2.42
+        - - AMRX
+          - 2.32
+        - - LGND
+          - 2.15
+        - - VTRS
+          - 2.13
+        - - INDV
+          - 2.05
+        - - PRGO
+          - 2.05
+        - - LLY
+          - 2.05
+        - - ANIP
+          - 2.04
+        - - PFE
+          - 2.04
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: S&P Pharmaceuticals Select Industry Index
+        url: https://www.sec.gov/Archives/edgar/data/1064642/000119312525250041/d74009d485bpos.htm
+        quote: In seeking to track the performance of the S&P Pharmaceuticals Select Industry Index (the “Index”), the Fund employs a sampling strategy, which means that the Fund is not required to purchase
+          all of the securities represented in the Index. Instead, the Fund may purchase a subset of the securities in
+  LABU:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: S&P Biotechnology Select Industry Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the S&P Biotechnology Select Industry Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078516/d30496d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices (the "Index Provider")
+      ticker: not stated
+      weighting: modified equal-weighted (the 497K gives only size/liquidity eligibility thresholds, not the weight-modification/cap rules)
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: S&P Biotechnology Select Industry
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: XBI
+      series_source: XBI (동일 지수 1x ETF)
+      onex_index_doc: 'XBI: S&P Biotechnology Select Industry Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '2006-02-06'
+      series_end: '2026-10-08'
+      n_bars: 5201
+      validation:
+        beta_252: 2.986
+        r2_252: 0.9984
+        n_252: 252
+        beta_full: 2.975
+        r2_full: 0.9961
+        n_full: 2858
+        te_ann_252: 0.034
+        lag_r2: '{"-1": 0.0118, "0": 0.9984, "1": 0.0091}'
+        verdict: OK
+      before:
+        proxy: XBI
+        beta_252: 2.986
+        r2_252: 0.9984
+        n_252: 252
+        beta_full: 2.975
+        r2_full: 0.9961
+      top_holdings_proxy:
+        etf: XBI
+        items:
+        - - TWST
+          - 2.21
+        - - MRNA
+          - 2.04
+        - - NTRA
+          - 1.8
+        - - IOVA
+          - 1.62
+        - - AMGN
+          - 1.55
+        - - BIIB
+          - 1.54
+        - - UTHR
+          - 1.54
+        - - ABBV
+          - 1.5
+        - - HALO
+          - 1.48
+        - - SYRE
+          - 1.47
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: S&P Biotechnology Select Industry Index
+        url: https://www.sec.gov/Archives/edgar/data/1064642/000119312525250041/d74009d485bpos.htm
+        quote: In seeking to track the performance of the S&P Biotechnology Select Industry Index (the “Index”), the Fund employs a sampling strategy, which means that the Fund is not required to purchase
+          all of the securities represented in the Index. Instead, the Fund may purchase a subset of the securities in t
+  FAS:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: Financial Select Sector Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the Financial Select Sector Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078524/d36113d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices (the "Index Provider")
+      ticker: not stated
+      weighting: 'Select Sector: "modified market capitalization" weights (single-stock weight modifications to conform to Internal Revenue Code requirements); all constituents are S&P 500 members'
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: Financial Select Sector
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: XLF
+      series_source: XLF (동일 지수 1x ETF)
+      onex_index_doc: 'XLF: Financial Select Sector Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '1998-12-22'
+      series_end: '2026-10-08'
+      n_bars: 6991
+      validation:
+        beta_252: 2.937
+        r2_252: 0.9681
+        n_252: 252
+        beta_full: 2.654
+        r2_full: 0.9754
+        n_full: 4497
+        te_ann_252: 0.079
+        lag_r2: '{"-1": 0.0002, "0": 0.9681, "1": 0.0002}'
+        verdict: OK
+      before:
+        proxy: XLF
+        beta_252: 2.937
+        r2_252: 0.9681
+        n_252: 252
+        beta_full: 2.654
+        r2_full: 0.9754
+      top_holdings_proxy:
+        etf: XLF
+        items:
+        - - BRK-B
+          - 12.3
+        - - JPM
+          - 11.66
+        - - V
+          - 8.12
+        - - MA
+          - 5.91
+        - - BAC
+          - 4.69
+        - - GS
+          - 3.48
+        - - WFC
+          - 3.21
+        - - MS
+          - 2.98
+        - - C
+          - 2.88
+        - - AXP
+          - 2.12
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: Financial Select Sector Index
+        url: https://www.sec.gov/Archives/edgar/data/1064641/000119312526027312/d15107d485bpos.htm
+        quote: 'seeks to provide investment results that, before expenses, correspond generally to the price and yield performance of publicly traded equity securities of companies in the Financial Select
+          Sector Index (the “Index”). Fees and Expenses of the Fund The table below describes the fees and expenses that '
+  DPST:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: S&P Regional Banks Select Industry Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the S&P Regional Banks Select Industry Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078566/d78907d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices LLC (SPDJI) - per 497K "Index Information" section
+      ticker: not stated
+      weighting: modified equal-weighted (the 497K gives only size/liquidity eligibility thresholds, not the weight-modification/cap rules)
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: S&P Regional Banks Select Industry
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: KRE
+      series_source: KRE (동일 지수 1x ETF)
+      onex_index_doc: 'KRE: S&P Regional Banks Select Industry Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '2006-06-22'
+      series_end: '2026-10-08'
+      n_bars: 5106
+      validation:
+        beta_252: 2.965
+        r2_252: 0.9945
+        n_252: 252
+        beta_full: 2.893
+        r2_full: 0.9572
+        n_full: 2799
+        te_ann_252: 0.049
+        lag_r2: '{"-1": 0.0064, "0": 0.9945, "1": 0.0056}'
+        verdict: OK
+      before:
+        proxy: KRE
+        beta_252: 2.965
+        r2_252: 0.9945
+        n_252: 252
+        beta_full: 2.893
+        r2_full: 0.9572
+      top_holdings_proxy:
+        etf: KRE
+        items:
+        - - UBSI
+          - 1.15
+        - - FIBK
+          - 1.14
+        - - ONB
+          - 1.13
+        - - HWC
+          - 1.13
+        - - EWBC
+          - 1.13
+        - - EBC
+          - 1.13
+        - - FULT
+          - 1.13
+        - - FHB
+          - 1.13
+        - - AUB
+          - 1.12
+        - - COLB
+          - 1.12
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: S&P Regional Banks Select Industry Index
+        url: https://www.sec.gov/Archives/edgar/data/1064642/000119312525250041/d74009d485bpos.htm
+        quote: 'In seeking to track the performance of the S&P Regional Banks Select Industry Index (the “Index”), the Fund employs a sampling strategy, which means that the Fund is not required to purchase
+          all of the securities represented in the Index. Instead, the Fund may purchase a subset of the securities in '
+  DFEN:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: Dow Jones U.S. Select Aerospace & Defense Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the Dow Jones U.S. Select Aerospace & Defense Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078618/d832304d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices LLC (the "Index Provider")
+      ticker: not stated
+      weighting: '497K text: Index Provider selects stocks "on the basis of the float-adjusted, market capitalization-weight of each constituent" - wording ambiguous; weighting scheme not unambiguously
+        stated (presumably float-adjusted market-cap)'
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner "DJ U.S. Select Aerospace & Defense" = verbatim "Dow Jones U.S. Select Aerospace & Defense Index".
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: DJ U.S. Select Aerospace & Defense
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: ITA
+      series_source: ITA (동일 지수 1x ETF)
+      onex_index_doc: 'ITA: Dow Jones U.S. Select Aerospace & Defense Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '2006-05-05'
+      series_end: '2026-10-08'
+      n_bars: 5139
+      validation:
+        beta_252: 2.998
+        r2_252: 0.9811
+        n_252: 252
+        beta_full: 2.979
+        r2_full: 0.5523
+        n_full: 2371
+        te_ann_252: 0.097
+        lag_r2: '{"-1": 0.0004, "0": 0.9811, "1": 0.0}'
+        verdict: OK
+      before:
+        proxy: ITA
+        beta_252: 2.998
+        r2_252: 0.9811
+        n_252: 252
+        beta_full: 2.979
+        r2_full: 0.5523
+      top_holdings_proxy:
+        etf: ITA
+        items:
+        - - GE
+          - 20.97
+        - - RTX
+          - 16.19
+        - - BA
+          - 7.49
+        - - HWM
+          - 4.61
+        - - LMT
+          - 4.6
+        - - TDG
+          - 4.56
+        - - GD
+          - 4.46
+        - - NOC
+          - 4.45
+        - - HONA
+          - 3.82
+        - - LHX
+          - 3.43
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: Dow Jones U.S. Select Aerospace & Defense Index
+        url: https://www.ishares.com/us/products/239502/ishares-us-aerospace-defense-etf
+        quote: 'Key Facts "Benchmark Index": "Dow Jones U.S. Select Aerospace & Defense Index" | objective: "seeks to track the investment results of an index composed of U.S. equities in the aerospace
+          and defense sector."'
+  DUSL:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: Industrials Select Sector Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the Industrials Select Sector Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078632/d292022d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices (the "Index Provider")
+      ticker: not stated
+      weighting: 'Select Sector: "modified market capitalization" weights (single-stock weight modifications to conform to Internal Revenue Code requirements); all constituents are S&P 500 members'
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: Industrials Select Sector
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: XLI
+      series_source: XLI (동일 지수 1x ETF)
+      onex_index_doc: 'XLI: Industrial Select Sector Index'
+      exact: 'exact(정규화: ''Industrials''↔''Industrial'' 1글자 차)'
+      extension: null
+      note: null
+      series_start: '1998-12-22'
+      series_end: '2026-10-08'
+      n_bars: 6991
+      validation:
+        beta_252: 2.96
+        r2_252: 0.959
+        n_252: 252
+        beta_full: 2.935
+        r2_full: 0.9713
+        n_full: 2371
+        te_ann_252: 0.106
+        lag_r2: '{"-1": 0.0126, "0": 0.959, "1": 0.0068}'
+        verdict: OK
+      before:
+        proxy: XLI
+        beta_252: 2.96
+        r2_252: 0.959
+        n_252: 252
+        beta_full: 2.935
+        r2_full: 0.9713
+      top_holdings_proxy:
+        etf: XLI
+        items:
+        - - CAT
+          - 7.01
+        - - GE
+          - 6.09
+        - - GEV
+          - 4.76
+        - - RTX
+          - 4.71
+        - - DE
+          - 3.17
+        - - ETN
+          - 3.14
+        - - UNP
+          - 3.04
+        - - BA
+          - 2.76
+        - - UBER
+          - 2.63
+        - - PH
+          - 2.26
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: Industrial Select Sector Index
+        url: https://www.sec.gov/Archives/edgar/data/1064641/000119312526027312/d15107d485bpos.htm
+        quote: seeks to provide investment results that, before expenses, correspond generally to the price and yield performance of publicly traded equity securities of companies in the Industrial Select
+          Sector Index (the “Index”). Fees and Expenses of the Fund The table below describes the fees and expenses that
+  TPOR:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: S&P Transportation Select Industry FMC Capped Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the S&P Transportation Select Industry FMC Capped Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078603/d190978d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices (the "Index Provider")
+      ticker: not stated
+      weighting: 'FMC Capped: float-adjusted market-value weighted, with caps applied at each quarterly rebalance: (i) any single issuer max 22.5%; (ii) aggregate weight of all issuers individually above
+        4.5% max 45%. Weights may exceed caps between quarterly rebalances.'
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: S&P Transportation Select Industry FMC Capped
+      matches_owner_guide: 'True'
+    onex:
+      path: b+a
+      path_label: exact 1x ETF + 지수 레벨(구간 분할)
+      key: TPOR_1X
+      series_source: 'IYT(exact: S&P Transportation Select Industry FMC Capped, 2021-07-19~) + 2022-07-29 이전은 ^DJT'
+      onex_index_doc: 'IYT: S&P Transportation Select Industry FMC Capped Index'
+      exact: exact(IYT 문서, 지수 변경 2021-07-19 이후)
+      extension: null
+      note: TPOR 는 2022-08-01 이전 Dow Jones Transportation Average 추종(발행사 497K) — 그 구간은 ^DJT
+      series_start: '2000-01-03'
+      series_end: '2026-10-08'
+      n_bars: 6732
+      validation:
+        beta_252: 2.909
+        r2_252: 0.9921
+        n_252: 252
+        beta_full: 2.919
+        r2_full: 0.9738
+        n_full: 2371
+        te_ann_252: 0.055
+        lag_r2: '{"-1": 0.0051, "0": 0.9921, "1": 0.002}'
+        verdict: OK
+      before:
+        proxy: IYT
+        beta_252: 2.909
+        r2_252: 0.9921
+        n_252: 252
+        beta_full: 2.914
+        r2_full: 0.9547
+      top_holdings_proxy:
+        etf: IYT
+        items:
+        - - UNP
+          - 17.44
+        - - UBER
+          - 15.1
+        - - CSX
+          - 9.3
+        - - DAL
+          - 4.95
+        - - UAL
+          - 4.84
+        - - NSC
+          - 4.46
+        - - ODFL
+          - 4.46
+        - - UPS
+          - 4.4
+        - - FDX
+          - 4.3
+        - - EXPD
+          - 3.4
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: S&P Transportation Select Industry FMC Capped Index
+        url: https://www.ishares.com/us/products/239501/ishares-transportation-average-etf
+        quote: 'Key Facts "Benchmark Index": "S&P Transportation Select Industry FMC Capped Index" | objective: "seeks to track the investment results of an index composed of U.S. equities in the transportation
+          sector."'
+  RETL:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: S&P Retail Select Industry Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the S&P Retail Select Industry Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078609/d481142d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices LLC (SPDJI) - per 497K "Index Information" section
+      ticker: not stated
+      weighting: modified equal-weighted (the 497K gives only size/liquidity eligibility thresholds, not the weight-modification/cap rules)
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: S&P Retail Select Industry
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: XRT
+      series_source: XRT (동일 지수 1x ETF)
+      onex_index_doc: 'XRT: S&P Retail Select Industry Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '2006-06-22'
+      series_end: '2026-10-08'
+      n_bars: 5106
+      validation:
+        beta_252: 2.947
+        r2_252: 0.9958
+        n_252: 252
+        beta_full: 2.598
+        r2_full: 0.8802
+        n_full: 4084
+        te_ann_252: 0.041
+        lag_r2: '{"-1": 0.0083, "0": 0.9958, "1": 0.0064}'
+        verdict: OK
+      before:
+        proxy: XRT
+        beta_252: 2.947
+        r2_252: 0.9958
+        n_252: 252
+        beta_full: 2.598
+        r2_full: 0.8802
+      top_holdings_proxy:
+        etf: XRT
+        items:
+        - - GME
+          - 1.8
+        - - OLLI
+          - 1.72
+        - - VSXY
+          - 1.69
+        - - WRBY
+          - 1.64
+        - - BURL
+          - 1.62
+        - - RVLV
+          - 1.59
+        - - DDS
+          - 1.56
+        - - GAP
+          - 1.55
+        - - M
+          - 1.53
+        - - KSS
+          - 1.53
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: S&P Retail Select Industry Index
+        url: https://www.sec.gov/Archives/edgar/data/1064642/000119312525250041/d74009d485bpos.htm
+        quote: In seeking to track the performance of the S&P Retail Select Industry Index (the “Index”), the Fund employs a sampling strategy, which means that the Fund is not required to purchase all
+          of the securities represented in the Index. Instead, the Fund may purchase a subset of the securities in the Inde
+  WANT:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: Consumer Discretionary Select Sector Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the Consumer Discretionary Select Sector Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078507/d25566d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices (the "Index Provider")
+      ticker: not stated
+      weighting: 'Select Sector: "modified market capitalization" weights (single-stock weight modifications to conform to Internal Revenue Code requirements); all constituents are S&P 500 members'
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: Consumer Discretionary Select Sector
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: XLY
+      series_source: XLY (동일 지수 1x ETF)
+      onex_index_doc: 'XLY: Consumer Discretionary Select Sector Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '1998-12-22'
+      series_end: '2026-10-08'
+      n_bars: 6991
+      validation:
+        beta_252: 2.957
+        r2_252: 0.9974
+        n_252: 252
+        beta_full: 2.931
+        r2_full: 0.993
+        n_full: 1973
+        te_ann_252: 0.03
+        lag_r2: '{"-1": 0.0013, "0": 0.9974, "1": 0.0015}'
+        verdict: OK
+      before:
+        proxy: XLY
+        beta_252: 2.957
+        r2_252: 0.9974
+        n_252: 252
+        beta_full: 2.931
+        r2_full: 0.993
+      top_holdings_proxy:
+        etf: XLY
+        items:
+        - - AMZN
+          - 23.39
+        - - TSLA
+          - 17.67
+        - - HD
+          - 5.01
+        - - MCD
+          - 4.22
+        - - TJX
+          - 4.07
+        - - BKNG
+          - 3.41
+        - - SBUX
+          - 2.98
+        - - LOW
+          - 2.88
+        - - MAR
+          - 2.12
+        - - ROST
+          - 2.09
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: Consumer Discretionary Select Sector Index
+        url: https://www.sec.gov/Archives/edgar/data/1064641/000119312526027312/d15107d485bpos.htm
+        quote: seeks to provide investment results that, before expenses, correspond generally to the price and yield performance of publicly traded equity securities of companies in the Consumer Discretionary
+          Select Sector Index (the “Index”). Fees and Expenses of the Fund The table below describes the fees and e
+  NAIL:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: Dow Jones U.S. Select Home Construction Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the Dow Jones U.S. Select Home Construction Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078539/d49064d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: NOT NAMED in the 497K strategy text; "Index Information" cites only Dow Jones & Company trademarks. unverified.
+      ticker: not stated
+      weighting: 'Capped; underlying weighting basis NOT stated. Rules: single company max 22.5% (excess redistributed iteratively); aggregate of companies with weight >4.5% capped at 45%; companies classified
+        Building Materials & Fixtures, Furnishings, and Home Improvement Retailers capped at 35% in aggregate'
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner "DJ U.S. Select Home Construction" = verbatim "Dow Jones U.S. Select Home Construction Index". Name matches; provider not named in the doc.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified) (provider presumed S&P DJI from
+        index-name convention only - unverified)
+      owner_guide_name: DJ U.S. Select Home Construction
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: ITB
+      series_source: ITB (동일 지수 1x ETF)
+      onex_index_doc: 'ITB: Dow Jones U.S. Select Home Construction Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '2006-05-05'
+      series_end: '2026-10-08'
+      n_bars: 5139
+      validation:
+        beta_252: 2.975
+        r2_252: 0.997
+        n_252: 252
+        beta_full: 2.832
+        r2_full: 0.8981
+        n_full: 2800
+        te_ann_252: 0.048
+        lag_r2: '{"-1": 0.009, "0": 0.997, "1": 0.0077}'
+        verdict: OK
+      before:
+        proxy: ITB
+        beta_252: 2.975
+        r2_252: 0.997
+        n_252: 252
+        beta_full: 2.832
+        r2_full: 0.8981
+      top_holdings_proxy:
+        etf: ITB
+        items:
+        - - DHI
+          - 17.76
+        - - PHM
+          - 11.11
+        - - LEN
+          - 8.07
+        - - NVR
+          - 7.96
+        - - TOL
+          - 4.61
+        - - SHW
+          - 4.52
+        - - LOW
+          - 4.17
+        - - HD
+          - 4.11
+        - - MAS
+          - 3.03
+        - - LII
+          - 2.54
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: Dow Jones U.S. Select Home Construction Index
+        url: https://www.ishares.com/us/products/239512/ishares-us-home-construction-etf
+        quote: 'Key Facts "Benchmark Index": "Dow Jones U.S. Select Home Construction Index" | objective: "seeks to track the investment results of an index composed of U.S. equities in the home construction
+          sector."'
+  DRN:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: Real Estate Select Sector Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the Real Estate Select Sector Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078562/d77019d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices (the "Index Provider")
+      ticker: not stated
+      weighting: 'Select Sector: "modified market capitalization" weights (single-stock weight modifications to conform to Internal Revenue Code requirements); all constituents are S&P 500 members'
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: Real Estate Select Sector
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: XLRE
+      series_source: XLRE (동일 지수 1x ETF)
+      onex_index_doc: 'XLRE: Real Estate Select Sector Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '2015-10-08'
+      series_end: '2026-10-08'
+      n_bars: 2766
+      validation:
+        beta_252: 2.955
+        r2_252: 0.9804
+        n_252: 252
+        beta_full: 2.826
+        r2_full: 0.9216
+        n_full: 2765
+        te_ann_252: 0.059
+        lag_r2: '{"-1": 0.0002, "0": 0.9804, "1": 0.0006}'
+        verdict: OK
+      before:
+        proxy: XLRE
+        beta_252: 2.955
+        r2_252: 0.9804
+        n_252: 252
+        beta_full: 2.826
+        r2_full: 0.9216
+      top_holdings_proxy:
+        etf: XLRE
+        items:
+        - - WELL
+          - 11.68
+        - - PLD
+          - 8.68
+        - - EQIX
+          - 7.02
+        - - AMT
+          - 5.37
+        - - SPG
+          - 4.65
+        - - PSA
+          - 4.55
+        - - VTR
+          - 4.5
+        - - VMRK
+          - 4.43
+        - - DLR
+          - 4.4
+        - - CBRE
+          - 4.31
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: Real Estate Select Sector Index
+        url: https://www.sec.gov/Archives/edgar/data/1064641/000119312526027312/d15107d485bpos.htm
+        quote: seeks to provide investment results that, before expenses, correspond generally to the price and yield performance of publicly traded equity securities of companies in the Real Estate Select
+          Sector Index (the “Index”). Fees and Expenses of the Fund The table below describes the fees and expenses tha
+  UTSL:
+    issuer: Direxion Funds
+    group: B 미국섹터ETF
+    type: ETF
+    index:
+      official_name: Utilities Select Sector Index
+      name_quote: '...the Fund’s objective is to magnify the daily performance of the Utilities Select Sector Index (the "Index")'
+      name_source:
+        url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078545/d59163d497k.htm
+        form: 497K (Summary Prospectus)
+        doc_date: '2026-02-27'
+        fetched: '2026-10-09'
+      provider: S&P Dow Jones Indices (the "Index Provider")
+      ticker: not stated
+      weighting: 'Select Sector: "modified market capitalization" weights (single-stock weight modifications to conform to Internal Revenue Code requirements); all constituents are S&P 500 members'
+      rebalance: '"The Index is rebalanced quarterly"'
+      return_type: 'NOT STATED in the Direxion 497K or in the Feb-27-2026 full prospectus (497 filed 2026-03-03, 0001193125-26-088794): neither ''price return'' nor ''total return'' is used to describe
+        the Index. unverified. (Corroboration only for the S&P 500 BENCHMARK row: its 2025 1-yr figure 17.88% equals the figure ProShares footnotes as ''Adjusted to reflect the reinvestment of dividends''
+        - i.e. benchmark rows look total-return; this does not establish what the swap references.)'
+      constituents: '[부재: 497K 미기재] 대체: 아래 onex.top_holdings_proxy'
+      constituent_changes: Owner label is an abbreviation of the verbatim name; no substantive difference.
+      history: Provider site https://www.spglobal.com/spdji/en/ (index-level pages return HTTP 403 to curl; exact index page URL and free-download availability NOT verified)
+      owner_guide_name: Utilities Select Sector
+      matches_owner_guide: 'True'
+    onex:
+      path: b
+      path_label: exact 1x ETF
+      key: XLU
+      series_source: XLU (동일 지수 1x ETF)
+      onex_index_doc: 'XLU: Utilities Select Sector Index'
+      exact: exact
+      extension: null
+      note: null
+      series_start: '1998-12-22'
+      series_end: '2026-10-08'
+      n_bars: 6991
+      validation:
+        beta_252: 2.965
+        r2_252: 0.9876
+        n_252: 252
+        beta_full: 2.97
+        r2_full: 0.9756
+        n_full: 2371
+        te_ann_252: 0.052
+        lag_r2: '{"-1": 0.0001, "0": 0.9876, "1": 0.0002}'
+        verdict: OK
+      before:
+        proxy: XLU
+        beta_252: 2.965
+        r2_252: 0.9876
+        n_252: 252
+        beta_full: 2.97
+        r2_full: 0.9756
+      top_holdings_proxy:
+        etf: XLU
+        items:
+        - - NEE
+          - 12.71
+        - - SO
+          - 7.67
+        - - DUK
+          - 7.15
+        - - CEG
+          - 6.74
+        - - AEP
+          - 5.2
+        - - D
+          - 4.28
+        - - SRE
+          - 4.1
+        - - ETR
+          - 3.73
+        - - XEL
+          - 3.54
+        - - VST
+          - 3.51
+        source: yfinance funds_data.top_holdings (2026-10-09)
+        caveat: 1x ETF 보유 상위 — 지수 구성과 동일 가정 [미검증]
+      onex_doc:
+        index_name: Utilities Select Sector Index
+        url: https://www.sec.gov/Archives/edgar/data/1064641/000119312526027312/d15107d485bpos.htm
+        quote: 'seeks to provide investment results that, before expenses, correspond generally to the price and yield performance of publicly traded equity securities of companies in the Utilities Select
+          Sector Index (the “Index”). Fees and Expenses of the Fund The table below describes the fees and expenses that '
+  FNGU:
+    issuer: Bank of Montreal / MicroSectors
+    group: C 섹터테마ETN
+    type: ETN
+    index:
+      official_name: NYSE FANG+(R) Index - gross total return version
+      name_quote: The gross total return version of the NYSE FANG+® Index. The ticker symbol of the Index is "NYFANGT".
+      name_source:
+        doc: FNGB_A11
+        loc: line 309
+        docs_used:
+        - FNGB_A11
+        - FNGD_A42
+        - FNGS_A7
+        - FNGO_A2
+        - WEB_FNGU
+        fetched: '2026-10-09'
+      provider: ICE Data Indices, LLC (Index Sponsor; calculates, publishes)
+      ticker: NYFANGT
+      weighting: equal weight (10% each at quarterly reconstitution; weights drift between reconstitutions)
+      n_constituents: 10
+      rebalance: quarterly reconstitution + reweighting after close of 3rd Friday of Mar/Jun/Sep/Dec; reference date = last trading day of month preceding; announcement 2nd Friday; shares converted using
+        data from 2nd trading day preceding 3rd Friday
+      capping: none beyond equal 10% reset; if a corporate action removes a security between reconstitutions the next-ranked security is added at the deleted weight
+      selection_rule: 6 fixed FAANMG names (AAPL, AMZN, GOOGL, META, NFLX, MSFT) if eligible + 4 highest-ranked non-FAANMG by 35% mkt cap / 35% ADTV / 15% P/S / 15% sales growth rank
+      return_type: GTR
+      methodology_url: https://www.theice.com/publicdocs/data/NYSE_FANGplus_Index_Methodology.pdf ; general publication info at www.indices.ice.com
+      constituents:
+        as_of: 2026-10-08 start-of-day (per page footnote)
+        source: microsectors.com 상품 페이지
+        items:
+        - name: MICRON TECHNOLOGY INC
+          weight_pct: 11.01
+        - name: PALANTIR TECHNOLOGIES INC-A
+          weight_pct: 10.44
+        - name: NVIDIA CORP
+          weight_pct: 10.41
+        - name: BROADCOM INC
+          weight_pct: 10.4
+        - name: MICROSOFT CORP
+          weight_pct: 10.13
+        - name: META PLATFORMS INC-CLASS A
+          weight_pct: 10.05
+        - name: AMAZON.COM INC
+          weight_pct: 9.91
+        - name: ALPHABET INC-CL A
+          weight_pct: 9.59
+        - name: APPLE INC
+          weight_pct: 9.5
+        - name: NETFLIX INC
+          weight_pct: 8.55
+      constituent_changes:
+      - 'Index launched 2017-09-26; 2021-02-12 constituent list (10): Facebook, Apple, Amazon, Netflix, Google, Alibaba, Baidu, Nvidia, Tesla, Twitter'
+      - Methodology for constituent selection and other index rules CHANGED December 2022 (FAANMG-6 + top-4 ranked structure; first reconstitution under it Dec 2022)
+      - note: Intermediate constituent changes (2021-02 -> 2026-10) are not itemised in any downloaded issuer document; compare list above with current page list (BABA, BIDU, TSLA, TWTR no longer present;
+          MU, PLTR, AVGO, MSFT present).
+      history:
+        availability: public (unauthenticated JSON used by the product-page chart; daily closing levels, live history only - pre-launch hypothetical back-test not included in file)
+        url: https://microsectors.com/wp-content/themes/uncode-child/json/nyfangt_index1.json
+        local_copy: sources/ms_extra/index_json/nyfangt_index1.json
+        format: '[[epoch_ms_utc, level], ...]'
+        n_points: 2270
+        first:
+        - '2017-09-26'
+        - 2027.12
+        last:
+        - '2026-10-07'
+        - 20195.44
+        src:
+          src: JS_CHART
+          loc: line 38
+          quote: symbol = "nyfangt";
+      owner_working_name: consistent with "NYSE FANG+ Index"; documents specify the GROSS total return version (not price, not net)
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_NYFANGT
+      series_source: 'microsectors.com nyfangt_index1.json (발행사 공시 지수 레벨); 연장: ~2017-09-25 ^NYFANG(가격수익)'
+      onex_index_doc: NYSE FANG+ Index (gross TR)
+      exact: n.a.
+      extension: ~2017-09-25 ^NYFANG(가격수익)
+      note: null
+      series_start: '2014-09-22'
+      series_end: '2026-10-07'
+      n_bars: 3029
+      validation:
+        beta_252: 2.949
+        r2_252: 0.9974
+        n_252: 252
+        beta_full: 2.904
+        r2_full: 0.9912
+        n_full: 409
+        te_ann_252: 0.036
+        lag_r2: '{"-1": 0.0036, "0": 0.9974, "1": 0.0059}'
+        verdict: OK
+      before:
+        proxy: FNGS
+        beta_252: 2.86
+        r2_252: 0.9705
+        n_252: 252
+        beta_full: 2.824
+        r2_full: 0.9625
+  BULZ:
+    issuer: Bank of Montreal / MicroSectors
+    group: C 섹터테마ETN
+    type: ETN
+    index:
+      official_name: Solactive FANG Innovation Index
+      name_quote: The return on the notes is linked to a three times leveraged participation in the performance of the Solactive FANG Innovation Index, compounded daily
+      name_source:
+        doc: BULZ_A28
+        loc: line 177
+        docs_used:
+        - BULZ_A28
+        - BERZ_A12
+        - WEB_BULZ
+        fetched: '2026-10-09'
+      provider: Solactive AG (Index Sponsor; publishes the level)
+      ticker: SOLFANGT
+      weighting: equal weight, re-equalised monthly
+      n_constituents: 15
+      rebalance: monthly equal-weight rebalance after close on 3rd Friday; constituents (re)selected on first day of Mar/Jun/Sep/Dec (quarterly reconstitution)
+      capping: 'no weight caps (equal weight); eligibility floor: free-float mkt cap >= US$10bn; spin-offs excluded and weight redistributed; removed names replaced by largest 12m-ADV non-member'
+      selection_rule: 8 fixed Core Components (AAPL, AMZN, META, GOOGL, MSFT, NFLX, NVDA, TSLA) if eligible; other 7 = from top-30 by free-float mkt cap among FactSet-industry-eligible US stocks, ranked
+        by 12m ADV
+      return_type: TR (gross vs net not specified in PS; reinvestment of dividends)
+      methodology_url: PS cites "Solactive Equity Index Methodology" on sponsor website www.solactive.com (no deep link)
+      constituents:
+        as_of: 2026-10-08 start-of-day (per page footnote)
+        source: microsectors.com 상품 페이지
+        items:
+        - name: ADVANCED MICRO DEVICES
+          weight_pct: 7.4
+        - name: PALANTIR TECHNOLOGIES INC-A
+          weight_pct: 7.01
+        - name: META PLATFORMS INC-CLASS A
+          weight_pct: 6.95
+        - name: MICROSOFT CORP
+          weight_pct: 6.88
+        - name: MICRON TECHNOLOGY INC
+          weight_pct: 6.87
+        - name: NVIDIA CORP
+          weight_pct: 6.85
+        - name: BROADCOM INC
+          weight_pct: 6.76
+        - name: INTEL CORP
+          weight_pct: 6.68
+        - name: TESLA INC
+          weight_pct: 6.65
+        - name: AMAZON.COM INC
+          weight_pct: 6.57
+        - name: ALPHABET INC-CL A
+          weight_pct: 6.43
+        - name: APPLE INC
+          weight_pct: 6.42
+        - name: ORACLE CORP
+          weight_pct: 6.24
+        - name: NETFLIX INC
+          weight_pct: 6.23
+        - name: SANDISK CORP
+          weight_pct: 6.06
+      constituent_changes:
+      - note: 'No itemised history in issuer documents. PS fixes only the 8 core names; the 7 non-core names change at quarterly selection and are published by Solactive. Current non-core (web 2026-10-08):
+          AMD, PLTR, MU, AVGO, INTC, ORCL, SNDK.'
+      history:
+        availability: public (unauthenticated JSON used by the product-page chart; daily closing levels, live history only - pre-launch hypothetical back-test not included in file)
+        url: https://microsectors.com/wp-content/themes/uncode-child/json/solfangt_index1.json
+        local_copy: sources/ms_extra/index_json/solfangt_index1.json
+        format: '[[epoch_ms_utc, level], ...]'
+        n_points: 1340
+        first:
+        - '2021-06-08'
+        - 5329.17
+        last:
+        - '2026-10-07'
+        - 16215.9
+        src:
+          src: JS_CHART
+          loc: line 14
+          quote: symbol = "solfangt";
+        cross_check_vs_PS:
+        - src: BULZ_A28
+          loc: line 5479
+          quote: The Index Closing Level on February 23, 2026 was 10,980.97.
+          date: '2026-02-23'
+          json_value: 10980.97
+      owner_working_name: matches owner working name
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_SOLFANGT
+      series_source: 'microsectors.com solfangt_index1.json (발행사 공시 지수 레벨); 연장: ~2021-06-07 SG 인증서 DE000SL0DF12'
+      onex_index_doc: Solactive FANG Innovation Index (TR)
+      exact: n.a.
+      extension: ~2021-06-07 SG 인증서 DE000SL0DF12
+      note: null
+      series_start: '2014-12-19'
+      series_end: '2026-10-07'
+      n_bars: 2966
+      validation:
+        beta_252: 2.975
+        r2_252: 0.9983
+        n_252: 252
+        beta_full: 2.952
+        r2_full: 0.9981
+        n_full: 1289
+        te_ann_252: 0.037
+        lag_r2: '{"-1": 0.0001, "0": 0.9983, "1": 0.0004}'
+        verdict: OK
+      before:
+        proxy: QQQ
+        beta_252: 4.167
+        r2_252: 0.8857
+        n_252: 252
+        beta_full: 3.87
+        r2_full: 0.9292
+  BNKU:
+    issuer: Bank of Montreal / MicroSectors
+    group: C 섹터테마ETN
+    type: ETN
+    index:
+      official_name: Solactive MicroSectors(TM) U.S. Big Banks Index - gross total return version
+      name_quote: The gross total return version of the Solactive MicroSectors™ U.S. Big Banks Index. The ticker symbol of the Index is "SOLUSBBT".
+      name_source:
+        doc: BNKU_A2
+        loc: line 256
+        docs_used:
+        - BNKU_A2
+        - BNKD_A1
+        - WEB_BNKU
+        fetched: '2026-10-09'
+      provider: Solactive AG (Index Sponsor; calculates and publishes; developed in collaboration with REX Shares)
+      ticker: SOLUSBBT
+      weighting: equal weight, reset on each monthly Adjustment Day
+      n_constituents: 10
+      rebalance: 'monthly: Selection Day = first business day of month; Adjustment Day = 3rd Friday; full re-selection each March, monthly buffer review (top-13 rank rule) otherwise'
+      capping: 'no caps (equal weight). Universe: Solactive GBS US Large & Mid Cap member, US-listed & domiciled, free-float mkt cap > $1bn, ADTV (1m and 6m) > $25m; FactSet RBICS banking / investment services'
+      selection_rule: null
+      return_type: GTR
+      methodology_url: PS cites Solactive Equity Index Methodology on sponsor website (no deep link)
+      constituents:
+        as_of: 2026-10-08 start-of-day (per page footnote)
+        source: microsectors.com 상품 페이지
+        items:
+        - name: CITIGROUP INC
+          weight_pct: 10.32
+        - name: JPMORGAN CHASE & CO
+          weight_pct: 10.12
+        - name: US BANCORP
+          weight_pct: 10.08
+        - name: GOLDMAN SACHS GROUP INC
+          weight_pct: 10.06
+        - name: MORGAN STANLEY
+          weight_pct: 10.0
+        - name: PNC FINANCIAL SERVICES GROUP
+          weight_pct: 9.97
+        - name: WELLS FARGO & CO
+          weight_pct: 9.95
+        - name: BANK OF NEW YORK MELLON CORP
+          weight_pct: 9.91
+        - name: BANK OF AMERICA CORP
+          weight_pct: 9.9
+        - name: SCHWAB (CHARLES) CORP
+          weight_pct: 9.7
+      constituent_changes:
+      - 'PS list as of 2025-10-13: BAC, C, GS, JPM, MS, PNC, SCHW, TFC (Truist), USB, WFC'
+      - BNKD PS 2026-02-24 repeats the same list incl. TFC
+      - note: 'Web 2026-10-08 list has BANK OF NEW YORK MELLON CORP and NO Truist (TFC): Truist -> BNY Mellon swap occurred after the 2026-02-24 PS. Change date is not documented in any downloaded issuer
+          document (monthly selection day rule above).'
+      history:
+        availability: public (unauthenticated JSON used by the product-page chart; daily closing levels, live history only - pre-launch hypothetical back-test not included in file)
+        url: https://microsectors.com/wp-content/themes/uncode-child/json/solusbbt_index1.json
+        local_copy: sources/ms_extra/index_json/solusbbt_index1.json
+        format: '[[epoch_ms_utc, level], ...]'
+        n_points: 1936
+        first:
+        - '2019-01-25'
+        - 1996.92
+        last:
+        - '2026-10-07'
+        - 5784.32
+        src:
+          src: JS_CHART
+          loc: line 20
+          quote: symbol = "solusbbt";
+      owner_working_name: matches; ETN tracks the GROSS total return version
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_SOLUSBBT
+      series_source: 'microsectors.com solusbbt_index1.json (발행사 공시 지수 레벨); 연장: ~2019-01-24 SG 인증서 DE000SLA7WC8'
+      onex_index_doc: Solactive MicroSectors U.S. Big Banks Index (GTR)
+      exact: n.a.
+      extension: ~2019-01-24 SG 인증서 DE000SLA7WC8
+      note: null
+      series_start: '2013-03-15'
+      series_end: '2026-10-07'
+      n_bars: 3412
+      validation:
+        beta_252: 2.949
+        r2_252: 0.9761
+        n_252: 252
+        beta_full: 2.994
+        r2_full: 0.9818
+        n_full: 409
+        te_ann_252: 0.093
+        lag_r2: '{"-1": 0.0, "0": 0.9761, "1": 0.0}'
+        verdict: OK
+      before:
+        proxy: KBWB
+        beta_252: 2.779
+        r2_252: 0.9129
+        n_252: 252
+        beta_full: 2.813
+        r2_full: 0.9389
+  NRGU:
+    issuer: Bank of Montreal / MicroSectors
+    group: C 섹터테마ETN
+    type: ETN
+    index:
+      official_name: Solactive MicroSectors(TM) U.S. Big Oil Index - gross total return version
+      name_quote: The gross total return version of the Solactive MicroSectors™ U.S. Big Oil Index. The ticker symbol of the Index is "SOLUSBOT".
+      name_source:
+        doc: NRGU_A2
+        loc: line 256
+        docs_used:
+        - NRGU_A2
+        - NRGD_A5
+        - WEB_NRGU
+        fetched: '2026-10-09'
+      provider: Solactive AG (Index Sponsor; calculates and publishes; developed in collaboration with REX Shares)
+      ticker: SOLUSBOT
+      weighting: equal weight, reset on each monthly Adjustment Day
+      n_constituents: 10
+      rebalance: 'monthly: Selection Day = first business day of month; Adjustment Day = 3rd Friday; full re-selection each March, monthly top-13 buffer review otherwise'
+      capping: 'no caps (equal weight). Universe: Solactive GBS US Large & Mid Cap member, US-listed & domiciled, free-float mkt cap > $1bn, ADTV (1m and 6m) > $25m; FactSet RBICS upstream / integrated
+        / downstream & midstream energy'
+      selection_rule: null
+      return_type: GTR
+      methodology_url: PS cites Solactive Equity Index Methodology on sponsor website (no deep link)
+      constituents:
+        as_of: 2026-10-08 start-of-day (per page footnote)
+        source: microsectors.com 상품 페이지
+        items:
+        - name: MARATHON PETROLEUM CORP
+          weight_pct: 10.45
+        - name: VALERO ENERGY CORP
+          weight_pct: 10.3
+        - name: EXXONMOBIL HOLDINGS CORP
+          weight_pct: 10.07
+        - name: EOG RESOURCES INC
+          weight_pct: 10.04
+        - name: PHILLIPS 66
+          weight_pct: 9.98
+        - name: OCCIDENTAL PETROLEUM CORP
+          weight_pct: 9.93
+        - name: DEVON ENERGY CORP
+          weight_pct: 9.89
+        - name: CONOCOPHILLIPS
+          weight_pct: 9.89
+        - name: CHEVRON CORP
+          weight_pct: 9.83
+        - name: DIAMONDBACK ENERGY INC
+          weight_pct: 9.62
+      constituent_changes:
+      - 'PS list as of 2025-06-17: HES, CVX, VLO, OXY, MPC, EOG, PSX, XOM, FANG, COP'
+      - NRGD PS dated 2026-05-26 still lists Hess (HES) - the PS list is evidently static boilerplate, not a live constituent list
+      - note: 'Web 2026-10-08 list has DEVON ENERGY CORP and NO Hess: Hess -> Devon swap after the PS lists; ExxonMobil is shown as "EXXONMOBIL HOLDINGS CORP" on the page vs "Exxon Mobil Corporation" in
+          the PS. Change dates not documented in any downloaded issuer document.'
+      history:
+        availability: public (unauthenticated JSON used by the product-page chart; daily closing levels, live history only - pre-launch hypothetical back-test not included in file)
+        url: https://microsectors.com/wp-content/themes/uncode-child/json/solusbot_index1.json
+        local_copy: sources/ms_extra/index_json/solusbot_index1.json
+        format: '[[epoch_ms_utc, level], ...]'
+        n_points: 1905
+        first:
+        - '2019-03-12'
+        - 1275.32
+        last:
+        - '2026-10-07'
+        - 4770.09
+        src:
+          src: JS_CHART
+          loc: line 26
+          quote: symbol = "solusbot";
+      owner_working_name: matches; ETN tracks the GROSS total return version
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_SOLUSBOT
+      series_source: 'microsectors.com solusbot_index1.json (발행사 공시 지수 레벨); 연장: ~2019-03-11 SG 인증서 DE000SLA7WX4'
+      onex_index_doc: Solactive MicroSectors U.S. Big Oil Index (GTR)
+      exact: n.a.
+      extension: ~2019-03-11 SG 인증서 DE000SLA7WX4
+      note: null
+      series_start: '2013-03-15'
+      series_end: '2026-10-07'
+      n_bars: 3412
+      validation:
+        beta_252: 3.016
+        r2_252: 0.9812
+        n_252: 252
+        beta_full: 3.01
+        r2_full: 0.9866
+        n_full: 409
+        te_ann_252: 0.111
+        lag_r2: '{"-1": 0.0001, "0": 0.9812, "1": 0.0008}'
+        verdict: OK
+      before:
+        proxy: XLE
+        beta_252: 3.512
+        r2_252: 0.906
+        n_252: 252
+        beta_full: 3.456
+        r2_full: 0.9225
+  OILU:
+    issuer: Bank of Montreal / MicroSectors
+    group: C 섹터테마ETN
+    type: ETN
+    index:
+      official_name: Solactive MicroSectors(TM) Oil & Gas Exploration & Production Index
+      name_quote: linked to a three times leveraged participation in the daily performance of the Solactive MicroSectorsTM Oil & Gas Exploration & Production Index (the "Index")
+      name_source:
+        doc: OILU_A4
+        loc: line 13
+        docs_used:
+        - OILU_A4
+        - OILD_A14
+        - WEB_OILU
+        fetched: '2026-10-09'
+      provider: Solactive AG (Index Sponsor; calculates level to 2 decimals)
+      ticker: SOLOILT
+      weighting: 'NOT equal weight: weight by lower of 1m / 6m average daily value traded, ranked; max 15% per component; sector aggregate targets Integrated O&G 30% / Upstream 50% / Downstream & Midstream
+        20%; constraints eased to 25% max if infeasible'
+      n_constituents: 25
+      rebalance: monthly rebalance; component selection on first day of Mar/Jun/Sep/Dec (quarterly)
+      capping: '15% single-name cap (25% fallback) + sector caps; excess redistributed proportionally; eligibility: US-domiciled (not Canada-incorporated), not MLP, free-float mkt cap > $250m, ADV > $25m
+        (1m & 6m)'
+      selection_rule: null
+      return_type: TR (gross vs net not specified)
+      methodology_url: www.solactive.com (Solactive Equity Index Methodology)
+      constituents:
+        as_of: 2026-10-08 start-of-day (per page footnote)
+        source: microsectors.com 상품 페이지
+        items:
+        - name: EXXONMOBIL HOLDINGS CORP
+          weight_pct: 15.24
+        - name: CHEVRON CORP
+          weight_pct: 14.87
+        - name: CONOCOPHILLIPS
+          weight_pct: 8.0
+        - name: SLB LTD
+          weight_pct: 5.44
+        - name: VALERO ENERGY CORP
+          weight_pct: 4.37
+        - name: DEVON ENERGY CORP
+          weight_pct: 4.37
+        - name: OCCIDENTAL PETROLEUM CORP
+          weight_pct: 4.23
+        - name: EOG RESOURCES INC
+          weight_pct: 3.94
+        - name: BAKER HUGHES CO
+          weight_pct: 3.6
+        - name: MARATHON PETROLEUM CORP
+          weight_pct: 3.56
+        - name: DIAMONDBACK ENERGY INC
+          weight_pct: 3.37
+        - name: HALLIBURTON CO
+          weight_pct: 3.21
+        - name: EQT CORP
+          weight_pct: 3.19
+        - name: PHILLIPS 66
+          weight_pct: 2.75
+        - name: WILLIAMS COS INC
+          weight_pct: 2.54
+        - name: EXPAND ENERGY CORP
+          weight_pct: 2.32
+        - name: CHENIERE ENERGY INC
+          weight_pct: 2.21
+        - name: APA CORP
+          weight_pct: 2.09
+        - name: PERMIAN RESOURCES CORP-CL A
+          weight_pct: 1.95
+        - name: TECHNIPFMC PLC
+          weight_pct: 1.93
+        - name: OVINTIV INC
+          weight_pct: 1.87
+        - name: KINDER MORGAN INC
+          weight_pct: 1.7
+        - name: ONEOK INC
+          weight_pct: 1.68
+        - name: HF SINCLAIR CORP
+          weight_pct: 0.98
+        - name: DT MIDSTREAM INC
+          weight_pct: 0.57
+      constituent_changes:
+      - note: No itemised history or constituent list in issuer PS. Index consists of 25 components (PS states "only 25 Index components"); web list 2026-10-08 gives names/weights only.
+      history:
+        availability: public (unauthenticated JSON used by the product-page chart; daily closing levels, live history only - pre-launch hypothetical back-test not included in file)
+        url: https://microsectors.com/wp-content/themes/uncode-child/json/soloilt_index1.json
+        local_copy: sources/ms_extra/index_json/soloilt_index1.json
+        format: '[[epoch_ms_utc, level], ...]'
+        n_points: 1246
+        first:
+        - '2021-10-20'
+        - 1168.49
+        last:
+        - '2026-10-07'
+        - 2911.92
+        src:
+          src: JS_CHART
+          loc: line 44
+          quote: symbol = "soloilt";
+        cross_check_vs_PS:
+        - src: OILD_A14
+          loc: line 6419
+          quote: The Index Closing Level on May 1, 2026 was 2,758.17.
+          date: '2026-05-01'
+          json_value: 2758.17
+      owner_working_name: matches owner working name
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_SOLOILT
+      series_source: 'microsectors.com soloilt_index1.json (발행사 공시 지수 레벨); 연장: ~2021-10-19 SG 인증서 DE000SL0EDX2'
+      onex_index_doc: Solactive MicroSectors Oil & Gas Exploration & Production Index (GTR)
+      exact: n.a.
+      extension: ~2021-10-19 SG 인증서 DE000SL0EDX2
+      note: null
+      series_start: '2017-12-15'
+      series_end: '2026-10-07'
+      n_bars: 2213
+      validation:
+        beta_252: 3.015
+        r2_252: 0.996
+        n_252: 252
+        beta_full: 3.026
+        r2_full: 0.9839
+        n_full: 1231
+        te_ann_252: 0.043
+        lag_r2: '{"-1": 0.0001, "0": 0.996, "1": 0.0007}'
+        verdict: OK
+      before:
+        proxy: XOP
+        beta_252: 2.134
+        r2_252: 0.8505
+        n_252: 252
+        beta_full: 2.29
+        r2_full: 0.8842
+  GDXU:
+    issuer: Bank of Montreal / MicroSectors
+    group: C 섹터테마ETN
+    type: ETN
+    index:
+      official_name: S-Network MicroSectors(TM) Gold Miners Index
+      name_quote: linked to a three times leveraged participation in the daily performance of the S-Network MicroSectorsTM Gold Miners Index (the "Index")
+      name_source:
+        doc: GDXU_A28
+        loc: line 13
+        docs_used:
+        - GDXU_A28
+        - GDXD_A31
+        - WEB_GDXU
+        fetched: '2026-10-09'
+      provider: VettaFi LLC (Index Sponsor; end-of-day closing level)
+      ticker: MINERS (closing); MINERSV = VWAP-closing variant (final 15 min VWAP)
+      weighting: market-capitalisation weighted across the two ETFs (GDX, GDXJ) via Index Shares; no cap stated
+      n_constituents: 2 to date (GDX, GDXJ); universe reviewed each quarter
+      rebalance: quarterly review/rebalance effective at close of 3rd Friday of the "Rebalancing Month" (third month of each calendar quarter); snapshot date = last trading day of 2nd month of quarter;
+        weight date = 2nd Friday
+      capping: 'none stated; ETF eligibility: mkt cap > US$1bn and ADTV > US$1m'
+      selection_rule: null
+      return_type: TR (gross vs net not specified)
+      methodology_url: https://www.vettafi.com/indexing/index/miners
+      constituents:
+        as_of: 2026-10-08 start-of-day (per page footnote)
+        source: microsectors.com 상품 페이지
+        items:
+        - name: VANECK GOLD MINERS ETF
+          weight_pct: 76.2
+        - name: VANECK JUNIOR GOLD MINERS
+          weight_pct: 23.8
+      constituent_changes:
+      - Only GDX and GDXJ have ever been constituents
+      history:
+        availability: public (unauthenticated JSON used by the product-page chart; daily closing levels, live history only - pre-launch hypothetical back-test not included in file)
+        url: https://microsectors.com/wp-content/themes/uncode-child/json/miners_index1.json
+        local_copy: sources/ms_extra/index_json/miners_index1.json
+        format: '[[epoch_ms_utc, level], ...]'
+        n_points: 1540
+        first:
+        - '2020-08-20'
+        - 1809.3
+        last:
+        - '2026-10-07'
+        - 3901.83
+        src:
+          src: JS_CHART
+          loc: line 32
+          quote: symbol = "miners";
+      owner_working_name: matches name, BUT the Index Sponsor named in the 2026 PS is VettaFi LLC (not S-Network); intraday values by Cboe Global Indices
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_MINERS
+      series_source: 'microsectors.com miners_index1.json (발행사 공시 지수 레벨); 연장: ~2020-08-19 GDX/GDXJ 구성 복제(Adj Close)'
+      onex_index_doc: S-Network MicroSectors Gold Miners Index (TR)
+      exact: n.a.
+      extension: ~2020-08-19 GDX/GDXJ 구성 복제(Adj Close)
+      note: null
+      series_start: '2010-01-04'
+      series_end: '2026-10-07'
+      n_bars: 4216
+      validation:
+        beta_252: 2.96
+        r2_252: 0.9989
+        n_252: 252
+        beta_full: 2.953
+        r2_full: 0.9938
+        n_full: 1466
+        te_ann_252: 0.056
+        lag_r2: '{"-1": 0.0024, "0": 0.9989, "1": 0.0014}'
+        verdict: OK
+      before:
+        proxy: GDX
+        beta_252: 3.035
+        r2_252: 0.9972
+        n_252: 252
+        beta_full: 3.035
+        r2_full: 0.9896
+  AIQU:
+    issuer: Bank of Montreal / MicroSectors
+    group: C 섹터테마ETN
+    type: ETN
+    index:
+      official_name: BITA AI Leaders Select NTR US Index
+      name_quote: The BITA AI Leaders Select NTR US Index. The ticker symbol of the Index is "BAILSN".
+      name_source:
+        doc: AIQU_PS
+        loc: line 235
+        docs_used:
+        - AIQU_PS
+        - AIQD_PS
+        - WEB_AIQU
+        fetched: '2026-10-09'
+      provider: BITA GmbH (Index Sponsor; calculates, administers and publishes)
+      ticker: BAILSN
+      weighting: 'composite: Purity Leaders (5 names) = 40% of index weighted by 12m ADTV; Key Enablers (20 names) = 60% equal-weighted; each constituent capped at 10% of index, excess redistributed pro
+        rata'
+      n_constituents: 25 (5 Purity Leaders + 20 Key Enablers); may temporarily exceed 25 on Extraordinary Additions
+      rebalance: monthly rebalance at close of 3rd Friday; quarterly reconstitution (Mar/Jun/Sep/Dec) at close of 3rd Friday; determination date = 1st Friday of the month; fast-entry rule for IPOs / pivots
+      capping: 10% cap per constituent; weights above 10% redistributed proportionally to uncapped constituents
+      selection_rule: null
+      return_type: NTR
+      methodology_url: not given as URL in PS (BITA "Equity Corporate Actions Treatment Guide" referenced by name only)
+      constituents:
+        as_of: 2026-10-08 start-of-day (per page footnote)
+        source: microsectors.com 상품 페이지
+        items:
+        - name: PALANTIR TECHNOLOGIES INC-A
+          weight_pct: 10.29
+        - name: NVIDIA CORP
+          weight_pct: 9.52
+        - name: MARVELL TECHNOLOGY INC
+          weight_pct: 8.98
+        - name: TAIWAN SEMICONDUCTOR-SP ADR
+          weight_pct: 8.45
+        - name: ADVANCED MICRO DEVICES
+          weight_pct: 3.75
+        - name: SEAGATE TECHNOLOGY HOLDINGS
+          weight_pct: 3.57
+        - name: LUMENTUM HOLDINGS INC
+          weight_pct: 3.49
+        - name: PALO ALTO NETWORKS INC
+          weight_pct: 3.37
+        - name: INTEL CORP
+          weight_pct: 3.27
+        - name: META PLATFORMS INC-CLASS A
+          weight_pct: 3.24
+        - name: TEXAS INSTRUMENTS INC
+          weight_pct: 3.1
+        - name: DELL TECHNOLOGIES -C
+          weight_pct: 3.06
+        - name: CISCO SYSTEMS INC
+          weight_pct: 2.98
+        - name: MICRON TECHNOLOGY INC
+          weight_pct: 2.97
+        - name: MICROSOFT CORP
+          weight_pct: 2.94
+        - name: APPLE INC
+          weight_pct: 2.92
+        - name: BROADCOM INC
+          weight_pct: 2.92
+        - name: QUALCOMM INC
+          weight_pct: 2.91
+        - name: ALPHABET INC-CL A
+          weight_pct: 2.87
+        - name: AMAZON.COM INC
+          weight_pct: 2.79
+        - name: SERVICENOW INC
+          weight_pct: 2.71
+        - name: INTL BUSINESS MACHINES CORP
+          weight_pct: 2.6
+        - name: ORACLE CORP
+          weight_pct: 2.51
+        - name: WESTERN DIGITAL CORP
+          weight_pct: 2.4
+        - name: SALESFORCE INC
+          weight_pct: 2.4
+      constituent_changes:
+      - NTR index is new (launched 2026-05-15); gross-TR variant launched April 2024
+      - note: 'No constituent list or change history in the PS. Inference (arithmetic on page weights): the first five names sum to 41.0% (consistent with the ~40% Purity Leaders bucket after intra-month
+          drift); PLTR 10.29% exceeds the 10% cap through drift.'
+      history:
+        availability: public (unauthenticated JSON used by the product-page chart; daily closing levels, live history only - pre-launch hypothetical back-test not included in file)
+        url: https://microsectors.com/wp-content/themes/uncode-child/json/bailsn_index1.json
+        local_copy: sources/ms_extra/index_json/bailsn_index1.json
+        format: '[[epoch_ms_utc, level], ...]'
+        n_points: 100
+        first:
+        - '2026-05-15'
+        - 2496.85
+        last:
+        - '2026-10-07'
+        - 3069.86
+        src:
+          src: JS_CHART
+          loc: line 68
+          quote: symbol = "bailsn";
+      owner_working_name: matches; note the product web page headline calls it "BITA AI Leaders Select Index" (no NTR/US) - PS name is the ETN-linked one
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_BAILSN
+      series_source: 'microsectors.com bailsn_index1.json (발행사 공시 지수 레벨); 연장: ~2026-05-14 25종 복제'
+      onex_index_doc: BITA AI Leaders Select NTR US Index
+      exact: n.a.
+      extension: ~2026-05-14 25종 복제
+      note: null
+      series_start: '2010-01-04'
+      series_end: '2026-10-07'
+      n_bars: 4216
+      validation:
+        beta_252: 2.998
+        r2_252: 0.9948
+        n_252: 88
+        beta_full: 2.998
+        r2_full: 0.9948
+        n_full: 88
+        te_ann_252: 0.072
+        lag_r2: '{"-1": 0.0008, "0": 0.9948, "1": 0.0002}'
+        verdict: OK
+      before:
+        proxy: AIQ
+        beta_252: 2.644
+        r2_252: 0.8024
+        n_252: 89
+        beta_full: 2.644
+        r2_full: 0.8024
+  SMHU:
+    issuer: Bank of Montreal / MicroSectors
+    group: C 섹터테마ETN
+    type: ETN
+    index:
+      official_name: VettaFi Semiconductor Fund-Tracking Index
+      name_quote: The VettaFi Semiconductor Fund-Tracking Index (the "Index"). The Index is designed to track the performance of the VanEck® Semiconductor ETF (the "Reference Fund").
+      name_source:
+        doc: SMHU_PS
+        loc: line 232
+        docs_used:
+        - SMHU_PS
+        - SMHD_PS
+        - WEB_SMHU
+        fetched: '2026-10-09'
+      provider: VettaFi LLC (Index Sponsor; calculates and publishes)
+      ticker: SEMIS
+      weighting: single constituent, target weight 100%
+      n_constituents: 1 (VanEck Semiconductor ETF "SMH"); the ETF holds 25 stocks via target index
+      rebalance: quarterly rebalance & reconstitution at close of 3rd Friday of each calendar quarter (trivial for 1 constituent)
+      capping: 'none at ETN-index level. Look-through (target index MVIS US Listed Semiconductor 25): float-adjusted modified mkt-cap weights; large-weight group max 20% / min 5% per name, small-weights
+        max 4.5%, large group aggregate capped 50%; semiannual reconstitution (Mar/Sep) and quarterly rebalance per WEB_SMHU page text, not PS'
+      selection_rule: null
+      return_type: TR (gross vs net not specified; ETF dividends/distributions reinvested, recognised day after ex-date)
+      methodology_url: not given as URL in PS
+      constituents:
+        as_of: 2026-10-08 start-of-day (per page footnote)
+        source: microsectors.com 상품 페이지
+        items:
+        - name: VANECK SEMICONDUCTOR ETF
+          weight_pct: 100.0
+      constituent_changes:
+      - Index launched 2026-07-13; sole constituent has always been SMH
+      history:
+        availability: public (unauthenticated JSON used by the product-page chart; daily closing levels, live history only - pre-launch hypothetical back-test not included in file)
+        url: https://microsectors.com/wp-content/themes/uncode-child/json/semis_index1.json
+        local_copy: sources/ms_extra/index_json/semis_index1.json
+        format: '[[epoch_ms_utc, level], ...]'
+        n_points: 62
+        first:
+        - '2026-07-13'
+        - 45288.51
+        last:
+        - '2026-10-07'
+        - 48336.25
+        src:
+          src: JS_CHART
+          loc: line 74
+          quote: symbol = "semis";
+      owner_working_name: matches. NOTE the reference asset is the ETF SMH (single constituent), not the MVIS index directly; page headlines emphasise the MVIS US Listed Semiconductor 25 Index (the ETF
+        target index)
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_SEMIS
+      series_source: 'microsectors.com semis_index1.json (발행사 공시 지수 레벨); 연장: ~2026-07-10 SMH 총수익(Adj Close; SEMIS 의 정의)'
+      onex_index_doc: VettaFi Semiconductor Fund-Tracking Index (SMH 100%, TR)
+      exact: n.a.
+      extension: ~2026-07-10 SMH 총수익(Adj Close; SEMIS 의 정의)
+      note: null
+      series_start: '2009-06-01'
+      series_end: '2026-10-07'
+      n_bars: 4366
+      validation:
+        beta_252: 2.959
+        r2_252: 0.9938
+        n_252: 45
+        beta_full: 2.959
+        r2_full: 0.9938
+        n_full: 45
+        te_ann_252: 0.07
+        lag_r2: '{"-1": 0.0007, "0": 0.9938, "1": 0.0032}'
+        verdict: CHECK(표본 n=45<60)
+      before:
+        proxy: SMH
+        beta_252: 2.972
+        r2_252: 0.9939
+        n_252: 46
+        beta_full: 2.972
+        r2_full: 0.9939
+  MNGU:
+    issuer: Bank of Montreal / MicroSectors
+    group: C 섹터테마ETN
+    type: ETN
+    index:
+      official_name: NYSE(R) MaNGoS+ Index - net total return version
+      name_quote: The net total return version of the NYSE® MaNGoS+ Index. The ticker symbol of the Index is "MANGOSN."
+      name_source:
+        doc: MNGU_PS
+        loc: line 238
+        docs_used:
+        - MNGU_PS
+        - WEB_MNGU
+        fetched: '2026-10-09'
+      provider: ICE Data Indices, LLC (Index Sponsor / administrator)
+      ticker: MANGOSN (NTR); web page also lists MANGOS (price return) and MANGOST (gross TR)
+      weighting: equal weight, 10% each at quarterly reconstitution
+      n_constituents: 10
+      rebalance: quarterly reconstitution after close of 3rd Friday of Mar/Jun/Sep/Dec; reference date = last index business day of preceding month; announcement 2nd Friday; share reference date = 2nd index
+        business day before 3rd Friday; plus fast-entry for newly listed MaNGoS securities
+      capping: 'none beyond equal 10% reset; eligibility floors: float-adj mkt cap >= $5bn, 6m ADTV >= $100m, free float >= 5%, positive LTM P/S; 6 named anchors (META, Anthropic, NVDA, GOOGL, OpenAI, SpaceX
+        Class A SPCX) included if eligible; others need AI Related Score >= 0.20'
+      selection_rule: null
+      return_type: NTR
+      methodology_url: indices.ice.com (per web page "Index website")
+      constituents:
+        as_of: 2026-10-08 start-of-day (per page footnote)
+        source: microsectors.com 상품 페이지
+        items:
+        - name: ADVANCED MICRO DEVICES
+          weight_pct: 11.27
+        - name: MICRON TECHNOLOGY INC
+          weight_pct: 10.5
+        - name: TAIWAN SEMICONDUCTOR-SP ADR
+          weight_pct: 10.11
+        - name: PALANTIR TECHNOLOGIES INC-A
+          weight_pct: 9.96
+        - name: SPACE EXPLORATION TECHN-CL A
+          weight_pct: 9.93
+        - name: NVIDIA CORP
+          weight_pct: 9.93
+        - name: BROADCOM INC
+          weight_pct: 9.92
+        - name: MICROSOFT CORP
+          weight_pct: 9.66
+        - name: META PLATFORMS INC-CLASS A
+          weight_pct: 9.58
+        - name: ALPHABET INC-CL A
+          weight_pct: 9.14
+      constituent_changes:
+      - At launch the Index had 4 MaNGoS + 6 non-MaNGoS securities; Anthropic and OpenAI private/ineligible
+      - note: Index is only ~7 weeks old (35 daily points); web 2026-10-08 list (META, NVDA, GOOGL, SPCX + AMD, MU, TSM, PLTR, AVGO, MSFT) has 4 anchors + 6 others, consistent with launch statement.
+      history:
+        availability: public (unauthenticated JSON used by the product-page chart; daily closing levels, live history only - pre-launch hypothetical back-test not included in file)
+        url: https://microsectors.com/wp-content/themes/uncode-child/json/mangosn_index1.json
+        local_copy: sources/ms_extra/index_json/mangosn_index1.json
+        format: '[[epoch_ms_utc, level], ...]'
+        n_points: 35
+        first:
+        - '2026-08-19'
+        - 435.63
+        last:
+        - '2026-10-07'
+        - 501.19
+        src:
+          src: JS_CHART
+          loc: line 110
+          quote: symbol = "mangosn";
+      owner_working_name: matches name; ETN tracks the NET total return version (unlike FNGU which uses gross)
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_MANGOSN
+      series_source: 'microsectors.com mangosn_index1.json (발행사 공시 지수 레벨); 연장: ~2026-08-18 10종 복제'
+      onex_index_doc: NYSE MaNGoS+ Index (NTR)
+      exact: n.a.
+      extension: ~2026-08-18 10종 복제
+      note: null
+      series_start: '2010-01-04'
+      series_end: '2026-10-07'
+      n_bars: 4216
+      validation:
+        beta_252: 3.075
+        r2_252: 0.9933
+        n_252: 28
+        beta_full: 3.075
+        r2_full: 0.9933
+        n_full: 28
+        te_ann_252: 0.051
+        lag_r2: '{"-1": 0.0084, "0": 0.9933, "1": 0.0031}'
+        verdict: CHECK(표본 n=28<60)
+      before:
+        proxy: QQQ
+        beta_252: 4.172
+        r2_252: 0.9106
+        n_252: 29
+        beta_full: 4.172
+        r2_full: 0.9106
+  XLCU:
+    issuer: Bank of Montreal / MicroSectors
+    group: C 섹터테마ETN
+    type: ETN
+    index:
+      official_name: VettaFi US Communications Fund-Tracking Index
+      name_quote: The VettaFi US Communications Fund-Tracking Index (the "Index"). The Index is designed to track the performance of the State Street® Communication Services Select Sector SPDR® ETF (the
+        "Reference Fund").
+      name_source:
+        doc: XLCU_PS
+        loc: line 231
+        docs_used:
+        - XLCU_PS
+        - XLCD_PS
+        - WEB_XLCU
+        fetched: '2026-10-09'
+      provider: VettaFi LLC (Index Sponsor; calculates and publishes)
+      ticker: VXLCF
+      weighting: single constituent, target weight 100%
+      n_constituents: 1 (XLC)
+      rebalance: quarterly rebalance & reconstitution at close of 3rd Friday of each calendar quarter (trivial for 1 constituent)
+      capping: 'none at ETN-index level. Look-through: Target Index is a capped market-cap-weighted Select Sector Index (single name cap 23% buffer / 24% trigger; names >4.8% sum capped at 50%; quarterly
+        capping rebalance after 3rd Friday of Mar/Jun/Sep/Dec)'
+      selection_rule: null
+      return_type: TR (gross vs net not specified; reference-fund dividends reinvested, recognised day after ex-date; tracks ETF MARKET PRICE not NAV)
+      methodology_url: not given as URL in PS
+      constituents:
+        as_of: 2026-10-08 start-of-day (per page footnote)
+        source: microsectors.com 상품 페이지
+        items:
+        - name: SS COMM SELECT SECTOR SPDR
+          weight_pct: 100.0
+      constituent_changes:
+      - Index launched 2026-07-13; sole constituent is the reference ETF
+      history:
+        availability: public (unauthenticated JSON used by the product-page chart; daily closing levels, live history only - pre-launch hypothetical back-test not included in file)
+        url: https://microsectors.com/wp-content/themes/uncode-child/json/vxlcf_index1.json
+        local_copy: sources/ms_extra/index_json/vxlcf_index1.json
+        format: '[[epoch_ms_utc, level], ...]'
+        n_points: 62
+        first:
+        - '2026-07-13'
+        - 2436.1
+        last:
+        - '2026-10-07'
+        - 2436.61
+        src:
+          src: JS_CHART
+          loc: line 116
+          quote: symbol = "vxlcf";
+      owner_working_name: 'DIFFERS from expectation "Communication Services Select Sector Index": that is the TARGET index of the reference ETF XLC; the ETN-linked index is the VettaFi fund-tracking index
+        with XLC as its sole constituent'
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_VXLCF
+      series_source: 'microsectors.com vxlcf_index1.json (발행사 공시 지수 레벨); 연장: ~2026-07-10 XLC 총수익(Adj Close; VXLCF 의 정의)'
+      onex_index_doc: VettaFi US Communications Fund-Tracking Index (XLC 100%, TR)
+      exact: n.a.
+      extension: ~2026-07-10 XLC 총수익(Adj Close; VXLCF 의 정의)
+      note: null
+      series_start: '2018-06-19'
+      series_end: '2026-10-07'
+      n_bars: 2087
+      validation:
+        beta_252: 2.586
+        r2_252: 0.5549
+        n_252: 18
+        beta_full: 2.586
+        r2_full: 0.5549
+        n_full: 18
+        te_ann_252: 0.508
+        lag_r2: '{"-1": 0.0574, "0": 0.5549, "1": 0.0289}'
+        verdict: CHECK(표본 n=18<60)
+      before:
+        proxy: XLC
+        beta_252: 2.669
+        r2_252: 0.5467
+        n_252: 18
+        beta_full: 2.669
+        r2_full: 0.5467
+  XLPU:
+    issuer: Bank of Montreal / MicroSectors
+    group: C 섹터테마ETN
+    type: ETN
+    index:
+      official_name: VettaFi US Consumer Staples Fund-Tracking Index
+      name_quote: The VettaFi US Consumer Staples Fund-Tracking Index (the "Index"). The Index is designed to track the performance of the State Street® Consumer Staples Select Sector SPDR® ETF (the "Reference
+        Fund").
+      name_source:
+        doc: XLPU_PS
+        loc: line 231
+        docs_used:
+        - XLPU_PS
+        - XLPD_PS
+        - WEB_XLPU
+        fetched: '2026-10-09'
+      provider: VettaFi LLC (Index Sponsor; calculates and publishes)
+      ticker: VXLPF
+      weighting: single constituent, target weight 100%
+      n_constituents: 1 (XLP)
+      rebalance: quarterly rebalance & reconstitution at close of 3rd Friday of each calendar quarter (trivial for 1 constituent)
+      capping: 'none at ETN-index level. Look-through: Target Index is a capped market-cap-weighted Select Sector Index (single name cap 23% buffer / 24% trigger; names >4.8% sum capped at 50%; quarterly
+        capping rebalance after 3rd Friday of Mar/Jun/Sep/Dec)'
+      selection_rule: null
+      return_type: TR (gross vs net not specified; reference-fund dividends reinvested, recognised day after ex-date; tracks ETF MARKET PRICE not NAV)
+      methodology_url: not given as URL in PS
+      constituents:
+        as_of: 2026-10-08 start-of-day (per page footnote)
+        source: microsectors.com 상품 페이지
+        items:
+        - name: SS CONSUMER STAPLES SEL SECT
+          weight_pct: 100.0
+      constituent_changes:
+      - Index launched 2026-07-13; sole constituent is the reference ETF
+      history:
+        availability: public (unauthenticated JSON used by the product-page chart; daily closing levels, live history only - pre-launch hypothetical back-test not included in file)
+        url: https://microsectors.com/wp-content/themes/uncode-child/json/vxlpf_index1.json
+        local_copy: sources/ms_extra/index_json/vxlpf_index1.json
+        format: '[[epoch_ms_utc, level], ...]'
+        n_points: 62
+        first:
+        - '2026-07-13'
+        - 5942.54
+        last:
+        - '2026-10-07'
+        - 5777.39
+        src:
+          src: JS_CHART
+          loc: line 122
+          quote: symbol = "vxlpf";
+      owner_working_name: 'DIFFERS from expectation "Consumer Staples Select Sector Index": that is the TARGET index of the reference ETF XLP; the ETN-linked index is the VettaFi fund-tracking index with
+        XLP as its sole constituent'
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_VXLPF
+      series_source: 'microsectors.com vxlpf_index1.json (발행사 공시 지수 레벨); 연장: ~2026-07-10 XLP 총수익(Adj Close; VXLPF 의 정의)'
+      onex_index_doc: VettaFi US Consumer Staples Fund-Tracking Index (XLP 100%, TR)
+      exact: n.a.
+      extension: ~2026-07-10 XLP 총수익(Adj Close; VXLPF 의 정의)
+      note: null
+      series_start: '2000-01-03'
+      series_end: '2026-10-07'
+      n_bars: 6731
+      validation:
+        beta_252: 1.252
+        r2_252: 0.3004
+        n_252: 18
+        beta_full: 1.252
+        r2_full: 0.3004
+        n_full: 18
+        te_ann_252: 0.298
+        lag_r2: '{"-1": 0.0113, "0": 0.3004, "1": 0.0225}'
+        verdict: CHECK(표본 n=18<60)
+      before:
+        proxy: XLP
+        beta_252: 1.144
+        r2_252: 0.2733
+        n_252: 18
+        beta_full: 1.144
+        r2_full: 0.2733
+  FLYU:
+    issuer: Bank of Montreal / MicroSectors
+    group: C 섹터테마ETN
+    type: ETN
+    index:
+      official_name: MerQube MicroSectors(TM) U.S. Travel Index
+      name_quote: linked to a three times leveraged participation in the daily performance of the MerQube MicroSectorsTM U.S. Travel Index (the "Index")
+      name_source:
+        doc: FLYU_PS
+        loc: line 8
+        docs_used:
+        - FLYU_PS
+        - FLYD_A7
+        - WEB_FLYU
+        fetched: '2026-10-09'
+      provider: MerQube, Inc. (Index Sponsor; publishes the level)
+      ticker: MQUSTRAV
+      weighting: 'liquidity weighted: each component weighted by average of (close x total volume) over preceding 12 months, subject to caps'
+      n_constituents: variable (not fixed in PS; rules differ for <25 vs >=25 components; web page 2026-10-08 shows 34 names)
+      rebalance: monthly rebalance; component selection on last business day of Feb/May/Aug/Nov (quarterly)
+      capping: single component max 25%; top-5 aggregate max 60% if <25 components, 50% if >=25 components; non-capped component not above lowest capped weight; excess redistributed proportionally
+      selection_rule: null
+      return_type: NTR
+      methodology_url: MerQube site www.merqube.com (no deep link)
+      constituents:
+        as_of: 2026-10-08 start-of-day (per page footnote)
+        source: microsectors.com 상품 페이지
+        items:
+        - name: UBER TECHNOLOGIES INC
+          weight_pct: 10.73
+        - name: BOOKING HOLDINGS INC
+          weight_pct: 9.57
+        - name: WALT DISNEY CO/THE
+          weight_pct: 8.09
+        - name: AMERICAN AIRLINES GROUP INC
+          weight_pct: 7.59
+        - name: ROYAL CARIBBEAN CRUISES LTD
+          weight_pct: 5.83
+        - name: CARNIVAL CORP LTD
+          weight_pct: 5.7
+        - name: UNITED AIRLINES HOLDINGS INC
+          weight_pct: 4.59
+        - name: DELTA AIR LINES INC
+          weight_pct: 4.55
+        - name: HILTON WORLDWIDE HOLDINGS IN
+          weight_pct: 4.35
+        - name: AIRBNB INC-CLASS A
+          weight_pct: 4.28
+        - name: MARRIOTT INTERNATIONAL -CL A
+          weight_pct: 3.94
+        - name: EXPEDIA GROUP INC
+          weight_pct: 3.3
+        - name: NORWEGIAN CRUISE LINE HOLDIN
+          weight_pct: 3.02
+        - name: JOBY AVIATION INC
+          weight_pct: 2.67
+        - name: SOUTHWEST AIRLINES CO
+          weight_pct: 2.52
+        - name: TOAST INC-CLASS A
+          weight_pct: 2.42
+        - name: LYFT INC-A
+          weight_pct: 2.06
+        - name: AVIS BUDGET GROUP INC
+          weight_pct: 1.92
+        - name: LAS VEGAS SANDS CORP
+          weight_pct: 1.84
+        - name: VIKING HOLDINGS LTD
+          weight_pct: 1.47
+        - name: CAESARS ENTERTAINMENT INC
+          weight_pct: 1.21
+        - name: ALASKA AIR GROUP INC
+          weight_pct: 1.18
+        - name: WYNN RESORTS LTD
+          weight_pct: 1.18
+        - name: HYATT HOTELS CORP - CL A
+          weight_pct: 1.05
+        - name: MGM RESORTS INTERNATIONAL
+          weight_pct: 0.97
+        - name: VAIL RESORTS INC
+          weight_pct: 0.87
+        - name: WYNDHAM HOTELS & RESORTS INC
+          weight_pct: 0.78
+        - name: BOYD GAMING CORP
+          weight_pct: 0.54
+        - name: CHURCHILL DOWNS INC
+          weight_pct: 0.54
+        - name: TRAVEL + LEISURE CO
+          weight_pct: 0.36
+        - name: MARRIOTT VACATIONS WORLD
+          weight_pct: 0.3
+        - name: SKYWEST INC
+          weight_pct: 0.25
+        - name: AGILYSYS INC
+          weight_pct: 0.21
+        - name: ST JOE CO/THE
+          weight_pct: 0.1
+      constituent_changes:
+      - note: No constituent list or change history in PS (graph of closing levels only). Web list is the only source.
+      history:
+        availability: public (unauthenticated JSON used by the product-page chart; daily closing levels, live history only - pre-launch hypothetical back-test not included in file)
+        url: https://microsectors.com/wp-content/themes/uncode-child/json/mqustrav_index1.json
+        local_copy: sources/ms_extra/index_json/mqustrav_index1.json
+        format: '[[epoch_ms_utc, level], ...]'
+        n_points: 1238
+        first:
+        - '2021-11-01'
+        - 2636.31
+        last:
+        - '2026-10-07'
+        - 3278.13
+        src:
+          src: JS_CHART
+          loc: line 50
+          quote: symbol = "mqustrav";
+        cross_check_vs_PS:
+        - src: FLYD_A7
+          loc: line 6465
+          quote: The Index Closing Level on March 18, 2026 was 3,101.33.
+          date: '2026-03-18'
+          json_value: 3101.33
+      owner_working_name: matches owner working name
+    onex:
+      path: a
+      path_label: 공식 지수 레벨
+      key: IDX_MQUSTRAV
+      series_source: 'microsectors.com mqustrav_index1.json (발행사 공시 지수 레벨); 연장: ~2021-10-29 34종 복제'
+      onex_index_doc: MerQube MicroSectors U.S. Travel Index (NTR)
+      exact: n.a.
+      extension: ~2021-10-29 34종 복제
+      note: null
+      series_start: '2010-01-04'
+      series_end: '2026-10-07'
+      n_bars: 4216
+      validation:
+        beta_252: 2.999
+        r2_252: 0.9971
+        n_252: 252
+        beta_full: 2.988
+        r2_full: 0.9957
+        n_full: 1077
+        te_ann_252: 0.041
+        lag_r2: '{"-1": 0.0071, "0": 0.9971, "1": 0.0067}'
+        verdict: OK
+      before:
+        proxy: JETS
+        beta_252: 2.026
+        r2_252: 0.7389
+        n_252: 252
+        beta_full: 2.323
+        r2_full: 0.739

@@ -1,6 +1,6 @@
 # 적격 규칙 — 운영값(백테스트 근거 아님, 오너 변경 가능). 값 변경은 이 파일만 수정한다.
 # 기록: MM-PAGE-V2-20261014 §1. E1~E5 전부 충족 → 적격 순위표. E1~E4 미달 → "대기" 표. E5 해당 → "제외" 표.
-version: 1
+version: 2
 E1:
   name: 상장 거래일 수
   threshold: 252
@@ -31,4 +31,6 @@ E5:
 freshness:
   unconfirmed_bar: 최신 행 Close NaN 또는 거래량 < 직전 20봉 거래량 중앙값의 50% -> 미확정 봉(제외하고 직전 확정일로 산출, 상단 '잠정')
   stale: 종목별 최신 확정 봉(3배·1x)이 기준일과 다르면 ⚠ 순위 제외(fail-closed)
-approx_badge: BULZ MNGU FNGU BNKU NRGU AIQU FLYU (1x ETF 가 지수와 다른 근사 대리 — 점수는 산출, 비고에 대리 티커)
+approx_badge: 근사 배지 = 3x~1x 회귀(최근 252일) 기준 β 2.7~3.3 ∧ R²≥0.95 미달 종목에만 (MM-PROXY-FIX-20261014). 표본 n<60 은 '검증 미완' 배지(근사 아님). 현재 근사 0종.
+
+E4_note: 1x 는 발행사 공시 공식 지수(data/index_specs.yaml). E4 임계(β 2.7~3.3, R²≥0.85)는 운영값 그대로 두고, 근사 배지 판정만 R²≥0.95 로 분리 (MM-PROXY-FIX-20261014 §3).

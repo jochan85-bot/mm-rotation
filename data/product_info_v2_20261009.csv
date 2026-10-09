@@ -1,0 +1,38 @@
+ticker,index_name,index_name_source,first_bar,splits_yf,yf_longName
+SPXL,S&P 500,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2008-11-05,2013-04-02 정분할 3:1; 2017-05-01 정분할 4:1,Direxion Daily S&P500 Bull 3X Shares
+UPRO,S&P 500,발행사 1차(ProShares 제품 페이지),2009-06-25,2011-02-25 정분할 3:1; 2013-06-10 정분할 2:1; 2015-05-20 정분할 2:1; 2018-05-24 정분할 3:1; 2022-01-13 정분할 2:1,ProShares UltraPro S&P500
+TQQQ,Nasdaq-100 Index,발행사 1차(ProShares 제품 페이지),2010-02-11,2011-02-25 정분할 2:1; 2012-05-11 정분할 2:1; 2014-01-24 정분할 2:1; 2017-01-12 정분할 2:1; 2018-05-24 정분할 3:1; 2021-01-21 정분할 2:1; 2022-01-13 정분할 2:1; 2025-11-20 정분할 2:1,ProShares UltraPro QQQ
+UDOW,Dow Jones Industrial Average,발행사 1차(ProShares 제품 페이지),2010-02-11,2012-05-11 정분할 3:1; 2015-05-20 정분할 2:1; 2017-07-17 정분할 2:1; 2021-05-25 정분할 2:1; 2025-11-20 정분할 2:1,ProShares UltraPro Dow30
+TNA,Russell 2000,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2008-11-19,2013-04-02 정분할 2:1; 2017-05-01 정분할 2:1,Direxion Daily Small Cap Bull 3X Shares
+URTY,Russell 2000 Index,발행사 1차(ProShares 제품 페이지),2010-02-11,2011-02-25 정분할 2:1; 2013-06-10 정분할 2:1; 2017-07-17 정분할 2:1,ProShares UltraPro Russell2000
+MIDU,S&P MidCap 400,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2009-01-08,2010-05-05 정분할 3:1; 2015-05-20 정분할 4:1,Direxion Daily Mid Cap Bull 3X Shares
+UMDD,S&P MidCap 400,발행사 1차(ProShares 제품 페이지),2010-02-11,2011-02-25 정분할 2:1; 2013-06-10 정분할 2:1; 2015-05-20 정분할 2:1; 2021-05-25 정분할 5:1,ProShares UltraPro MidCap400
+HIBL,S&P 500 High Beta,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2019-11-07,2020-04-23 역분할 1:10; 2021-03-02 정분할 7:1,Direxion Daily S&P 500 High Beta Bull 3X Shares
+SOXL,NYSE Semiconductor,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2010-03-11,2015-05-20 정분할 4:1; 2021-03-02 정분할 15:1,Direxion Daily Semiconductor Bull 3X Shares
+TECL,Technology Select Sector,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2008-12-30,2010-05-05 정분할 4:1; 2015-05-20 정분할 4:1; 2021-03-02 정분할 10:1,Direxion Daily Technology Bull 3X Shares
+WEBL,Dow Jones Internet Composite,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2019-11-07,없음,Direxion Daily Dow Jones Internet Bull 3X Shares
+CURE,Health Care Select Sector,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2011-06-15,2013-08-20 정분할 2:1; 2015-05-20 정분할 4:1,Direxion Daily Healthcare Bull 3X Shares
+PILL,S&P Pharmaceuticals Select Industry,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2017-11-15,없음,Direxion Daily Pharmaceutical & Medical Bull 3X Shares ETF
+LABU,S&P Biotechnology Select Industry,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2015-05-28,2016-03-24 역분할 1:4; 2023-12-04 역분할 1:20,Direxion Daily S&P Biotech Bull 3X Shares
+FAS,Financial Select Sector,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2008-11-19,2009-07-09 역분할 1:5; 2010-05-05 정분할 3:1; 2011-11-10 역분할 1:5; 2013-04-02 정분할 3:1; 2015-05-20 정분할 4:1,Direxion Daily Financial Bull 3X Shares
+DPST,S&P Regional Banks Select Industry,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2015-08-20,2020-04-23 역분할 1:10; 2021-10-25 정분할 5:1; 2023-06-05 역분할 1:10,Direxion Daily Regional Banks Bull 3X Shares
+DFEN,Dow Jones U.S. Select Aerospace & Defense,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2017-05-03,없음,Direxion Daily Aerospace & Defense Bull 3X Shares
+DUSL,Industrial Select Sector,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2017-05-03,없음,Direxion Daily Industrials Bull 3X Shares
+TPOR,Dow Jones Transportation Average(추정),[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2017-05-03,없음,Direxion Daily Transportation Bull 3X Shares
+RETL,S&P Retail Select Industry,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2010-07-14,2013-04-02 정분할 3:1; 2015-05-20 정분할 4:1; 2020-04-23 역분할 1:10; 2021-01-11 정분할 5:1; 2021-10-25 정분할 5:1,Direxion Daily Retail Bull 3X Shares
+WANT,Consumer Discretionary Select Sector,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2018-11-29,없음,Direxion Daily Cnsmr Discret Bull 3XShrs
+NAIL,Dow Jones U.S. Select Home Construction,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2015-08-19,없음,Direxion Daily Homebuilders & Supplies Bull 3X Shares
+DRN,Real Estate Select Sector,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2009-07-16,2010-05-05 정분할 4:1; 2013-04-02 정분할 2:1; 2016-08-25 정분할 4:1,Direxion Daily Real Estate Bull 3X Shares
+UTSL,Utilities Select Sector,[확인실패] Direxion 페이지 403 → 지식기반 [미검증],2017-05-03,없음,Direxion Daily Utilities Bull 3X Shares
+FNGU,NYSE FANG+ Index,발행사 1차(MicroSectors 제품 페이지),2025-02-20,없음,MicroSectors FANG+ 3X Leveraged
+BULZ,Solactive FANG Innovation Index,발행사 1차(MicroSectors 제품 페이지),2021-08-18,2022-10-31 역분할 1:10; 2026-02-24 정분할 10:1,MicroSectors Solactive FANG Innovation 3X Leveraged ETNs
+BNKU,Solactive MicroSectors U.S. Big Banks Index,발행사 1차(MicroSectors 제품 페이지),2025-02-20,없음,MicroSectors™ U.S. Big Banks 3x Leveraged ETNs
+NRGU,Solactive MicroSectors U.S. Big Oil Index,발행사 1차(MicroSectors 제품 페이지),2025-02-20,없음,Microsectors U.S. Big Oil 3x Leveraged ETNs
+OILU,Solactive MicroSectors Oil & Gas Exploration & Production Index,발행사 1차(MicroSectors 제품 페이지),2021-11-09,없음,MicroSectorsTM Oil & Gas Exploration & Production 3X Leveraged ETNs
+GDXU,S-Network MicroSectors Gold Miners Index (GDX+GDXJ 구성),발행사 1차(MicroSectors 제품 페이지),2020-12-03,2022-10-31 역분할 1:10,MicroSectors Gold Miners 3X Leveraged ETNs
+AIQU,BITA AI Leaders Select Index,발행사 1차(MicroSectors 제품 페이지),2026-06-02,없음,"MicroSectors - MicroSectors 3× Long Artificial Intelligence (AI) ETNs due May 30, 2046"
+SMHU,SMH(VanEck Semiconductor ETF) 일간 주가 3x — 기초 MVIS US Listed Semiconductor 25 Index,발행사 1차(MicroSectors 제품 페이지),2026-08-04,없음,MicroSectors™ 3× Long Semiconductor ETNs
+MNGU,NYSE MaNGoS+ Index,발행사 1차(MicroSectors 제품 페이지),2026-08-27,없음,MicroSectors 3× Long MANGOS+ ex Private Companies ETN
+XLCU,Communication Services Select Sector Index,발행사 1차(MicroSectors 제품 페이지),2026-09-11,없음,MicroSectors 3x Long Communication Services (XLC) ETNs
+XLPU,Consumer Staples Select Sector Index,발행사 1차(MicroSectors 제품 페이지),2026-09-11,없음,MicroSectors 3x Long Consumer Staples (XLP) ETNs
+FLYU,MerQube MicroSectors U.S. Travel Index,발행사 1차(MicroSectors 제품 페이지),2022-06-22,없음,MicroSectors Travel 3X Leveraged ETNs

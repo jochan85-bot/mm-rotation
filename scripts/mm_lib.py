@@ -6,8 +6,8 @@ warnings.filterwarnings("ignore")
 ROOT=Path(__file__).resolve().parent.parent
 DATA=ROOT/"data"; LOCAL=ROOT/".local"; RAW=LOCAL/"p0view"; FETCHED=LOCAL/"fetched"; DOCS=ROOT/"docs"; LOGS=LOCAL/"logs"
 STUDY=Path.home()/"studies"/"mm_rotation_20261007"
-MSCORE_DOC=STUDY/"MSCORE_V1.md"
-MSCORE_SHA="41e4f209f338ba7ebb09bc7905be081f99e6b5abfef3170b84494bb223a9c83a"
+MSCORE_DOC=STUDY/"MSCORE_V1_1.md"
+MSCORE_SHA="2c2b8f73ebd37bd862aa7206591bb032d8e71c716576c9fa92ac16d01079c590"   # v1.1: 산식 불변, 1x 매핑표만 교체 (v1 sha 41e4f209f338ba7ebb09bc7905be081f99e6b5abfef3170b84494bb223a9c83a 는 MSCORE_V1.md 에 보존)
 KST=dt.timezone(dt.timedelta(hours=9))
 class FormulaMismatch(RuntimeError): pass
 def now_kst(): return dt.datetime.now(KST)
@@ -58,7 +58,20 @@ def need_tickers():
     OVR={"WTIU":"XLE","TPOR":"IYT"}
     s=set(b.ticker)|{OVR.get(t,p) for t,p in zip(b.ticker,b.proxy_1x)}|{"SPY"}
     uni=pd.read_csv(DATA/"universe.csv"); s|=set(uni.ticker)|set(uni.proxy.dropna())
+    import mm_proxy
+    s-=set(mm_proxy.synthetic_keys(DATA))                         # 합성 키는 yfinance 티커가 아님
+    s|=set(mm_proxy.full_fetch_tickers(DATA))                     # Yahoo 지수·splice 후반 ETF
     return sorted(s)
+def synthetic_keys():
+    import mm_proxy; return mm_proxy.synthetic_keys(DATA)
+def build_synthetic(log=print):
+    """합성(공식 지수 레벨 + 연장) 1x 계열 생성 — 수신 직후, clean_all 직전"""
+    import mm_proxy
+    fails=mm_proxy.fetch_recent(mm_proxy.tail_fetch_tickers(DATA),FETCHED/"tail")
+    if fails: log(f"꼬리 소스 수신 실패 {fails}")
+    return mm_proxy.build_all(DATA,FETCHED,LOCAL,log)
+def proxy_info():
+    p=LOCAL/"proxy_build_info.json"; return json.load(open(p,encoding="utf-8")) if p.exists() else {}
 def fetch_all(tickers):
     import yfinance as yf
     FETCHED.mkdir(parents=True,exist_ok=True); fails=[]
@@ -81,20 +94,22 @@ def _write(t,h):
 def clean_all(tickers):
     """미확정 마지막 행 제거 + SPY 달력에 없는 행 제거. 반환 (T, provisional_info, dropped{ticker:reason})"""
     dropped={}
-    def conf(h):
+    SYNK=set(synthetic_keys())
+    def conf(h,t=""):
         if len(h)<22: return True,""
         last=h.iloc[-1]
         if pd.isna(last["Close"]): return False,"Close 가 NaN(미확정)"
+        if t.startswith("^") or t in SYNK: return True,""          # 지수 레벨·합성 계열은 거래량 개념 없음 — Close 유무만 본다
         med=h["Volume"].iloc[-21:-1].median()
-        if med>0 and last["Volume"]<0.5*med: return False,"거래량이 직전 20봉 중앙값의 50% 미만(미확정)"
+        if med>=10000 and last["Volume"]<0.5*med: return False,"거래량이 직전 20봉 중앙값의 50% 미만(미확정)"   # 극저유동 ETN(중앙값<1만주)은 무거래일이 정상이라 제외
         return True,""
-    spy=_read("SPY"); ok,why=conf(spy); spy_raw_last=spy.index.max(); prov=None
+    spy=_read("SPY"); ok,why=conf(spy,"SPY"); spy_raw_last=spy.index.max(); prov=None
     if not ok:
         spy=spy.iloc[:-1]; prov={"raw_last":str(spy_raw_last.date()),"reason":why}
     _write("SPY",spy); T=spy.index.max(); sdates=set(spy.index)
     for t in tickers:
         if t=="SPY": continue
-        h=_read(t); ok,why=conf(h)
+        h=_read(t); ok,why=conf(h,t)
         if not ok: h=h.iloc[:-1]; dropped[t]=why
         h=h[h.index.isin(sdates)|(h.index<spy.index.min())]
         _write(t,h)
@@ -128,6 +143,10 @@ def compute(S,asof,T,cfg,status,uni,pq,remeasure=False):
     for r in uni.itertuples():
         t=r.ticker; px=r.proxy; reasons=[]; tab="적격"
         rec=dict(date=str(asof.date()),ticker=t,group=r.group,type=r.type,issuer=r.issuer,proxy=px,approx=int(r.approx))
+        _s=lambda v:(v if isinstance(v,str) else "")
+        rec.update(proxy_disp=_s(getattr(r,"proxy_disp","")),proxy_tip=_s(getattr(r,"proxy_tip","")),vstate=_s(getattr(r,"vstate","")))
+        _pi=proxy_info().get(px,{})
+        rec["proxy_tail"]=(f"공식 레벨 {_pi['official_last']}까지 + {_pi['tail_days']}일 연장({_pi['tail_src']})" if _pi.get("tail_days") else "")+(" · 공식 레벨 캐시 사용" if _pi.get("official_from_cache") else "")
         try:
             h3=S.loadp(t); h1=S.loadp(px)
         except Exception as e:
@@ -197,4 +216,4 @@ def compute(S,asof,T,cfg,status,uni,pq,remeasure=False):
 
 def init_from_raw():
     """주간 점검 등: 저장된 RAW 데이터만으로 연구 모듈 로딩 (T = SPY 마지막 확정 봉)"""
-    T,prov,dropped=clean_all(need_tickers()); return T, load_study(T)
+    T,prov,dropped=clean_all(need_tickers()+synthetic_keys()); return T, load_study(T)

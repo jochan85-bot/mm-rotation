@@ -10,8 +10,11 @@ def run(push=True, fetch=True):
     L.check_formula()
     cfg=L.load_yaml_simple(L.DATA/"eligibility.yaml"); uni=pd.read_csv(L.DATA/"universe.csv"); status=L.load_status()
     need=L.need_tickers(); fails=[]
-    if fetch: fails=L.fetch_all(need); L.log(f"수신 완료 실패={fails}")
-    T,prov,dropped=L.clean_all(need); L.log(f"기준일 T={T.date()} 잠정={prov} 미확정 행 제거={len(dropped)}종")
+    if fetch:
+        fails=L.fetch_all(need); L.log(f"수신 완료 실패={fails}")
+        binfo=L.build_synthetic(L.log); L.log(f"합성 1x 생성 {sum('error' not in v for v in binfo.values())}/{len(binfo)}")
+        fails=fails+[k for k,v in binfo.items() if "error" in v]
+    T,prov,dropped=L.clean_all(need+L.synthetic_keys()); L.log(f"기준일 T={T.date()} 잠정={prov} 미확정 행 제거={len(dropped)}종")
     S=L.load_study(T)
     pq=pd.read_csv(L.DATA/"proxy_quality.csv")
     df,upd=L.compute(S,T,T,cfg,status,uni,pq,remeasure=True)

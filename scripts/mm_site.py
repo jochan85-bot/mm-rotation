@@ -35,12 +35,18 @@ def f1(x,n=1,sign=False):
     return f"{x:+,.{n}f}" if sign else f"{x:,.{n}f}"
 def cells(r, child=False):
     appr=' <span class="badge b-approx">근사</span>' if int(r.approx) else ""
+    vs=getattr(r,"vstate","") if isinstance(getattr(r,"vstate",""),str) else ""
+    if vs: appr+=f' <span class="badge b-prov">{E(vs)}</span>'
+    ptail=getattr(r,"proxy_tail","") if isinstance(getattr(r,"proxy_tail",""),str) else ""
+    if ptail: appr+=f' <span class="badge b-approx" title="{E(ptail)}">연장</span>'
+    pdisp=getattr(r,"proxy_disp",None); pdisp=pdisp if isinstance(pdisp,str) and pdisp else r.proxy
+    ptip=getattr(r,"proxy_tip","") if isinstance(getattr(r,"proxy_tip",""),str) else ""
     ab="○" if (r.get("above200",0)==1) else "×"
     bq=f"β {r.beta:.2f} · R² {r.r2:.2f}" if (r.beta is not None and not pd.isna(r.beta)) else "—"
-    return (f'<td>{E(str(r.rank_txt))}</td><td class="l">{E(r.ticker_txt)}</td><td class="l">{E(r.issuer)}</td><td>{E(r.type)}</td><td class="l">{E(r.proxy)}{appr}</td>'
+    return (f'<td>{E(str(r.rank_txt))}</td><td class="l">{E(r.ticker_txt)}</td><td class="l">{E(r.issuer)}</td><td>{E(r.type)}</td><td class="l" title="{E(ptip)}">{E(pdisp)}{appr}</td>'
             f'<td data-v="{r.M:.4f}"><b>{r.M:.1f}</b></td><td data-v="{r.sig*100:.3f}">{r.sig*100:.1f}</td><td>{r.p_sig:.3f}</td><td data-v="{r.rsA*100:.3f}">{f1(r.rsA*100,1,True)}</td><td>{r.p_rsA:.3f}</td>'
             f'<td data-v="{r.f1b*100:.3f}">{f1(r.f1b*100,2,True)}</td><td>{r.p_f1b:.3f}</td><td data-v="{r.c1_ma200*100:.3f}">{f1(r.c1_ma200*100,1,True)}</td><td data-v="{ 1 if ab=="○" else 0}">{ab}</td>'
-            f'<td data-v="{r.close3:.4f}">{f1(r.close3,2)}</td><td data-v="{r.adtv:.4f}">{f1(r.adtv,1)}</td><td>{int(r.listed_days)}</td><td class="l">{E(bq)}</td><td class="l">{r.d_rank_html}</td><td class="l">{E(r.dgrp)}</td>')
+            f'<td data-v="{r.close3:.4f}">{f1(r.close3,2)}</td><td data-v="{r.adtv:.4f}">{f1(r.adtv,1)}</td><td>{int(r.listed_days)}</td><td class="l">{E(bq)}</td><td class="l">{r.d_rank_html}</td><td class="l">{E(pdisp if r.dgrp else "")}</td>')
 HEAD=["순위","티커","발행사","구분","1x","M-score","σ60(%)","pct","RS_A(%)","pct","MA항(%)","pct","1x종가/MA200−1(%)","1x 200일선 상회","3배 종가","20일 평균 거래대금($M)","listed_days","대리 품질","Δ순위(5일)","동일 1x 그룹"]
 def thead(tid): return "<thead><tr>"+"".join(f'<th{" class=l" if i in (1,2,4,17,18,19) else ""} onclick="sortT(\'{tid}\',{i})">{E(h)}</th>' for i,h in enumerate(HEAD))+"</tr></thead>"
 def drank(v):
@@ -76,7 +82,7 @@ def build_index(df, meta):
     chk=st.get("check_incomplete",{}); chk_html=(f'<div class="warn">점검 미완: '+", ".join(f"{E(k)}({E(v)})" for k,v in chk.items())+"</div>") if chk else ""
     body=f"""<h1>무매 M-score 공용 페이지</h1>
 <div class="meta">기준일 <b>{E(meta['asof'])}</b> (US 종가) · 산출 {E(meta['generated'])} KST · 적격 <b>{n}/{N}</b> · 1x 200일선 상회 <b>{up}/{n}</b><br>
-M-score = [pct(σ60) + pct(RS_A: 12-1개월 수익률) + pct(MA50/MA200−1)] / 3 × 100 — 1x 기초지수 ETF 기준, 적격 종목 내 백분위 단순평균 (정의 sha256 {E(MSCORE_SHA[:8])}…). 참고용 표시이며 개인 보유·평단 정보는 사용하지 않습니다.</div>
+M-score = [pct(σ60) + pct(RS_A: 12-1개월 수익률) + pct(MA50/MA200−1)] / 3 × 100 — 1x = 발행사 공시 공식 지수 기준(지수 레벨 또는 동일 지수 1x ETF — 상품 페이지 참조), 적격 종목 내 백분위 단순평균 (정의 sha256 {E(MSCORE_SHA[:8])}…). 참고용 표시이며 개인 보유·평단 정보는 사용하지 않습니다.</div>
 {banner}{stale_html}{chk_html}
 <h2>표1. 적격 순위표</h2><div class="wrap"><table id="t1">{thead('t1')}<tbody>{''.join(rowsHTML)}</tbody></table></div>
 <div class="meta" style="margin-top:6px">접힌 행(동일 1x 그룹)의 3배 열은 거래대금 최대 티커 값이며 ▸ 로 개별 티커를 펼칩니다. 동점은 같은 순위 번호입니다.</div>"""
@@ -106,11 +112,17 @@ def build_products(uni, df, meta, p0):
         note=[]
         if r.ticker in st["notes"]: note+=[str(x) for x in st["notes"][r.ticker]]
         if r.ticker in st.get("check_incomplete",{}): note.append("점검 미완: "+st["check_incomplete"][r.ticker])
-        rows.append(f'<tr><td class="l"><b>{E(r.ticker)}</b></td><td class="l">{E(r.issuer)}</td><td>{E(r.type)}</td><td>{E(r.leverage)}</td><td class="l" style="white-space:normal;min-width:220px">{E(str(pr.index_name)) if pr is not None else "—"}<br><span style="color:#777">{E(str(pr.index_name_source)) if pr is not None else ""}</span></td><td class="l">{E(r.proxy)}{appr}</td><td class="l">{(f"β {d.beta:.2f} · R² {d.r2:.2f} ({E(str(d.proxy_measured))})" if d is not None and d.beta is not None and not pd.isna(d.beta) else "—")}</td><td>{E(str(pr.first_bar)) if pr is not None else "—"}</td><td class="l" style="white-space:normal;min-width:200px">{E(str(pr.splits_yf)) if pr is not None else "—"}</td><td class="l" style="white-space:normal;min-width:240px">{E(" / ".join(note)) or "—"}</td></tr>')
+        g=lambda k: (str(pr[k]) if pr is not None and k in pr.index and isinstance(pr[k],str) and pr[k] else "—")
+        vs=getattr(r,"vstate","") if isinstance(getattr(r,"vstate",""),str) else ""
+        vb=f' <span class="badge b-prov">{E(vs)}</span>' if vs else ""
+        pdisp=getattr(r,"proxy_disp",r.proxy)
+        onex=f'<b>{E(pdisp)}</b>{appr}{vb}<br><span style="color:#555">{E(g("onex_path"))} · 지수 문서: {E(g("onex_index_doc"))} · exact: {E(g("onex_exact"))}</span><br><span style="color:#777">{E(g("onex_series"))}'+(f' · 연장: {E(g("onex_extension"))}' if g("onex_extension")!="—" else "")+'</span>'
+        idx=f'<b>{E(str(pr.index_name)) if pr is not None else "—"}</b><br><span style="color:#555">제공사 {E(g("index_provider"))} · 구성 {E(g("index_weighting"))} · 리밸런스 {E(g("index_rebalance"))} · 수익 유형 {E(g("index_return_type"))}</span><br><span style="color:#777">{E(str(pr.index_name_source)) if pr is not None else ""}</span>'
+        rows.append(f'<tr><td class="l"><b>{E(r.ticker)}</b></td><td class="l">{E(r.issuer)}</td><td>{E(r.type)}</td><td>{E(r.leverage)}</td><td class="l" style="white-space:normal;min-width:340px">{idx}</td><td class="l" style="white-space:normal;min-width:300px">{onex}</td><td class="l">{(f"β {d.beta:.2f} · R² {d.r2:.2f} ({E(str(d.proxy_measured))})" if d is not None and d.beta is not None and not pd.isna(d.beta) else "—")}</td><td>{E(str(pr.first_bar)) if pr is not None else "—"}</td><td class="l" style="white-space:normal;min-width:200px">{E(str(pr.splits_yf)) if pr is not None else "—"}</td><td class="l" style="white-space:normal;min-width:240px">{E(" / ".join(note)) or "—"}</td></tr>')
     for c in meta.get("new_products",[]):
         rows.append(f'<tr><td class="l"><b>{E(c.get("ticker") or c.get("name",""))}</b></td><td class="l">{E(c.get("issuer",""))}</td><td>{E(c.get("type",""))}</td><td>{E(c.get("leverage",""))}</td><td class="l">{E(c.get("index",""))}</td><td class="l">미정</td><td>—</td><td>—</td><td>—</td><td class="l" style="white-space:normal">초안 · 신규 편입 {E(c.get("found",""))} · 출처 {E(c.get("source",""))}</td></tr>')
-    body=f"""<h1>상품 정보</h1><div class="meta">유니버스 {len(uni)}종 + 신규 편입 {len(meta.get('new_products',[]))}종. 추종지수명·출처는 MM-P0B 조사(발행사 1차 자료 / 지식 기반 [미검증] 표기), 대리 품질은 data/proxy_quality.csv, 분할 이력은 yfinance 기록. 수수료·금융비용은 자동 수집하지 않으며 발행사 문서를 확인하십시오.</div>
-<div class="wrap"><table style="min-width:1100px"><thead><tr><th class="l">티커</th><th class="l">발행사</th><th>구분</th><th>배수</th><th class="l">추종지수 · 출처</th><th class="l">1x 대리</th><th class="l">대리 품질</th><th>첫 일봉</th><th class="l">분할·역분할</th><th class="l">비고</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>"""
+    body=f"""<h1>상품 정보</h1><div class="meta">유니버스 {len(uni)}종 + 신규 편입 {len(meta.get('new_products',[]))}종. 1x = 발행사가 공시한 공식 지수 하나(MM-PROXY-FIX-20261014). 지수명은 발행사 문서(Direxion·ProShares 497K, BMO 가격보충서) 원문, 상세·출처 URL은 data/index_specs.yaml. 1x 경로 = 공식 지수 레벨 / 동일 지수 1x ETF(exact) / 구간 분할. '연장'은 공식 레벨 이전·이후 구간을 같은 지수 계열(인증서·구성종목 복제·ETF 총수익)로 이은 구간. 대리 품질(회귀)은 data/proxy_quality.csv. '근사' 배지는 회귀 기준(β 2.7~3.3·R²≥0.95) 미달 종목에만 붙고, 표본 60 미만은 '검증 미완', 분할 이력은 yfinance 기록. 수수료·금융비용은 자동 수집하지 않으며 발행사 문서를 확인하십시오.</div>
+<div class="wrap"><table style="min-width:1500px"><thead><tr><th class="l">티커</th><th class="l">발행사</th><th>구분</th><th>배수</th><th class="l">공식 추종지수 · 제공사 · 구성 · 출처</th><th class="l">1x (채택 경로)</th><th class="l">대리 품질</th><th>첫 일봉</th><th class="l">분할·역분할</th><th class="l">비고</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>"""
     return pg("무매 상품",body,"products.html")
 def build_history(files, latest_df):
     el=latest_df[latest_df.table=="적격"].sort_values(["rank","M"],ascending=[True,False]).head(10)
