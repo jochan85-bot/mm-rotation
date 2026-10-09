@@ -1,0 +1,1840 @@
+{
+ "generated": "2026-10-09",
+ "items": {
+  "SPXL": {
+   "basis": "1x ETF SPY 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "NVDA",
+     "w": 8.36
+    },
+    {
+     "n": "AAPL",
+     "w": 7.35
+    },
+    {
+     "n": "MSFT",
+     "w": 5.76
+    },
+    {
+     "n": "AMZN",
+     "w": 3.7
+    },
+    {
+     "n": "GOOGL",
+     "w": 3.05
+    },
+    {
+     "n": "AVGO",
+     "w": 2.53
+    },
+    {
+     "n": "GOOG",
+     "w": 2.45
+    },
+    {
+     "n": "META",
+     "w": 2.42
+    },
+    {
+     "n": "MU",
+     "w": 1.82
+    },
+    {
+     "n": "TSLA",
+     "w": 1.51
+    }
+   ]
+  },
+  "UPRO": {
+   "basis": "1x ETF SPY 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "NVDA",
+     "w": 8.36
+    },
+    {
+     "n": "AAPL",
+     "w": 7.35
+    },
+    {
+     "n": "MSFT",
+     "w": 5.76
+    },
+    {
+     "n": "AMZN",
+     "w": 3.7
+    },
+    {
+     "n": "GOOGL",
+     "w": 3.05
+    },
+    {
+     "n": "AVGO",
+     "w": 2.53
+    },
+    {
+     "n": "GOOG",
+     "w": 2.45
+    },
+    {
+     "n": "META",
+     "w": 2.42
+    },
+    {
+     "n": "MU",
+     "w": 1.82
+    },
+    {
+     "n": "TSLA",
+     "w": 1.51
+    }
+   ]
+  },
+  "TQQQ": {
+   "basis": "1x ETF QQQ 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "NVDA",
+     "w": 8.33
+    },
+    {
+     "n": "AAPL",
+     "w": 7.35
+    },
+    {
+     "n": "MSFT",
+     "w": 5.76
+    },
+    {
+     "n": "MU",
+     "w": 5.02
+    },
+    {
+     "n": "AMD",
+     "w": 4.17
+    },
+    {
+     "n": "AMZN",
+     "w": 4.07
+    },
+    {
+     "n": "META",
+     "w": 3.26
+    },
+    {
+     "n": "GOOGL",
+     "w": 3.05
+    },
+    {
+     "n": "GOOG",
+     "w": 2.85
+    },
+    {
+     "n": "TSLA",
+     "w": 2.82
+    }
+   ]
+  },
+  "UDOW": {
+   "basis": "1x ETF DIA 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "GS",
+     "w": 10.48
+    },
+    {
+     "n": "CAT",
+     "w": 9.44
+    },
+    {
+     "n": "MSFT",
+     "w": 5.97
+    },
+    {
+     "n": "AMGN",
+     "w": 4.91
+    },
+    {
+     "n": "UNH",
+     "w": 4.27
+    },
+    {
+     "n": "V",
+     "w": 4.18
+    },
+    {
+     "n": "TRV",
+     "w": 4.15
+    },
+    {
+     "n": "GOOGL",
+     "w": 4.01
+    },
+    {
+     "n": "AAPL",
+     "w": 3.88
+    },
+    {
+     "n": "JPM",
+     "w": 3.85
+    }
+   ]
+  },
+  "TNA": {
+   "basis": "1x ETF IWM 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "XTSLA",
+     "w": 0.48
+    },
+    {
+     "n": "TWST",
+     "w": 0.43
+    },
+    {
+     "n": "MOG-A",
+     "w": 0.37
+    },
+    {
+     "n": "FROG",
+     "w": 0.36
+    },
+    {
+     "n": "TXG",
+     "w": 0.36
+    },
+    {
+     "n": "UMBF",
+     "w": 0.32
+    },
+    {
+     "n": "BTSG",
+     "w": 0.32
+    },
+    {
+     "n": "GKOS",
+     "w": 0.32
+    },
+    {
+     "n": "VSAT",
+     "w": 0.3
+    },
+    {
+     "n": "HUT",
+     "w": 0.3
+    }
+   ]
+  },
+  "URTY": {
+   "basis": "1x ETF IWM 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "XTSLA",
+     "w": 0.48
+    },
+    {
+     "n": "TWST",
+     "w": 0.43
+    },
+    {
+     "n": "MOG-A",
+     "w": 0.37
+    },
+    {
+     "n": "FROG",
+     "w": 0.36
+    },
+    {
+     "n": "TXG",
+     "w": 0.36
+    },
+    {
+     "n": "UMBF",
+     "w": 0.32
+    },
+    {
+     "n": "BTSG",
+     "w": 0.32
+    },
+    {
+     "n": "GKOS",
+     "w": 0.32
+    },
+    {
+     "n": "VSAT",
+     "w": 0.3
+    },
+    {
+     "n": "HUT",
+     "w": 0.3
+    }
+   ]
+  },
+  "MIDU": {
+   "basis": "1x ETF IJH 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "TWLO",
+     "w": 1.32
+    },
+    {
+     "n": "OKTA",
+     "w": 1.02
+    },
+    {
+     "n": "FTI",
+     "w": 0.78
+    },
+    {
+     "n": "NVT",
+     "w": 0.76
+    },
+    {
+     "n": "ATI",
+     "w": 0.76
+    },
+    {
+     "n": "ENTG",
+     "w": 0.69
+    },
+    {
+     "n": "UTHR",
+     "w": 0.68
+    },
+    {
+     "n": "XPO",
+     "w": 0.61
+    },
+    {
+     "n": "THC",
+     "w": 0.61
+    },
+    {
+     "n": "SNX",
+     "w": 0.61
+    }
+   ]
+  },
+  "UMDD": {
+   "basis": "1x ETF IJH 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "TWLO",
+     "w": 1.32
+    },
+    {
+     "n": "OKTA",
+     "w": 1.02
+    },
+    {
+     "n": "FTI",
+     "w": 0.78
+    },
+    {
+     "n": "NVT",
+     "w": 0.76
+    },
+    {
+     "n": "ATI",
+     "w": 0.76
+    },
+    {
+     "n": "ENTG",
+     "w": 0.69
+    },
+    {
+     "n": "UTHR",
+     "w": 0.68
+    },
+    {
+     "n": "XPO",
+     "w": 0.61
+    },
+    {
+     "n": "THC",
+     "w": 0.61
+    },
+    {
+     "n": "SNX",
+     "w": 0.61
+    }
+   ]
+  },
+  "HIBL": {
+   "basis": "1x ETF SPHB 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "SNDK",
+     "w": 2.88
+    },
+    {
+     "n": "MRNA",
+     "w": 2.69
+    },
+    {
+     "n": "AMD",
+     "w": 2.06
+    },
+    {
+     "n": "MU",
+     "w": 2.05
+    },
+    {
+     "n": "SMCI",
+     "w": 2.0
+    },
+    {
+     "n": "COIN",
+     "w": 1.97
+    },
+    {
+     "n": "MRVL",
+     "w": 1.89
+    },
+    {
+     "n": "HOOD",
+     "w": 1.85
+    },
+    {
+     "n": "INTC",
+     "w": 1.71
+    },
+    {
+     "n": "LRCX",
+     "w": 1.66
+    }
+   ]
+  },
+  "SOXL": {
+   "basis": "1x ETF SOXX 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "INTC",
+     "w": 9.59
+    },
+    {
+     "n": "AMD",
+     "w": 9.28
+    },
+    {
+     "n": "MU",
+     "w": 7.93
+    },
+    {
+     "n": "NVDA",
+     "w": 7.39
+    },
+    {
+     "n": "AVGO",
+     "w": 6.77
+    },
+    {
+     "n": "MRVL",
+     "w": 4.46
+    },
+    {
+     "n": "AMAT",
+     "w": 3.98
+    },
+    {
+     "n": "KLAC",
+     "w": 3.97
+    },
+    {
+     "n": "ADI",
+     "w": 3.91
+    },
+    {
+     "n": "LRCX",
+     "w": 3.89
+    }
+   ]
+  },
+  "TECL": {
+   "basis": "1x ETF XLK 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "NVDA",
+     "w": 15.47
+    },
+    {
+     "n": "AAPL",
+     "w": 13.6
+    },
+    {
+     "n": "MSFT",
+     "w": 10.66
+    },
+    {
+     "n": "AMD",
+     "w": 5.06
+    },
+    {
+     "n": "AVGO",
+     "w": 4.68
+    },
+    {
+     "n": "MU",
+     "w": 4.47
+    },
+    {
+     "n": "INTC",
+     "w": 3.38
+    },
+    {
+     "n": "PLTR",
+     "w": 2.44
+    },
+    {
+     "n": "CSCO",
+     "w": 2.4
+    },
+    {
+     "n": "LRCX",
+     "w": 2.33
+    }
+   ]
+  },
+  "WEBL": {
+   "basis": "1x ETF FDN 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "META",
+     "w": 11.08
+    },
+    {
+     "n": "AMZN",
+     "w": 9.86
+    },
+    {
+     "n": "CSCO",
+     "w": 8.55
+    },
+    {
+     "n": "GOOGL",
+     "w": 5.76
+    },
+    {
+     "n": "NFLX",
+     "w": 5.75
+    },
+    {
+     "n": "ANET",
+     "w": 4.74
+    },
+    {
+     "n": "GOOG",
+     "w": 4.62
+    },
+    {
+     "n": "CRM",
+     "w": 4.22
+    },
+    {
+     "n": "BKNG",
+     "w": 4.17
+    },
+    {
+     "n": "SNOW",
+     "w": 4.01
+    }
+   ]
+  },
+  "CURE": {
+   "basis": "1x ETF XLV 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "LLY",
+     "w": 15.1
+    },
+    {
+     "n": "JNJ",
+     "w": 10.41
+    },
+    {
+     "n": "ABBV",
+     "w": 7.54
+    },
+    {
+     "n": "MRK",
+     "w": 5.85
+    },
+    {
+     "n": "UNH",
+     "w": 5.38
+    },
+    {
+     "n": "TMO",
+     "w": 4.07
+    },
+    {
+     "n": "AMGN",
+     "w": 3.72
+    },
+    {
+     "n": "GILD",
+     "w": 3.01
+    },
+    {
+     "n": "ABT",
+     "w": 2.79
+    },
+    {
+     "n": "PFE",
+     "w": 2.65
+    }
+   ]
+  },
+  "PILL": {
+   "basis": "1x ETF XPH 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "XERS",
+     "w": 2.46
+    },
+    {
+     "n": "MANE",
+     "w": 2.42
+    },
+    {
+     "n": "AMRX",
+     "w": 2.32
+    },
+    {
+     "n": "LGND",
+     "w": 2.15
+    },
+    {
+     "n": "VTRS",
+     "w": 2.13
+    },
+    {
+     "n": "INDV",
+     "w": 2.05
+    },
+    {
+     "n": "PRGO",
+     "w": 2.05
+    },
+    {
+     "n": "LLY",
+     "w": 2.05
+    },
+    {
+     "n": "ANIP",
+     "w": 2.04
+    },
+    {
+     "n": "PFE",
+     "w": 2.04
+    }
+   ]
+  },
+  "LABU": {
+   "basis": "1x ETF XBI 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "TWST",
+     "w": 2.21
+    },
+    {
+     "n": "MRNA",
+     "w": 2.04
+    },
+    {
+     "n": "NTRA",
+     "w": 1.8
+    },
+    {
+     "n": "IOVA",
+     "w": 1.62
+    },
+    {
+     "n": "AMGN",
+     "w": 1.55
+    },
+    {
+     "n": "BIIB",
+     "w": 1.54
+    },
+    {
+     "n": "UTHR",
+     "w": 1.54
+    },
+    {
+     "n": "ABBV",
+     "w": 1.5
+    },
+    {
+     "n": "HALO",
+     "w": 1.48
+    },
+    {
+     "n": "SYRE",
+     "w": 1.47
+    }
+   ]
+  },
+  "FAS": {
+   "basis": "1x ETF XLF 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "BRK-B",
+     "w": 12.3
+    },
+    {
+     "n": "JPM",
+     "w": 11.66
+    },
+    {
+     "n": "V",
+     "w": 8.12
+    },
+    {
+     "n": "MA",
+     "w": 5.91
+    },
+    {
+     "n": "BAC",
+     "w": 4.69
+    },
+    {
+     "n": "GS",
+     "w": 3.48
+    },
+    {
+     "n": "WFC",
+     "w": 3.21
+    },
+    {
+     "n": "MS",
+     "w": 2.98
+    },
+    {
+     "n": "C",
+     "w": 2.88
+    },
+    {
+     "n": "AXP",
+     "w": 2.12
+    }
+   ]
+  },
+  "DPST": {
+   "basis": "1x ETF KRE 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "UBSI",
+     "w": 1.15
+    },
+    {
+     "n": "FIBK",
+     "w": 1.14
+    },
+    {
+     "n": "ONB",
+     "w": 1.13
+    },
+    {
+     "n": "HWC",
+     "w": 1.13
+    },
+    {
+     "n": "EWBC",
+     "w": 1.13
+    },
+    {
+     "n": "EBC",
+     "w": 1.13
+    },
+    {
+     "n": "FULT",
+     "w": 1.13
+    },
+    {
+     "n": "FHB",
+     "w": 1.13
+    },
+    {
+     "n": "AUB",
+     "w": 1.12
+    },
+    {
+     "n": "COLB",
+     "w": 1.12
+    }
+   ]
+  },
+  "DFEN": {
+   "basis": "1x ETF ITA 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "GE",
+     "w": 20.97
+    },
+    {
+     "n": "RTX",
+     "w": 16.19
+    },
+    {
+     "n": "BA",
+     "w": 7.49
+    },
+    {
+     "n": "HWM",
+     "w": 4.61
+    },
+    {
+     "n": "LMT",
+     "w": 4.6
+    },
+    {
+     "n": "TDG",
+     "w": 4.56
+    },
+    {
+     "n": "GD",
+     "w": 4.46
+    },
+    {
+     "n": "NOC",
+     "w": 4.45
+    },
+    {
+     "n": "HONA",
+     "w": 3.82
+    },
+    {
+     "n": "LHX",
+     "w": 3.43
+    }
+   ]
+  },
+  "DUSL": {
+   "basis": "1x ETF XLI 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "CAT",
+     "w": 7.01
+    },
+    {
+     "n": "GE",
+     "w": 6.09
+    },
+    {
+     "n": "GEV",
+     "w": 4.76
+    },
+    {
+     "n": "RTX",
+     "w": 4.71
+    },
+    {
+     "n": "DE",
+     "w": 3.17
+    },
+    {
+     "n": "ETN",
+     "w": 3.14
+    },
+    {
+     "n": "UNP",
+     "w": 3.04
+    },
+    {
+     "n": "BA",
+     "w": 2.76
+    },
+    {
+     "n": "UBER",
+     "w": 2.63
+    },
+    {
+     "n": "PH",
+     "w": 2.26
+    }
+   ]
+  },
+  "TPOR": {
+   "basis": "1x ETF IYT 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "UNP",
+     "w": 17.44
+    },
+    {
+     "n": "UBER",
+     "w": 15.1
+    },
+    {
+     "n": "CSX",
+     "w": 9.3
+    },
+    {
+     "n": "DAL",
+     "w": 4.95
+    },
+    {
+     "n": "UAL",
+     "w": 4.84
+    },
+    {
+     "n": "NSC",
+     "w": 4.46
+    },
+    {
+     "n": "ODFL",
+     "w": 4.46
+    },
+    {
+     "n": "UPS",
+     "w": 4.4
+    },
+    {
+     "n": "FDX",
+     "w": 4.3
+    },
+    {
+     "n": "EXPD",
+     "w": 3.4
+    }
+   ]
+  },
+  "RETL": {
+   "basis": "1x ETF XRT 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "GME",
+     "w": 1.8
+    },
+    {
+     "n": "OLLI",
+     "w": 1.72
+    },
+    {
+     "n": "VSXY",
+     "w": 1.69
+    },
+    {
+     "n": "WRBY",
+     "w": 1.64
+    },
+    {
+     "n": "BURL",
+     "w": 1.62
+    },
+    {
+     "n": "RVLV",
+     "w": 1.59
+    },
+    {
+     "n": "DDS",
+     "w": 1.56
+    },
+    {
+     "n": "GAP",
+     "w": 1.55
+    },
+    {
+     "n": "M",
+     "w": 1.53
+    },
+    {
+     "n": "KSS",
+     "w": 1.53
+    }
+   ]
+  },
+  "WANT": {
+   "basis": "1x ETF XLY 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "AMZN",
+     "w": 23.39
+    },
+    {
+     "n": "TSLA",
+     "w": 17.67
+    },
+    {
+     "n": "HD",
+     "w": 5.01
+    },
+    {
+     "n": "MCD",
+     "w": 4.22
+    },
+    {
+     "n": "TJX",
+     "w": 4.07
+    },
+    {
+     "n": "BKNG",
+     "w": 3.41
+    },
+    {
+     "n": "SBUX",
+     "w": 2.98
+    },
+    {
+     "n": "LOW",
+     "w": 2.88
+    },
+    {
+     "n": "MAR",
+     "w": 2.12
+    },
+    {
+     "n": "ROST",
+     "w": 2.09
+    }
+   ]
+  },
+  "NAIL": {
+   "basis": "1x ETF ITB 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "DHI",
+     "w": 17.76
+    },
+    {
+     "n": "PHM",
+     "w": 11.11
+    },
+    {
+     "n": "LEN",
+     "w": 8.07
+    },
+    {
+     "n": "NVR",
+     "w": 7.96
+    },
+    {
+     "n": "TOL",
+     "w": 4.61
+    },
+    {
+     "n": "SHW",
+     "w": 4.52
+    },
+    {
+     "n": "LOW",
+     "w": 4.17
+    },
+    {
+     "n": "HD",
+     "w": 4.11
+    },
+    {
+     "n": "MAS",
+     "w": 3.03
+    },
+    {
+     "n": "LII",
+     "w": 2.54
+    }
+   ]
+  },
+  "DRN": {
+   "basis": "1x ETF XLRE 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "WELL",
+     "w": 11.68
+    },
+    {
+     "n": "PLD",
+     "w": 8.68
+    },
+    {
+     "n": "EQIX",
+     "w": 7.02
+    },
+    {
+     "n": "AMT",
+     "w": 5.37
+    },
+    {
+     "n": "SPG",
+     "w": 4.65
+    },
+    {
+     "n": "PSA",
+     "w": 4.55
+    },
+    {
+     "n": "VTR",
+     "w": 4.5
+    },
+    {
+     "n": "VMRK",
+     "w": 4.43
+    },
+    {
+     "n": "DLR",
+     "w": 4.4
+    },
+    {
+     "n": "CBRE",
+     "w": 4.31
+    }
+   ]
+  },
+  "UTSL": {
+   "basis": "1x ETF XLU 보유",
+   "as_of": "2026-10-09",
+   "scope": "상위 10종(제공처 공개 범위)",
+   "items": [
+    {
+     "n": "NEE",
+     "w": 12.71
+    },
+    {
+     "n": "SO",
+     "w": 7.67
+    },
+    {
+     "n": "DUK",
+     "w": 7.15
+    },
+    {
+     "n": "CEG",
+     "w": 6.74
+    },
+    {
+     "n": "AEP",
+     "w": 5.2
+    },
+    {
+     "n": "D",
+     "w": 4.28
+    },
+    {
+     "n": "SRE",
+     "w": 4.1
+    },
+    {
+     "n": "ETR",
+     "w": 3.73
+    },
+    {
+     "n": "XEL",
+     "w": 3.54
+    },
+    {
+     "n": "VST",
+     "w": 3.51
+    }
+   ]
+  },
+  "FNGU": {
+   "basis": "지수 구성종목",
+   "as_of": "2026-10-08",
+   "scope": "전체",
+   "items": [
+    {
+     "n": "MICRON TECHNOLOGY INC",
+     "w": 11.01
+    },
+    {
+     "n": "PALANTIR TECHNOLOGIES INC-A",
+     "w": 10.44
+    },
+    {
+     "n": "NVIDIA CORP",
+     "w": 10.41
+    },
+    {
+     "n": "BROADCOM INC",
+     "w": 10.4
+    },
+    {
+     "n": "MICROSOFT CORP",
+     "w": 10.13
+    },
+    {
+     "n": "META PLATFORMS INC-CLASS A",
+     "w": 10.05
+    },
+    {
+     "n": "AMAZON.COM INC",
+     "w": 9.91
+    },
+    {
+     "n": "ALPHABET INC-CL A",
+     "w": 9.59
+    },
+    {
+     "n": "APPLE INC",
+     "w": 9.5
+    },
+    {
+     "n": "NETFLIX INC",
+     "w": 8.55
+    }
+   ]
+  },
+  "BULZ": {
+   "basis": "지수 구성종목",
+   "as_of": "2026-10-08",
+   "scope": "전체",
+   "items": [
+    {
+     "n": "ADVANCED MICRO DEVICES",
+     "w": 7.4
+    },
+    {
+     "n": "PALANTIR TECHNOLOGIES INC-A",
+     "w": 7.01
+    },
+    {
+     "n": "META PLATFORMS INC-CLASS A",
+     "w": 6.95
+    },
+    {
+     "n": "MICROSOFT CORP",
+     "w": 6.88
+    },
+    {
+     "n": "MICRON TECHNOLOGY INC",
+     "w": 6.87
+    },
+    {
+     "n": "NVIDIA CORP",
+     "w": 6.85
+    },
+    {
+     "n": "BROADCOM INC",
+     "w": 6.76
+    },
+    {
+     "n": "INTEL CORP",
+     "w": 6.68
+    },
+    {
+     "n": "TESLA INC",
+     "w": 6.65
+    },
+    {
+     "n": "AMAZON.COM INC",
+     "w": 6.57
+    },
+    {
+     "n": "ALPHABET INC-CL A",
+     "w": 6.43
+    },
+    {
+     "n": "APPLE INC",
+     "w": 6.42
+    },
+    {
+     "n": "ORACLE CORP",
+     "w": 6.24
+    },
+    {
+     "n": "NETFLIX INC",
+     "w": 6.23
+    },
+    {
+     "n": "SANDISK CORP",
+     "w": 6.06
+    }
+   ]
+  },
+  "BNKU": {
+   "basis": "지수 구성종목",
+   "as_of": "2026-10-08",
+   "scope": "전체",
+   "items": [
+    {
+     "n": "CITIGROUP INC",
+     "w": 10.32
+    },
+    {
+     "n": "JPMORGAN CHASE & CO",
+     "w": 10.12
+    },
+    {
+     "n": "US BANCORP",
+     "w": 10.08
+    },
+    {
+     "n": "GOLDMAN SACHS GROUP INC",
+     "w": 10.06
+    },
+    {
+     "n": "MORGAN STANLEY",
+     "w": 10.0
+    },
+    {
+     "n": "PNC FINANCIAL SERVICES GROUP",
+     "w": 9.97
+    },
+    {
+     "n": "WELLS FARGO & CO",
+     "w": 9.95
+    },
+    {
+     "n": "BANK OF NEW YORK MELLON CORP",
+     "w": 9.91
+    },
+    {
+     "n": "BANK OF AMERICA CORP",
+     "w": 9.9
+    },
+    {
+     "n": "SCHWAB (CHARLES) CORP",
+     "w": 9.7
+    }
+   ]
+  },
+  "NRGU": {
+   "basis": "지수 구성종목",
+   "as_of": "2026-10-08",
+   "scope": "전체",
+   "items": [
+    {
+     "n": "MARATHON PETROLEUM CORP",
+     "w": 10.45
+    },
+    {
+     "n": "VALERO ENERGY CORP",
+     "w": 10.3
+    },
+    {
+     "n": "EXXONMOBIL HOLDINGS CORP",
+     "w": 10.07
+    },
+    {
+     "n": "EOG RESOURCES INC",
+     "w": 10.04
+    },
+    {
+     "n": "PHILLIPS 66",
+     "w": 9.98
+    },
+    {
+     "n": "OCCIDENTAL PETROLEUM CORP",
+     "w": 9.93
+    },
+    {
+     "n": "DEVON ENERGY CORP",
+     "w": 9.89
+    },
+    {
+     "n": "CONOCOPHILLIPS",
+     "w": 9.89
+    },
+    {
+     "n": "CHEVRON CORP",
+     "w": 9.83
+    },
+    {
+     "n": "DIAMONDBACK ENERGY INC",
+     "w": 9.62
+    }
+   ]
+  },
+  "OILU": {
+   "basis": "지수 구성종목",
+   "as_of": "2026-10-08",
+   "scope": "전체",
+   "items": [
+    {
+     "n": "EXXONMOBIL HOLDINGS CORP",
+     "w": 15.24
+    },
+    {
+     "n": "CHEVRON CORP",
+     "w": 14.87
+    },
+    {
+     "n": "CONOCOPHILLIPS",
+     "w": 8.0
+    },
+    {
+     "n": "SLB LTD",
+     "w": 5.44
+    },
+    {
+     "n": "VALERO ENERGY CORP",
+     "w": 4.37
+    },
+    {
+     "n": "DEVON ENERGY CORP",
+     "w": 4.37
+    },
+    {
+     "n": "OCCIDENTAL PETROLEUM CORP",
+     "w": 4.23
+    },
+    {
+     "n": "EOG RESOURCES INC",
+     "w": 3.94
+    },
+    {
+     "n": "BAKER HUGHES CO",
+     "w": 3.6
+    },
+    {
+     "n": "MARATHON PETROLEUM CORP",
+     "w": 3.56
+    },
+    {
+     "n": "DIAMONDBACK ENERGY INC",
+     "w": 3.37
+    },
+    {
+     "n": "HALLIBURTON CO",
+     "w": 3.21
+    },
+    {
+     "n": "EQT CORP",
+     "w": 3.19
+    },
+    {
+     "n": "PHILLIPS 66",
+     "w": 2.75
+    },
+    {
+     "n": "WILLIAMS COS INC",
+     "w": 2.54
+    },
+    {
+     "n": "EXPAND ENERGY CORP",
+     "w": 2.32
+    },
+    {
+     "n": "CHENIERE ENERGY INC",
+     "w": 2.21
+    },
+    {
+     "n": "APA CORP",
+     "w": 2.09
+    },
+    {
+     "n": "PERMIAN RESOURCES CORP-CL A",
+     "w": 1.95
+    },
+    {
+     "n": "TECHNIPFMC PLC",
+     "w": 1.93
+    },
+    {
+     "n": "OVINTIV INC",
+     "w": 1.87
+    },
+    {
+     "n": "KINDER MORGAN INC",
+     "w": 1.7
+    },
+    {
+     "n": "ONEOK INC",
+     "w": 1.68
+    },
+    {
+     "n": "HF SINCLAIR CORP",
+     "w": 0.98
+    },
+    {
+     "n": "DT MIDSTREAM INC",
+     "w": 0.57
+    }
+   ]
+  },
+  "GDXU": {
+   "basis": "지수 구성종목",
+   "as_of": "2026-10-08",
+   "scope": "전체",
+   "items": [
+    {
+     "n": "VANECK GOLD MINERS ETF",
+     "w": 76.2
+    },
+    {
+     "n": "VANECK JUNIOR GOLD MINERS",
+     "w": 23.8
+    }
+   ]
+  },
+  "AIQU": {
+   "basis": "지수 구성종목",
+   "as_of": "2026-10-08",
+   "scope": "전체",
+   "items": [
+    {
+     "n": "PALANTIR TECHNOLOGIES INC-A",
+     "w": 10.29
+    },
+    {
+     "n": "NVIDIA CORP",
+     "w": 9.52
+    },
+    {
+     "n": "MARVELL TECHNOLOGY INC",
+     "w": 8.98
+    },
+    {
+     "n": "TAIWAN SEMICONDUCTOR-SP ADR",
+     "w": 8.45
+    },
+    {
+     "n": "ADVANCED MICRO DEVICES",
+     "w": 3.75
+    },
+    {
+     "n": "SEAGATE TECHNOLOGY HOLDINGS",
+     "w": 3.57
+    },
+    {
+     "n": "LUMENTUM HOLDINGS INC",
+     "w": 3.49
+    },
+    {
+     "n": "PALO ALTO NETWORKS INC",
+     "w": 3.37
+    },
+    {
+     "n": "INTEL CORP",
+     "w": 3.27
+    },
+    {
+     "n": "META PLATFORMS INC-CLASS A",
+     "w": 3.24
+    },
+    {
+     "n": "TEXAS INSTRUMENTS INC",
+     "w": 3.1
+    },
+    {
+     "n": "DELL TECHNOLOGIES -C",
+     "w": 3.06
+    },
+    {
+     "n": "CISCO SYSTEMS INC",
+     "w": 2.98
+    },
+    {
+     "n": "MICRON TECHNOLOGY INC",
+     "w": 2.97
+    },
+    {
+     "n": "MICROSOFT CORP",
+     "w": 2.94
+    },
+    {
+     "n": "APPLE INC",
+     "w": 2.92
+    },
+    {
+     "n": "BROADCOM INC",
+     "w": 2.92
+    },
+    {
+     "n": "QUALCOMM INC",
+     "w": 2.91
+    },
+    {
+     "n": "ALPHABET INC-CL A",
+     "w": 2.87
+    },
+    {
+     "n": "AMAZON.COM INC",
+     "w": 2.79
+    },
+    {
+     "n": "SERVICENOW INC",
+     "w": 2.71
+    },
+    {
+     "n": "INTL BUSINESS MACHINES CORP",
+     "w": 2.6
+    },
+    {
+     "n": "ORACLE CORP",
+     "w": 2.51
+    },
+    {
+     "n": "WESTERN DIGITAL CORP",
+     "w": 2.4
+    },
+    {
+     "n": "SALESFORCE INC",
+     "w": 2.4
+    }
+   ]
+  },
+  "SMHU": {
+   "basis": "지수 구성종목",
+   "as_of": "2026-10-08",
+   "scope": "전체",
+   "items": [
+    {
+     "n": "VANECK SEMICONDUCTOR ETF",
+     "w": 100.0
+    }
+   ]
+  },
+  "MNGU": {
+   "basis": "지수 구성종목",
+   "as_of": "2026-10-08",
+   "scope": "전체",
+   "items": [
+    {
+     "n": "ADVANCED MICRO DEVICES",
+     "w": 11.27
+    },
+    {
+     "n": "MICRON TECHNOLOGY INC",
+     "w": 10.5
+    },
+    {
+     "n": "TAIWAN SEMICONDUCTOR-SP ADR",
+     "w": 10.11
+    },
+    {
+     "n": "PALANTIR TECHNOLOGIES INC-A",
+     "w": 9.96
+    },
+    {
+     "n": "SPACE EXPLORATION TECHN-CL A",
+     "w": 9.93
+    },
+    {
+     "n": "NVIDIA CORP",
+     "w": 9.93
+    },
+    {
+     "n": "BROADCOM INC",
+     "w": 9.92
+    },
+    {
+     "n": "MICROSOFT CORP",
+     "w": 9.66
+    },
+    {
+     "n": "META PLATFORMS INC-CLASS A",
+     "w": 9.58
+    },
+    {
+     "n": "ALPHABET INC-CL A",
+     "w": 9.14
+    }
+   ]
+  },
+  "XLCU": {
+   "basis": "지수 구성종목",
+   "as_of": "2026-10-08",
+   "scope": "전체",
+   "items": [
+    {
+     "n": "SS COMM SELECT SECTOR SPDR",
+     "w": 100.0
+    }
+   ]
+  },
+  "XLPU": {
+   "basis": "지수 구성종목",
+   "as_of": "2026-10-08",
+   "scope": "전체",
+   "items": [
+    {
+     "n": "SS CONSUMER STAPLES SEL SECT",
+     "w": 100.0
+    }
+   ]
+  },
+  "FLYU": {
+   "basis": "지수 구성종목",
+   "as_of": "2026-10-08",
+   "scope": "전체",
+   "items": [
+    {
+     "n": "UBER TECHNOLOGIES INC",
+     "w": 10.73
+    },
+    {
+     "n": "BOOKING HOLDINGS INC",
+     "w": 9.57
+    },
+    {
+     "n": "WALT DISNEY CO/THE",
+     "w": 8.09
+    },
+    {
+     "n": "AMERICAN AIRLINES GROUP INC",
+     "w": 7.59
+    },
+    {
+     "n": "ROYAL CARIBBEAN CRUISES LTD",
+     "w": 5.83
+    },
+    {
+     "n": "CARNIVAL CORP LTD",
+     "w": 5.7
+    },
+    {
+     "n": "UNITED AIRLINES HOLDINGS INC",
+     "w": 4.59
+    },
+    {
+     "n": "DELTA AIR LINES INC",
+     "w": 4.55
+    },
+    {
+     "n": "HILTON WORLDWIDE HOLDINGS IN",
+     "w": 4.35
+    },
+    {
+     "n": "AIRBNB INC-CLASS A",
+     "w": 4.28
+    },
+    {
+     "n": "MARRIOTT INTERNATIONAL -CL A",
+     "w": 3.94
+    },
+    {
+     "n": "EXPEDIA GROUP INC",
+     "w": 3.3
+    },
+    {
+     "n": "NORWEGIAN CRUISE LINE HOLDIN",
+     "w": 3.02
+    },
+    {
+     "n": "JOBY AVIATION INC",
+     "w": 2.67
+    },
+    {
+     "n": "SOUTHWEST AIRLINES CO",
+     "w": 2.52
+    },
+    {
+     "n": "TOAST INC-CLASS A",
+     "w": 2.42
+    },
+    {
+     "n": "LYFT INC-A",
+     "w": 2.06
+    },
+    {
+     "n": "AVIS BUDGET GROUP INC",
+     "w": 1.92
+    },
+    {
+     "n": "LAS VEGAS SANDS CORP",
+     "w": 1.84
+    },
+    {
+     "n": "VIKING HOLDINGS LTD",
+     "w": 1.47
+    },
+    {
+     "n": "CAESARS ENTERTAINMENT INC",
+     "w": 1.21
+    },
+    {
+     "n": "ALASKA AIR GROUP INC",
+     "w": 1.18
+    },
+    {
+     "n": "WYNN RESORTS LTD",
+     "w": 1.18
+    },
+    {
+     "n": "HYATT HOTELS CORP - CL A",
+     "w": 1.05
+    },
+    {
+     "n": "MGM RESORTS INTERNATIONAL",
+     "w": 0.97
+    },
+    {
+     "n": "VAIL RESORTS INC",
+     "w": 0.87
+    },
+    {
+     "n": "WYNDHAM HOTELS & RESORTS INC",
+     "w": 0.78
+    },
+    {
+     "n": "BOYD GAMING CORP",
+     "w": 0.54
+    },
+    {
+     "n": "CHURCHILL DOWNS INC",
+     "w": 0.54
+    },
+    {
+     "n": "TRAVEL + LEISURE CO",
+     "w": 0.36
+    },
+    {
+     "n": "MARRIOTT VACATIONS WORLD",
+     "w": 0.3
+    },
+    {
+     "n": "SKYWEST INC",
+     "w": 0.25
+    },
+    {
+     "n": "AGILYSYS INC",
+     "w": 0.21
+    },
+    {
+     "n": "ST JOE CO/THE",
+     "w": 0.1
+    }
+   ]
+  }
+ }
+}

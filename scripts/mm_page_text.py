@@ -2,7 +2,7 @@
 """투자자용 종목 페이지 문구 생성 — data/products.yaml(사실 필드) → data/products_page.json.
 
 표시층 전용(MM-PAGE-V3-DESIGN-20261010 §4). 매매·점수 계산과 무관하며 compute/판정 규칙을 건드리지 않는다.
-- 구성 방식 한 줄 · 특징 3줄 · 구조 리스크 1~2줄 · ETN 비용 한 줄 = LLM(claude -p, mm_products_gen 과 같은 호출·금지어 검증)
+- 구성 방식 한 줄 · 소개 4~6문장(V3.1 §6, 구 '특징 3줄' 대체) · 구조 리스크 1~2줄 · ETN 비용 한 줄 = LLM(claude -p, mm_products_gen 과 같은 호출·금지어 검증)
 - 상위 구성 5종 · 기본 정보 · 섹터 한 줄 = 코드가 products.yaml 에서 직접 뽑는다(LLM 미사용)
 - 입력(products.yaml 의 해당 종목 사실 필드)이 바뀐 종목만 재생성하고 '마지막 수정일'을 그 날짜로 갱신한다. 안 바뀌면 호출 0.
 사용: python3 scripts/mm_page_text.py [--no-llm] [--only SOXL,BULZ] [--force]
@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 OUT = DATA / "products_page.json"
 LOGDIR = ROOT / ".local" / "page_text_attempts"
-PROMPT_VERSION = "pg2"
+PROMPT_VERSION = "pg3"
 ISSUER_SHORT = {"Direxion": "Direxion", "ProShares": "ProShares"}
 
 
@@ -68,6 +68,7 @@ def facts(p):
         "상위 5종 비중 합계(%)": round(sum(ws), 2) if len(ws) == 5 else None,
         "비용 요약": (p.get("fee") or {}).get("summary"),
         "구조 사실": [s.get("fact") for s in (p.get("structural_risk") or [])],
+        "상장일": (p.get("inception") or {}).get("date"),
     }
     if c.get("selection_rule"): f["종목 선정 규칙"] = c["selection_rule"]
     if c.get("capping"): f["비중 상한 규칙"] = c["capping"]
@@ -94,22 +95,25 @@ def basic_info(p, issuer_uni):
 PROMPT = """아래 [사실]은 3배 레버리지 ETF/ETN 한 종목의 발행사 공시 기반 사실 필드다. 투자자용 종목 페이지 문구를 JSON 한 개로 작성하라.
 
 출력 형식(JSON 만, 코드펜스·설명 금지):
-{{"construction": "...", "features": ["...", "...", "..."], "risk": ["..."], "fee": "..."}}
+{{"construction": "...", "intro": "...", "risk": ["..."], "fee": "..."}}
 
 규칙(공통):
 - [사실]에 없는 내용·수치·날짜는 절대 쓰지 말 것(추측·일반 상식·외부 지식·계산 금지). 숫자·날짜·이름은 입력 그대로.
 - 전망·평가·권고·추측 표현 금지. 사용 금지 어휘: 추천, 유망, 전망, 기대, 매력, 우수, 좋은, 유리, 불리, 매수, 매도, 투자하, 예상, 권장, 적합, 가능성,
   안정적, '~할 것이다', '~로 보인다', '~일 것', '위험이 낮/적/크'. 서술문('~이다', '~한다', '~로 명시돼 있다', '~할 수 있다')으로만 쓴다.
 - 공식 지수의 영문 명칭은 쓰지 말 것(섹터/테마의 한국어 표기로 지칭). 영문 약어는 [사실]에 나온 티커·종목명만 허용.
-- 한 항목은 한 문장, 80자 안팎. 마크다운·불릿 금지.
+- 마크다운·불릿 금지.
+- 금액(달러·억·조)과 시가총액 범위는 쓰지 말 것(단위 환산 오류 방지). 비율(%)·종목 수·날짜만 입력 그대로 쓴다.
 
 필드별 규칙:
-- construction: 한 줄. '가중 방식 · 종목 수 · 리밸런스 주기' 순서로 가운뎃점(·)으로 잇는다. 예: "유동주식 시가총액 가중 · 30종목 · 분기 리밸런스". 사실에 없는 항목은 생략.
-- features: 정확히 3개.
-  [0] 무엇을 따르는 상품인지(발행사·ETF/ETN·섹터/테마·일간 3배).
-  [1] 어떤 성격의 움직임인지 — 지수의 구성 특성 사실만(종목 수, 가중 방식, 상위 5종 비중 합계, 섹터 편중 서술 등). 움직임의 방향·수준은 쓰지 않는다.
-  [2] 주의점 — 지수·구성 쪽에서 투자자가 알아둘 사실 하나(종목 수가 적어 집중돼 있다는 사실, 상위 5종 비중 합계의 크기, 비중 상한·편중 규칙, 구성 변경 방식, 특정 업종 편중 서술 등). 상위 구성 종목의 이름·비중 나열은 표에 따로 있으므로 반복하지 말 것. 구조 리스크(일간 리셋·발행사 신용 등)는 risk 에 쓰므로 반복하지 말 것.
-- risk: 1~2개. ETN 이면 첫 항목에 발행사 신용(무담보 채무)과 발행사 콜·조기상환 관련 사실, 그리고 [사실]에 '금융비용 변경 이력'이 있으면 마지막 항목에 그 변경(날짜·값 그대로) 1줄. ETF 이면 첫 항목에 일간 리셋·1일 초과 보유 시 지수 3배와 달라질 수 있다는 공시 문구 취지 1줄, 구조 사실에 지수(추종 목표) 변경 이력이 있으면 그 날짜와 함께 1줄.
+- construction: 한 줄(한 문장, 80자 안팎). '가중 방식 · 종목 수 · 리밸런스 주기' 순서로 가운뎃점(·)으로 잇는다. 예: "유동주식 시가총액 가중 · 30종목 · 분기 리밸런스". 사실에 없는 항목은 생략.
+- intro: 소개 문단 하나, 정확히 4~6문장(각 문장은 마침표로 끝낸다). 순서:
+  ① 이 상품이 무엇을 3배로 따르는지(발행사, 지수·섹터·구성 요지, 일간 3배).
+  ② 그 지수가 어떤 성격의 자산인지 — [사실]의 '지수 설명'·'종목 선정 규칙'·'비중 상한 규칙'·섹터/테마·종목 수·상위 5종 비중 합계에 적힌 범위 안에서만. 경기·금리·유가 같은 영향 요인은 [사실]에 그 요인이 직접 적혀 있을 때만 쓰고, 없으면 쓰지 말고 구성 특성(종목 수, 가중 방식, 편중 서술)만 쓴다. 지수 움직임의 방향·수준은 쓰지 않는다.
+  ③ ETF/ETN 구조와 비용 — ETF 이면 보수(비용 요약)와 일간 리셋 구조, ETN 이면 발행사 무담보 채무(발행사 신용에 노출)와 투자자 수수료·금융비용 요약.
+  ④ 상장일 한 문장(상장일은 '상장일' 필드 그대로).
+  ('구조 사실'의 상세 문구는 risk 에 쓰므로 반복하지 않는다. 상위 구성 종목 이름·비중 나열은 표에 따로 있으니 반복하지 않는다.)
+- risk: 1~2개(한 항목 한 문장). ETN 이면 첫 항목에 발행사 신용(무담보 채무)과 발행사 콜·조기상환 관련 사실, 그리고 [사실]에 '금융비용 변경 이력'이 있으면 마지막 항목에 그 변경(날짜·값 그대로) 1줄. ETF 이면 첫 항목에 일간 리셋·1일 초과 보유 시 지수 3배와 달라질 수 있다는 공시 문구 취지 1줄, 구조 사실에 지수(추종 목표) 변경 이력이 있으면 그 날짜와 함께 1줄.
 - fee: ETN 만. 투자자 수수료와 금융비용(기준금리+스프레드, 상한·인상 여부)을 한 줄로. ETF 이면 빈 문자열 "".
 
 [사실]
@@ -133,13 +137,15 @@ def _nums(s):
 def validate(out, fin_text, is_etn, has_changes):
     """구조·금지어·수치 출처 검증. 통과하면 None, 아니면 사유 문자열."""
     if not isinstance(out, dict): return "JSON 객체 아님"
-    for k in ("construction", "features", "risk", "fee"):
+    for k in ("construction", "intro", "risk", "fee"):
         if k not in out: return f"키 누락 {k}"
-    if not isinstance(out["features"], list) or len(out["features"]) != 3: return "features 3개 아님"
+    if not isinstance(out["intro"], str): return "intro 문자열 아님"
     if not isinstance(out["risk"], list) or not (1 <= len(out["risk"]) <= 2): return "risk 1~2개 아님"
-    texts = [out["construction"], out["fee"]] + out["features"] + out["risk"]
+    texts = [out["construction"], out["fee"], out["intro"]] + out["risk"]
     if any((not isinstance(x, str)) for x in texts): return "문자열 아닌 값"
-    if not out["construction"].strip() or any(not x.strip() for x in out["features"] + out["risk"]): return "빈 항목"
+    if not out["construction"].strip() or not out["intro"].strip() or any(not x.strip() for x in out["risk"]): return "빈 항목"
+    ns = len([x for x in re.split(r"\.(?:\s+|$)", out["intro"].strip()) if x.strip()])
+    if not (4 <= ns <= 6): return f"intro 문장 수 {ns} (4~6 아님)"
     if is_etn and not out["fee"].strip(): return "ETN fee 비어 있음"
     G = _gen()
     v = G.violations(" ".join(texts))
@@ -184,7 +190,7 @@ def gen_one(t, p, issuer_uni, stats):
         why = validate(out, fin_text, p["type"] == "ETN", has_changes)
         attempts.append({"n": n, "out": out, "invalid": why})
         if why is not None:
-            prompt = base_prompt + f"\n[직전 출력이 검증에서 거절됨: {why}. 같은 실수를 반복하지 말고 규칙대로 다시 작성하라. features 는 정확히 3개, risk 는 1~2개, [사실]에 없는 숫자는 쓰지 말 것.]"
+            prompt = base_prompt + f"\n[직전 출력이 검증에서 거절됨: {why}. 같은 실수를 반복하지 말고 규칙대로 다시 작성하라. intro 는 4~6문장, risk 는 1~2개, [사실]에 없는 숫자는 쓰지 말 것.]"
         if why is None:
             json.dump({"ticker": t, "attempts": attempts}, open(LOGDIR / f"{t}.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
             return out, n
@@ -224,7 +230,7 @@ def ensure(use_llm=True, only=None, force=False, today=None, issuers=None, log=p
                 out, n = f.result()
                 if out is None:
                     stats["failed"].append(t); log(f"[page_text] {t} 생성 실패(기존 유지) 시도 {n}"); continue
-                items[t] = {"hash": h, "modified": today, "text": {k: out[k] for k in ("construction", "features", "risk", "fee")}}
+                items[t] = {"hash": h, "modified": today, "text": {k: out[k] for k in ("construction", "intro", "risk", "fee")}}
                 stats["changed"].append(t); log(f"[page_text] {t} 생성 완료 시도 {n}")
     # 코드가 직접 뽑는 값(상위 구성·기본 정보·섹터)은 매번 현재 products.yaml 로 갱신 — 입력 해시에 포함돼 있어 바뀌면 위에서 재생성됨
     for t, p in prods.items():

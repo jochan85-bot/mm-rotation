@@ -13,10 +13,14 @@ except ImportError:
 E = html.escape
 NAV = (("index.html", "순위"), ("longterm.html", "장기순위"), ("products.html", "종목"), ("guide.html", "Guide"))
 NOTICE = mm_guide.NOTICE_TEXT
+# 크립토·골드 신호 박스와 같은 방식(색 원 + 흰 글리프)의 아이콘 — 무한매수 ∞ (MM-PAGE-V3.1 §1)
+BRAND_SVG = ('<svg class="sig-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#2f81f7"/>'
+             '<text x="12" y="17" font-size="15" font-weight="700" fill="#fff" text-anchor="middle" font-family="Helvetica,Arial">∞</text></svg>')
 
 
 def pg(title, body, cur, root="", scripts="", pop=False):
-    nav = "".join(f'<a href="{root}{h}" class="{"cur " if h == cur else ""}{"g" if h == "guide.html" else ""}">{n}</a>' for h, n in NAV)
+    brand = f'<a class="brand" href="{root}index.html" aria-label="무매 M-score">{BRAND_SVG}</a>'
+    nav = brand + "".join(f'<a href="{root}{h}" class="{"cur " if h == cur else ""}{"g" if h == "guide.html" else ""}">{n}</a>' for h, n in NAV)
     return (f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{E(title)}</title><link rel="stylesheet" href="{root}assets/mm.css"></head><body><nav class="top">{nav}</nav>{body}'
             f'{"<div id=pop hidden></div>" if pop else ""}{scripts}</body></html>')
@@ -62,17 +66,14 @@ def load_exclusion_text():
 
 
 def exclusion_rows(df, st):
-    """[(티커, 사유 문장, 링크 URL 또는 '')] — E5 제외(공지 문장) 먼저, 그다음 순위 계산에서 일시 제외된 종목(⚠)"""
+    """(공시 제외 [(티커, 사유 문장, 링크)], 데이터 확인 중 [티커]) — 사유가 다른 두 가지를 섞지 않는다(MM-PAGE-V3.1 §9)"""
     tx = load_exclusion_text(); rows = []
     for r in df[df.table == "제외"].itertuples():
         e = st.get("excluded", {}).get(r.ticker, {})
         fmt = tx["excluded"].get(e.get("type", ""), tx["default_excluded"])
         rows.append((r.ticker, fmt.format(date=e.get("date", "날짜 미상")), e.get("url", "")))
-    for r in df[df.table == "⚠"].itertuples():
-        reason = str(r.reason or "")
-        txt = next((h["text"] for h in tx["held"] if reason.startswith(h["match"])), tx["default_held"])
-        rows.append((r.ticker, txt, ""))
-    return rows
+    held = [r.ticker for r in df[df.table == "⚠"].itertuples()]
+    return rows, held
 
 
 # ---------- 메인 ----------
@@ -123,22 +124,23 @@ def build_index(df, meta):
     if not dates: first = last = meta["asof"]; dates = [meta["asof"]]
     data = {"asof": meta["asof"], "first": first, "last": last, "dates": dates, "latest": rows, "tk": tk}
     prov = meta.get("provisional")
-    pill = (f'<span class="pill prov" title="{E("SPY 일봉 최신 행(" + prov["raw_last"] + ")이 " + prov["reason"] + " → 직전 확정일로 산출")}">잠정</span>' if prov
-            else '<span class="pill ok">확정</span>')
+    pill = (f'<span class="pill prov" title="{E("SPY 일봉 최신 행(" + prov["raw_last"] + ")이 " + prov["reason"] + " → 직전 확정일로 산출")}">잠정</span>' if prov else "")
     banner = ""                                                   # 예약 실행 확인(2026-10-09 17:18 launchd) 후 배너 제거
-    xr = exclusion_rows(df, st)
+    xr, held = exclusion_rows(df, st)
+    heldhtml = f'<p class="meta hold">데이터 확인 중: <b>{E(", ".join(held))}</b></p>' if held else ""
     if xr:
         trs = "".join(f'<tr><td><b>{E(t)}</b></td><td>{E(s)}</td><td>{("<a href=" + chr(34) + E(u, quote=True) + chr(34) + " rel=noopener>공지</a>") if u else "—"}</td></tr>' for t, s, u in xr)
         xhtml = f'<div class="wrap"><table class="pl"><thead><tr><th>티커</th><th>사유</th><th>공지</th></tr></thead><tbody>{trs}</tbody></table></div>'
     else:
         xhtml = '<div class="empty">현재 없음</div>'
-    body = f"""<h1>무매 M-score<small>3배 레버리지 ETF·ETN 상대 순위 · 참고용</small></h1>
+    body = f"""<h1>{BRAND_SVG}무매 M-score<small>3배 레버리지 ETF·ETN 상대 순위 · 참고용</small></h1>
 <div class="meta" id="top1">기준일 <b>{E(meta['asof'])}</b> · 종목 수 <b>{len(rows)}</b> {pill}</div>
 {banner}
 <div id="calbox"></div>
 <div class="tbar"><div class="ttl" id="ttl"></div><div class="acts"><button class="btn" id="todaybtn" hidden>오늘로</button><button class="btn" id="modebtn">상세보기</button></div></div>
+<div class="capt">변동성·상대강도·추세 = 유니버스 내 상대 점수, 100=최상위 · 열 머리를 누르면 정렬(다시 누르면 반대 방향)</div>
 <div class="wrap"><table class="rk" id="rk"></table></div>
-<h2>제외 목록</h2>{xhtml}
+{heldhtml}<h2>제외 목록</h2>{xhtml}
 <h2>안내</h2><div class="notice">{E(NOTICE)}</div>
 <p class="meta" style="margin-top:8px"><a href="guide.html">산출 방식·데이터 출처는 가이드 페이지</a></p>
 <script id="mmdata" type="application/json">{jscript(data)}</script>"""
@@ -201,7 +203,7 @@ def compute_longterm(latest_df, asof):
 
 def build_longterm(lt, meta):
     prov = meta.get("provisional")
-    pill = '<span class="pill prov">잠정</span>' if prov else '<span class="pill ok">확정</span>'
+    pill = '<span class="pill prov">잠정</span>' if prov else ""
     if lt is None:
         body = '<h1>장기순위</h1><div class="empty">장기순위 데이터를 만들지 못했습니다.</div>'
         return pg("무매 장기순위", body, "longterm.html")
@@ -209,6 +211,7 @@ def build_longterm(lt, meta):
 <div class="meta">기준일 <b>{E(lt['asof'])}</b> · 종목 수 <b>{lt['n_pop']}</b> {pill}</div>
 <div class="rangebar" id="ltabs"></div>
 <div class="tbar"><div class="ttl" id="ltl"></div></div>
+<div class="capt">평균 변동성·상대강도·추세 = 유니버스 내 상대 점수의 기간 평균, 100=최상위 · 열 머리를 누르면 정렬(다시 누르면 반대 방향)</div>
 <div class="wrap"><table class="rk" id="lt"></table></div>
 <p class="meta" style="margin-top:8px">기간 평균 M-score = 그 기간 거래일별 M-score(그날 모집단 안의 상대 점수)의 단순평균이며, 이 평균을 오늘 모집단 안에서 다시 순위 매깁니다. 기간 안에 점수가 있는 날이 창의 80% 미만이면 "—"입니다. 평균 변동성·상대강도·추세도 같은 기간의 일별 점수 평균입니다. 자세한 설명은 <a href="guide.html#longterm">Guide</a>.</p>
 <script id="ltdata" type="application/json">{jscript(lt)}</script>"""
@@ -229,29 +232,44 @@ def load_page_items():
         return {}
 
 
-def build_product(t, u, it):
-    """종목 페이지 1개. u = universe 행(Series/namedtuple), it = products_page.json 항목(없으면 {})."""
+def load_holdings():
+    try:
+        return json.load(open(DATA / "holdings.json", encoding="utf-8")).get("items", {})
+    except Exception:
+        return {}
+
+
+def holdings_html(h):
+    """구성 표: 기본 상위 10종 격자(모바일 2열·데스크톱 3열) + 10종을 넘는 부분은 '전체 보기'로 펼침(MM-PAGE-V3.1 §7)"""
+    if not h or not h.get("items"): return '<div class="empty">구성 종목 데이터를 확인하지 못했습니다.</div>'
+    items = sorted(h["items"], key=lambda x: -float(x["w"]))
+    cell = lambda x: f'<div class="hc"><span class="s">{E(str(x["n"]))}</span><span class="w">{f1(float(x["w"]), 2)}%</span></div>'
+    head, rest = items[:10], items[10:]
+    out = f'<div class="hgrid">{"".join(cell(x) for x in head)}</div>'
+    if rest:
+        out += f'<details class="hmore"><summary>전체 보기 ({len(items)}종)</summary><div class="hgrid">{"".join(cell(x) for x in rest)}</div></details>'
+    sc = h.get("scope", "")
+    out += f'<div class="chartnote">기준: {E(h.get("basis", ""))} · {E(str(h.get("as_of", "")))}' + (f' · {E(sc)}' if sc and sc != "전체" else (' · 전체' if sc == "전체" else "")) + '</div>'
+    return out
+
+
+def build_product(t, u, it, hold=None):
+    """종목 페이지 1개. u = universe 행(Series/namedtuple), it = products_page.json 항목(없으면 {}), hold = holdings.json 항목."""
     tx = it.get("text", {}); b = it.get("basic", {})
     sub = f'{E(b.get("issuer", u.issuer))} · {E(b.get("type", u.type))} · {E(b.get("leverage", ""))}'
-    t5 = it.get("top5", {}); items = t5.get("items", [])
-    t5rows = "".join(f'<tr><td>{E(i["name"])}</td><td class="n">{f1(i["w"], 2)}</td></tr>' for i in items)
-    t5html = (f'<table class="t5"><thead><tr><th>상위 구성 5종</th><th class="n">비중(%)</th></tr></thead><tbody>{t5rows}</tbody></table>'
-              f'<div class="chartnote">{E(t5.get("basis", ""))}{(" · " + E(t5["as_of"])) if t5.get("as_of") else ""}</div>') if items else ""
     comp = (f'<table class="info"><tr><th>섹터·테마</th><td>{E(it.get("sector", ""))}</td></tr>'
-            f'<tr><th>구성 방식</th><td>{E(tx.get("construction", "—"))}</td></tr></table>{t5html}')
-    labels = ("추종", "움직임", "주의")
-    feats = "".join(f'<li><b>{labels[i]}</b>{E(x)}</li>' for i, x in enumerate(tx.get("features", []))) or '<li>—</li>'
+            f'<tr><th>구성 방식</th><td>{E(tx.get("construction", "—"))}</td></tr></table>{holdings_html(hold)}')
     fee = b.get("fee") or tx.get("fee") or "—"
     basic = (f'<table class="info" style="table-layout:auto"><tr><th style="width:auto">발행사</th><th style="width:auto">구분</th><th style="width:auto">배수</th><th style="width:auto">보수</th><th style="width:auto">상장일</th></tr>'
              f'<tr><td>{E(b.get("issuer", ""))}</td><td>{E(b.get("type", ""))}</td><td>{E(b.get("leverage", ""))}</td><td>{E(fee)}</td><td>{E(str(b.get("inception") or "—"))}</td></tr></table>')
     risks = "".join(f'<li>{E(x)}</li>' for x in tx.get("risk", [])) or '<li>—</li>'
     body = f"""<h1>{E(t)}<small>{sub}</small></h1>
+<h2>소개</h2><div class="intro">{E(tx.get("intro", "—"))}</div>
 <div class="rangebar"><button class="btn" data-range="m3">3개월</button><button class="btn" data-range="m6">6개월</button><button class="btn on" data-range="y1">1년</button><button class="btn" data-range="all">전체</button></div>
 <div class="chartbox"><div id="chart" data-t="{E(t)}"></div>
 <div class="legend"><span><i style="background:#f59e0b"></i>M-score (좌축)</span><span><i style="background:#3b82f6"></i>순위 (우축·1위가 위)</span></div>
 <div class="chartnote" id="creadout">불러오는 중…</div></div>
 <h2>구성</h2>{comp}
-<h2>특징</h2><ul class="feat">{feats}</ul>
 <h2>기본 정보</h2>{basic}
 <h2>구조 리스크</h2><ul class="risk">{risks}</ul>
 <div class="stamp">마지막 수정일 {E(str(it.get("modified", "—")))} · <a href="../products.html">상품 목록</a> · <a href="../index.html">순위표</a></div>"""
@@ -259,18 +277,11 @@ def build_product(t, u, it):
 
 
 def build_products_dir(df, uni, items):
-    cur = {r.ticker: r for r in df.itertuples()}
-    rows = []
-    for u in uni.itertuples():
-        d = cur.get(u.ticker); it = items.get(u.ticker, {})
-        rk = int(d.rank) if d is not None and nz(d.rank) else None
-        rows.append((rk if rk is not None else 10 ** 6, u.ticker, it.get("sector", ""), u.type, u.issuer, d.M if d is not None and nz(d.M) else None, rk))
-    rows.sort(key=lambda x: (x[0], x[1]))
-    trs = "".join(f'<tr><td><a href="products/{E(t)}.html"><b>{E(t)}</b></a></td><td>{E(sec)}</td><td>{E(ty)}</td><td class="n">{f1(m, 1)}</td><td class="n">{rk if rk is not None else "—"}</td></tr>'
-                  for _, t, sec, ty, iss, m, rk in rows)
-    body = f"""<h1>상품<small>유니버스 {len(uni)}종 · 티커를 누르면 종목 페이지로 이동</small></h1>
-<div class="wrap" style="margin-top:8px"><table class="dir"><thead><tr><th>티커</th><th>섹터·테마</th><th>구분</th><th class="n">M-score</th><th class="n">순위</th></tr></thead><tbody>{trs}</tbody></table></div>"""
-    return pg("무매 상품", body, "products.html")
+    rows = sorted(((u.ticker, items.get(u.ticker, {}).get("sector", ""), u.type, str(u.issuer)) for u in uni.itertuples()), key=lambda x: x[0])
+    trs = "".join(f'<tr><td><a href="products/{E(t)}.html"><b>{E(t)}</b></a></td><td>{E(sec)}</td><td>{E(ty)}</td><td>{E(iss)}</td></tr>' for t, sec, ty, iss in rows)
+    body = f"""<h1>종목<small>유니버스 {len(uni)}종 · 티커를 누르면 종목 페이지로 이동 · 열 머리를 누르면 정렬</small></h1>
+<div class="wrap" style="margin-top:8px"><table class="dir" id="dir"><thead><tr><th data-c="0">티커</th><th data-c="1">섹터·테마</th><th data-c="2">구분</th><th data-c="3">발행사</th></tr></thead><tbody>{trs}</tbody></table></div>"""
+    return pg("무매 종목", body, "products.html", scripts='<script src="assets/sortable.js"></script>')
 
 
 # ---------- 차트 데이터 ----------
@@ -324,7 +335,7 @@ def build_all(latest_df, uni, meta, p0, score_files):
             from mm_lib import log
             log(f"[page_text] 종목 문구 갱신 건너뜀: {type(e).__name__}: {str(e)[:150]}", "alerts")
         except Exception: pass
-    items = load_page_items()
+    items = load_page_items(); hold = load_holdings()
     (DOCS / "index.html").write_text(build_index(latest_df, meta), encoding="utf-8")
     (DOCS / "guide.html").write_text(build_guide(latest_df, meta, uni), encoding="utf-8")
     lt = compute_longterm(latest_df, meta["asof"])
@@ -334,7 +345,7 @@ def build_all(latest_df, uni, meta, p0, score_files):
     (DOCS / "products.html").write_text(build_products_dir(latest_df, uni, items), encoding="utf-8")
     pd_ = DOCS / "products"; pd_.mkdir(exist_ok=True)
     for u in uni.itertuples():
-        (pd_ / f"{u.ticker}.html").write_text(build_product(u.ticker, u, items.get(u.ticker, {})), encoding="utf-8")
+        (pd_ / f"{u.ticker}.html").write_text(build_product(u.ticker, u, items.get(u.ticker, {}), hold.get(u.ticker)), encoding="utf-8")
     write_series(uni)
     write_tickers_json(uni, p0)
     h = DOCS / "history.html"

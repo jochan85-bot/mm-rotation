@@ -56,9 +56,7 @@ table.rk tr.dt[hidden]{display:none}
 .mem td{padding:4px 4px;text-align:right;border-bottom:1px solid #1b222c}
 .mem th.l,.mem td.l{text-align:left}
 .wh{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--amber);color:#111;font-size:11px;font-weight:800;line-height:1;cursor:pointer;vertical-align:middle}
-.wt{display:none;color:#fbbf24;font-size:11.5px;margin-left:5px;white-space:normal}
 .up{color:var(--up)} .dn{color:var(--dn)} .mu{color:var(--muted)}
-td.wc{text-align:left;width:28px}
 #pop{position:fixed;z-index:50;max-width:min(300px,86vw);background:#1b222c;border:1px solid var(--accent);color:var(--text);font-size:12px;padding:6px 9px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.5)}
 #pop[hidden]{display:none}
 /* ---- 달력 ---- */
@@ -85,8 +83,44 @@ table.pl th{background:#1b222c;color:var(--muted);font-size:11px;font-weight:600
 .guide table{width:100%;border-collapse:collapse;font-size:12.5px;margin:6px 0}
 .guide th,.guide td{padding:6px 8px;border-bottom:1px solid #21262d;text-align:left;vertical-align:top}
 .guide th{background:#1b222c;color:var(--muted);font-size:11px}
-.toc{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
-.toc a{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:2px 10px;color:var(--muted)}
+.toc{display:flex;flex-wrap:wrap;gap:9px 8px;margin:10px 0 8px}
+.toc a{font-size:12px;line-height:1.5;border:1px solid var(--border);border-radius:999px;padding:3px 11px;color:var(--muted);white-space:nowrap}
+/* ---- V3.1: 아이콘·정렬·열 폭·! 배치 ---- */
+.sig-ico{width:20px;height:20px;flex-shrink:0;display:block}
+nav.top .brand{flex:0 0 auto;display:flex;align-items:center;padding:0 3px}
+nav.top .brand:hover{text-decoration:none}
+nav.top .brand .sig-ico{width:28px;height:28px}
+h1 .sig-ico{display:inline-block;width:24px;height:24px;vertical-align:-4px;margin-right:7px}
+.capt{font-size:11px;color:var(--muted);margin:0 0 6px;line-height:1.5}
+.meta.hold{color:#fbbf24;margin:10px 0 0}
+table.rk.sum{table-layout:fixed}
+table.rk.sum th,table.rk.sum td{padding:7px 3px;overflow:hidden}
+table.rk th.s{cursor:pointer;user-select:none;word-break:keep-all;white-space:nowrap;line-height:1.25;font-size:10px;position:relative}
+table.rk th.s:hover{color:var(--text)}
+table.rk th .ar{color:var(--accent);font-size:8px;position:absolute;right:2px;top:50%;margin-top:-5px}
+table.rk.sum th.n{padding-right:10px}
+table.rk td.wc{text-align:left}
+.nw{white-space:nowrap}
+table.rk td.tk .more{font-size:9px;vertical-align:super;margin-left:1px}
+table.rk td.tk .car{width:auto;margin-right:2px}
+table.rk td.tk{white-space:normal;font-size:12.5px}
+table.rk td.tk .wh{margin-left:4px;width:14px;height:14px;font-size:10px}
+table.rk td.n{text-align:right;padding-right:8px}
+td.wc{text-align:left;white-space:normal;vertical-align:middle}
+.wr{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;font-size:10px;line-height:1.3;color:#fbbf24;cursor:pointer;white-space:normal;word-break:keep-all}
+table.rk.det td.wc{min-width:96px}
+@media (min-width:700px){.wr{font-size:11.5px}table.rk td.tk{font-size:13.5px}}
+.calbar select{font:inherit;font-size:13px;font-weight:600;color:var(--text);background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:3px 3px}
+.calbar select option:disabled{color:#4a5361}
+.calbar .ym{display:flex;align-items:center;gap:5px}
+.intro{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13.5px;line-height:1.75;margin:2px 0 10px}
+.hgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 8px;margin:8px 0 2px}
+.hc{display:flex;justify-content:space-between;gap:6px;min-width:0;padding:5px 8px;background:var(--panel);border:1px solid var(--border);border-radius:6px;font-size:12.5px}
+.hc .s{font-weight:600;min-width:0;overflow-wrap:anywhere;line-height:1.3;font-size:12px}
+.hc .w{color:var(--muted);flex-shrink:0}
+.hmore summary{cursor:pointer;color:var(--accent);font-size:12.5px;margin:8px 0 2px}
+@media (min-width:700px){.hgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+table.dir th{cursor:pointer;user-select:none} table.dir th .ar{color:var(--accent);font-size:9px;margin-left:2px}
 /* ---- 장기순위 ---- */
 #ltabs .btn{flex:1 1 0;padding:6px 2px}
 table.rk td.sc2{color:var(--text)}
@@ -120,6 +154,5 @@ table.dir td.n{text-align:right} table.dir th.n{text-align:right}
 @media (min-width:700px){
  body{font-size:14.5px;padding:16px 16px 50px}
  table.rk{font-size:13.5px} table.rk th,table.rk td{padding:8px 8px}
- .wt{display:inline} td.wc{width:auto;white-space:normal}
  .kv{grid-template-columns:repeat(3,1fr)}
 }

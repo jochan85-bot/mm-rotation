@@ -4,9 +4,11 @@
   'use strict';
   var D = JSON.parse(document.getElementById('mmdata').textContent);
   var $ = function (i) { return document.getElementById(i); };
-  var st = { date: D.asof, mode: 'sum', y: 0, m: 0, calOpen: true, cache: {}, rows: null, token: 0 };
+  var st = { date: D.asof, mode: 'sum', y: 0, m: 0, calOpen: true, cache: {}, rows: null, token: 0, sort: { k: 'M', dir: -1 } };
+  var availYM = {};
+  
   var avail = {};
-  D.dates.forEach(function (d) { avail[d] = 1; });
+  D.dates.forEach(function (d) { avail[d] = 1; availYM[+d.slice(0, 4) * 100 + +d.slice(5, 7)] = 1; });
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function num(v) { if (v === '' || v === undefined || v === null) return null; var x = parseFloat(v); return isNaN(x) ? null : x; }
@@ -63,6 +65,12 @@
     });
     return out;
   }
+  function whyLines(g) {
+    if (!g.grp) return why(g.rep).join('<br>');
+    var a = [];
+    g.mem.forEach(function (m) { var w = why(m); if (w.length) a.push(esc(m.ticker) + ': ' + w.map(esc).join(' · ')); });
+    return a.join('<br>');
+  }
   function whyText(g) {
     if (!g.grp) return why(g.rep).join(' · ');
     var a = [];
@@ -113,24 +121,59 @@
     R: '유니버스 내 상대 점수, 100=최상위 — 1x 지수의 12개월 수익률(최근 1개월 제외) 백분위',
     T: '유니버스 내 상대 점수, 100=최상위 — 1x 지수의 MA50/MA200−1 백분위'
   };
+  /* 열 정의: k=정렬 키, f=정렬값(그룹은 대표 종목 값으로 참여), n=숫자 열(우측 정렬) */
+  var BASE = [
+    { k: 'rank', t: '순위', c: 'c', f: function (g) { return g.rep.rank; }, w: 8 },
+    { k: 'tk', t: '티커', c: 'l', f: function (g) { return g.rep.ticker; }, w: 18 },
+    { k: 'M', t: 'M-score', c: 'n', tip: TIPS.M, f: function (g) { return g.rep.M; }, w: 14 },
+    { k: 'V', t: '변동성', c: 'n', tip: TIPS.V, f: function (g) { return g.rep.p_sig; }, w: 12 },
+    { k: 'R', t: '상대강도', c: 'n', tip: TIPS.R, f: function (g) { return g.rep.p_rsA; }, w: 12 },
+    { k: 'T', t: '추세', c: 'n', tip: TIPS.T, f: function (g) { return g.rep.p_f1b; }, w: 12 },
+    { k: 'W', t: '!', c: 'l', f: function (g) { return whyText(g) || null; }, w: 22 }
+  ];
+  var XKEYS = [
+    function (g) { return g.rep.sig; }, function (g) { return g.rep.rsA; }, function (g) { return g.rep.f1b; }, function (g) { return g.rep.c1_ma200; },
+    function (g) { return g.rep.above200; }, function (g) { return g.rep.close3; }, function (g) { return g.rep.adtv; }, function (g) { return g.rep.listed_days; },
+    function (g) { var v = parseInt(g.rep.d_rank, 10); return isNaN(v) ? null : v; }, function (g) { return g.grp ? ixName(g.rep.ticker) : null; }
+  ];
+  function cols() {
+    var c = BASE.slice();
+    if (st.mode === 'det') EXTRA.forEach(function (e, i) { c.push({ k: 'x' + i, t: e[0], c: 'n', f: XKEYS[i], w: 0 }); });
+    return c;
+  }
+  function cmp(a, b, col, dir) {
+    var x = col.f(a), y = col.f(b);
+    var nx = (x === null || x === undefined || (typeof x === 'number' && isNaN(x))), ny = (y === null || y === undefined || (typeof y === 'number' && isNaN(y)));
+    if (nx || ny) return nx && ny ? 0 : (nx ? 1 : -1);          // 결측은 방향과 상관없이 맨 아래
+    var r = (typeof x === 'string' || typeof y === 'string') ? String(x).localeCompare(String(y), 'ko') : (x - y);
+    return r * dir;
+  }
+  function sorted(gs) {
+    var col = cols().filter(function (c) { return c.k === st.sort.k; })[0] || BASE[2];
+    return gs.slice().sort(function (a, b) { var r = cmp(a, b, col, st.sort.dir); return r || (a.rep.rank - b.rep.rank); });
+  }
   function head() {
-    var h = '<tr><th class="c">순위</th><th class="l">티커</th>' +
-      '<th class="tip" data-w="' + esc(TIPS.M) + '" title="' + esc(TIPS.M) + '">M-score</th>' +
-      '<th class="tip" data-w="' + esc(TIPS.V) + '" title="' + esc(TIPS.V) + '">변동성</th>' +
-      '<th class="tip" data-w="' + esc(TIPS.R) + '" title="' + esc(TIPS.R) + '">상대강도</th>' +
-      '<th class="tip" data-w="' + esc(TIPS.T) + '" title="' + esc(TIPS.T) + '">추세</th><th class="l">!</th>';
-    if (st.mode === 'det') EXTRA.forEach(function (e) { h += '<th>' + e[0] + '</th>'; });
+    var h = '<tr>';
+    cols().forEach(function (c) {
+      var on = st.sort.k === c.k;
+      h += '<th class="' + c.c + ' s" data-s="' + c.k + '"' + (c.tip ? ' title="' + esc(c.tip) + '"' : '') + '>' + esc(c.t) + (on ? '<span class="ar">' + (st.sort.dir === -1 ? '▼' : '▲') + '</span>' : '') + '</th>';
+    });
     return h + '</tr>';
   }
+  function colgroup() {
+    if (st.mode === 'det') return '';
+    return '<colgroup>' + BASE.map(function (c) { return '<col style="width:' + c.w + '%">'; }).join('') + '</colgroup>';
+  }
   function body(rows) {
-    var gs = groups(rows), h = '', ncol = 7 + (st.mode === 'det' ? EXTRA.length : 0);
+    var gs = sorted(groups(rows)), h = '', ncol = 7 + (st.mode === 'det' ? EXTRA.length : 0);
     gs.forEach(function (g, i) {
       var r = g.rep, wt = whyText(g);
-      var tk = g.grp ? '<span class="car">▸</span>' + esc(r.ticker) + '<span class="more">+' + (g.mem.length - 1) + '</span>' : tkLink(r.ticker);
-      h += '<tr class="r" data-i="' + i + '"><td class="rk1">' + fx(r.rank, 0) + '</td><td class="tk">' + tk + '</td><td class="m">' + fx(r.M, 1) +
-        '</td><td class="sc">' + pct(r.p_sig) + '</td><td class="sc">' + pct(r.p_rsA) + '</td><td class="sc">' + pct(r.p_f1b) + '</td>' +
-        '<td class="wc">' + (wt ? '<span class="wh" data-w="' + esc(wt) + '">!</span><span class="wt">' + esc(wt) + '</span>' : '') + '</td>';
-      if (st.mode === 'det') EXTRA.forEach(function (e) { h += '<td' + (g.grp && e[2] ? ' class="mu" title="대표(거래대금 최대) 종목 ' + esc(r.ticker) + ' 값 — 펼치면 개별 값"' : '') + '>' + e[1](g) + '</td>'; });
+      var ic = wt ? '<span class="wh" data-w="' + esc(wt) + '">!</span>' : '';
+      var tk = g.grp ? '<span class="nw"><span class="car">▸</span>' + esc(r.ticker) + '<span class="more">+' + (g.mem.length - 1) + '</span></span>' + ic : tkLink(r.ticker) + ic;
+      h += '<tr class="r" data-i="' + i + '"><td class="rk1">' + fx(r.rank, 0) + '</td><td class="tk">' + tk + '</td><td class="m n">' + fx(r.M, 1) +
+        '</td><td class="sc n">' + pct(r.p_sig) + '</td><td class="sc n">' + pct(r.p_rsA) + '</td><td class="sc n">' + pct(r.p_f1b) + '</td>' +
+        '<td class="wc">' + (wt ? '<span class="wr" data-w="' + esc(wt) + '">' + whyLines(g) + '</span>' : '') + '</td>';
+      if (st.mode === 'det') EXTRA.forEach(function (e) { h += '<td class="n' + (g.grp && e[2] ? ' mu' : '') + '"' + (g.grp && e[2] ? ' title="대표(거래대금 최대) 종목 ' + esc(r.ticker) + ' 값 — 펼치면 개별 값"' : '') + '>' + e[1](g) + '</td>'; });
       h += '</tr>';
       var panel = (st.mode === 'sum' ? kvPanel(g) : '') + (g.grp ? memTable(g) : '');
       if (panel) h += '<tr class="dt" hidden><td colspan="' + ncol + '"><div class="panel">' + panel + '</div></td></tr>';
@@ -143,7 +186,8 @@
     $('todaybtn').hidden = (st.date === D.asof);
     $('modebtn').textContent = st.mode === 'sum' ? '상세보기' : '요약보기';
     $('modebtn').classList.toggle('on', st.mode === 'det');
-    t.innerHTML = '<thead>' + head() + '</thead><tbody>' + body(rows) + '</tbody>';
+    t.className = 'rk ' + (st.mode === 'sum' ? 'sum' : 'det');
+    t.innerHTML = colgroup() + '<thead>' + head() + '</thead><tbody>' + body(rows) + '</tbody>';
   }
 
   /* ---- 날짜 로드 ---- */
@@ -170,7 +214,10 @@
   /* ---- 달력 ---- */
   function drawCal() {
     var y = st.y, m = st.m, first = new Date(y, m - 1, 1).getDay(), last = new Date(y, m, 0).getDate();
-    var h = '<div class="calbar"><span><button class="btn" id="cprev" aria-label="이전 달">‹</button> <b>' + y + '년 ' + m + '월</b> <button class="btn" id="cnext" aria-label="다음 달">›</button></span>' +
+    var y0 = +D.first.slice(0, 4), y1 = +D.last.slice(0, 4), ys = '', ms = '';
+    for (var yy = y0; yy <= y1; yy++) ys += '<option value="' + yy + '"' + (yy === y ? ' selected' : '') + '>' + yy + '년</option>';
+    for (var mm = 1; mm <= 12; mm++) ms += '<option value="' + mm + '"' + (mm === m ? ' selected' : '') + (availYM[y * 100 + mm] ? '' : ' disabled') + '>' + mm + '월</option>';
+    var h = '<div class="calbar"><span class="ym"><button class="btn" id="cprev" aria-label="이전 달">‹</button><select id="cyear" aria-label="연도">' + ys + '</select><select id="cmonth" aria-label="월">' + ms + '</select><button class="btn" id="cnext" aria-label="다음 달">›</button></span>' +
       '<button class="btn" id="ctog">' + (st.calOpen ? '접기 ▴' : '달력 ▾') + '</button></div>';
     if (st.calOpen) {
       h += '<div class="cal">' + ['일', '월', '화', '수', '목', '금', '토'].map(function (x) { return '<div class="wd">' + x + '</div>'; }).join('');
@@ -229,6 +276,21 @@
     else if (t.getAttribute && t.getAttribute('data-d')) select(t.getAttribute('data-d'));
   });
 
+  $('calbox').addEventListener('change', function (e) {
+    var t = e.target;
+    if (t.id === 'cyear') {
+      var ny = +t.value, nm = st.m;
+      if (!availYM[ny * 100 + nm]) { nm = 0; for (var k = 1; k <= 12; k++) { if (availYM[ny * 100 + k]) { nm = k; if (ny !== +D.last.slice(0, 4)) break; } } }
+      st.y = ny; st.m = nm || 1; drawCal();
+    } else if (t.id === 'cmonth') { st.m = +t.value; drawCal(); }
+  });
+  $('rk').addEventListener('click', function (e) {
+    var th = e.target.closest ? e.target.closest('th.s') : null;
+    if (!th) return;
+    var k = th.getAttribute('data-s');
+    st.sort = { k: k, dir: st.sort.k === k ? -st.sort.dir : -1 };
+    renderTable();
+  });
   var h0 = (location.hash || '').slice(1);
   var start = avail[h0] ? h0 : D.asof, p0 = start.split('-');
   st.y = +p0[0]; st.m = +p0[1];
