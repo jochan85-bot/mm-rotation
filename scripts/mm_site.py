@@ -1,4 +1,4 @@
-"""정적 페이지 생성 — docs/index.html · guide.html · products.html · products/<티커>.html · data/series/<티커>.json.
+"""정적 페이지 생성 — docs/index.html · longterm.html · guide.html · products.html · products/<티커>.html · data/series/<티커>.json.
 MM-PAGE-V3-DESIGN-20261010: 표시층 전면 재구성(렌더러만 교체 — compute·판정 규칙·CSV 형식 무변경).
 스타일 = docs/assets/mm.css, 동작 = docs/assets/index.js · chart.js (정적 파일). 외부 라이브러리·외부 스크립트 0, 개인 정보 0."""
 import json, html, re
@@ -11,15 +11,12 @@ except ImportError:
     from scripts.mm_lib import DATA, DOCS, ROOT, now_kst, MSCORE_SHA, load_status
     from scripts import mm_guide
 E = html.escape
-NAV = (("index.html", "순위표"), ("products.html", "상품"), ("guide.html", "가이드"))
-NOTICE = ("이 표는 3배 레버리지 상품을 무한매수 방식으로 운용할 때 참고하도록 만든 순위입니다. 점수는 각 상품이 따르는 지수의 최근 흐름(변동성·1년 수익률·추세)을 상대적으로 비교한 것이며, "
-          "어떤 상품도 오를 것이라고 예측하지 않습니다. 과거 검증에서 이 순위는 지수가 1년 가까이 계속 하락하는 구간에서 손실이 회복되지 못하는 경우를 걸러내지 못했습니다. "
-          "3배 레버리지는 지수가 횡보만 해도 가격이 깎이고, 큰 하락 뒤에는 원래 가격으로 돌아오지 못할 수 있습니다. 어떤 상품을, 얼마를, 언제 사고팔지는 전적으로 투자자 본인이 판단하고 책임지는 일입니다. "
-          "이 페이지는 매수·매도를 권하지 않습니다.")
+NAV = (("index.html", "순위"), ("longterm.html", "장기순위"), ("products.html", "종목"), ("guide.html", "Guide"))
+NOTICE = mm_guide.NOTICE_TEXT
 
 
 def pg(title, body, cur, root="", scripts="", pop=False):
-    nav = "".join(f'<a href="{root}{h}"{" class=cur" if h == cur else ""}>{n}</a>' for h, n in NAV)
+    nav = "".join(f'<a href="{root}{h}" class="{"cur " if h == cur else ""}{"g" if h == "guide.html" else ""}">{n}</a>' for h, n in NAV)
     return (f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{E(title)}</title><link rel="stylesheet" href="{root}assets/mm.css"></head><body><nav class="top">{nav}</nav>{body}'
             f'{"<div id=pop hidden></div>" if pop else ""}{scripts}</body></html>')
@@ -128,7 +125,7 @@ def build_index(df, meta):
     prov = meta.get("provisional")
     pill = (f'<span class="pill prov" title="{E("SPY 일봉 최신 행(" + prov["raw_last"] + ")이 " + prov["reason"] + " → 직전 확정일로 산출")}">잠정</span>' if prov
             else '<span class="pill ok">확정</span>')
-    banner = '<div class="banner"><b>수동 산출</b> — 예약 실행 첫 확인 전까지 표시됩니다.</div>' if meta.get("manual") else ""
+    banner = ""                                                   # 예약 실행 확인(2026-10-09 17:18 launchd) 후 배너 제거
     xr = exclusion_rows(df, st)
     if xr:
         trs = "".join(f'<tr><td><b>{E(t)}</b></td><td>{E(s)}</td><td>{("<a href=" + chr(34) + E(u, quote=True) + chr(34) + " rel=noopener>공지</a>") if u else "—"}</td></tr>' for t, s, u in xr)
@@ -146,6 +143,76 @@ def build_index(df, meta):
 <p class="meta" style="margin-top:8px"><a href="guide.html">산출 방식·데이터 출처는 가이드 페이지</a></p>
 <script id="mmdata" type="application/json">{jscript(data)}</script>"""
     return pg("무매 M-score", body, "index.html", scripts='<script src="assets/index.js"></script>', pop=True)
+
+
+
+# ---------- 장기순위 (§11) ----------
+LT_TABS = ((5, "1주"), (20, "1달"), (60, "3달"), (120, "6달"), (250, "1년"))
+
+
+def _why_text(r):
+    o = []
+    for b in str(r.get("badges") or "").split(" · "):
+        if b == "신규": o.append(f"신규 {int(r['listed_days'])}일")
+        elif b == "저유동": o.append(f"거래대금 ${r['adtv']:,.2f}M")
+        elif b.startswith("무거래"): o.append(f"무거래 {b[3:]}일")
+        elif b == "표본부족": o.append(f"표본 {int(r['n_beta'])}개")
+    return " · ".join(o)
+
+
+def compute_longterm(latest_df, asof):
+    """기간 N거래일 M-score 단순평균(결측일 제외, 창의 80% 미만이면 결측)을 당일 모집단 안에서 순위. docs/data/scores 소급분에서 산출."""
+    import math
+    first, last, dates = date_list()
+    if not dates or dates[-1] != asof: return None
+    cache = {}
+
+    def day(d):
+        if d not in cache:
+            try: cache[d] = pd.read_csv(DOCS / "data" / "scores" / f"{d}.csv", skiprows=1, usecols=["ticker", "M", "p_sig", "p_rsA", "p_f1b"]).set_index("ticker")
+            except Exception: cache[d] = None
+        return cache[d]
+    pop = latest_df[latest_df.table == "순위"]
+    out = []
+    for N, label in LT_TABS:
+        win = dates[-N:]; acc = {t: [] for t in pop.ticker}
+        for d in win:
+            x = day(d)
+            if x is None: continue
+            for t in acc:
+                if t in x.index and pd.notna(x.at[t, "M"]):
+                    acc[t].append((float(x.at[t, "M"]), float(x.at[t, "p_sig"]) * 100, float(x.at[t, "p_rsA"]) * 100, float(x.at[t, "p_f1b"]) * 100))
+        need = math.ceil(0.8 * N); rows = []
+        for r in pop.to_dict("records"):
+            v = acc[r["ticker"]]
+            if len(v) >= need:
+                a = np.mean(v, axis=0); rows.append(dict(t=r["ticker"], m=round(float(a[0]), 6), v=int(round(a[1])), rs=int(round(a[2])), tr=int(round(a[3])), n=len(v), w=_why_text(r)))
+            else:
+                rows.append(dict(t=r["ticker"], m=None, v=None, rs=None, tr=None, n=len(v), w=_why_text(r)))
+        ok = sorted([x for x in rows if x["m"] is not None], key=lambda x: (-x["m"], x["t"]))
+        rk = {}
+        for i, x in enumerate(ok):
+            rk[x["t"]] = 1 + sum(1 for y in ok if y["m"] > x["m"])
+        for x in rows: x["r"] = rk.get(x["t"])
+        rows.sort(key=lambda x: (x["r"] is None, x["r"] or 0, x["t"]))
+        out.append(dict(k=N, label=label, days=min(N, len(dates)), rows=rows))
+    return dict(asof=asof, n_pop=len(pop), tabs=out)
+
+
+def build_longterm(lt, meta):
+    prov = meta.get("provisional")
+    pill = '<span class="pill prov">잠정</span>' if prov else '<span class="pill ok">확정</span>'
+    if lt is None:
+        body = '<h1>장기순위</h1><div class="empty">장기순위 데이터를 만들지 못했습니다.</div>'
+        return pg("무매 장기순위", body, "longterm.html")
+    body = f"""<h1>장기순위<small>기간별 평균 M-score 순위 · 참고용</small></h1>
+<div class="meta">기준일 <b>{E(lt['asof'])}</b> · 종목 수 <b>{lt['n_pop']}</b> {pill}</div>
+<div class="rangebar" id="ltabs"></div>
+<div class="tbar"><div class="ttl" id="ltl"></div></div>
+<div class="wrap"><table class="rk" id="lt"></table></div>
+<p class="meta" style="margin-top:8px">기간 평균 M-score = 그 기간 거래일별 M-score(그날 모집단 안의 상대 점수)의 단순평균이며, 이 평균을 오늘 모집단 안에서 다시 순위 매깁니다. 기간 안에 점수가 있는 날이 창의 80% 미만이면 "—"입니다. 평균 변동성·상대강도·추세도 같은 기간의 일별 점수 평균입니다. 자세한 설명은 <a href="guide.html#longterm">Guide</a>.</p>
+<script id="ltdata" type="application/json">{jscript(lt)}</script>"""
+    return pg("무매 장기순위", body, "longterm.html", scripts='<script src="assets/longterm.js"></script>', pop=True)
 
 
 # ---------- 가이드 ----------
@@ -260,6 +327,10 @@ def build_all(latest_df, uni, meta, p0, score_files):
     items = load_page_items()
     (DOCS / "index.html").write_text(build_index(latest_df, meta), encoding="utf-8")
     (DOCS / "guide.html").write_text(build_guide(latest_df, meta, uni), encoding="utf-8")
+    lt = compute_longterm(latest_df, meta["asof"])
+    if lt is not None:
+        json.dump(lt, open(DOCS / "data" / "longterm.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    (DOCS / "longterm.html").write_text(build_longterm(lt, meta), encoding="utf-8")
     (DOCS / "products.html").write_text(build_products_dir(latest_df, uni, items), encoding="utf-8")
     pd_ = DOCS / "products"; pd_.mkdir(exist_ok=True)
     for u in uni.itertuples():

@@ -126,7 +126,7 @@ orig=ms.pd.read_csv; ms.pd.read_csv=lambda p,*a,**k: pinfo if str(p).endswith("p
 h=ms.build_index(df,dict(asof="2026-10-08",generated="t",provisional=dict(raw_last="2026-10-09",reason="Close NaN"),manual=True,new_products=[],pipeline=[]))
 ms.pd.read_csv=orig
 check("페이지: 잠정 배지",'class="pill prov"' in h and ">잠정<" in h)
-check("페이지: 수동 산출 배너",'<b>수동 산출</b>' in h)
+check("페이지: 수동 산출 배너 제거(예약 실행 확인 후)",'수동 산출' not in h)
 import re as _re, json as _json
 _d=_json.loads(_re.search(r'<script id="mmdata" type="application/json">(.*?)</script>',h,_re.S).group(1))
 check("페이지: 내장 데이터(기준일·순위 행·티커 메타)",_d["asof"]=="2026-10-08" and len(_d["latest"])==int((df.table=="순위").sum()) and set(_d["tk"])>=set(df.ticker) and "p_sig" in _d["latest"][0])
@@ -138,5 +138,25 @@ _ex=ms.exclusion_rows(pd.DataFrame([dict(ticker="ZZZ",table="제외",reason="E5"
 check("제외 문장 매핑(코드 대신 사람 문장, 링크 보존)",_ex[0]==("ZZZ","발행사 조기상환 공지, 2026-10-01","https://example.invalid/n") and "일시 제외" in _ex[1][1] and "E5" not in _ex[1][1],str(_ex))
 import mm_guide as mg
 _g=mg.guide_body(df,dict(generated="t",anomalies=None,pipeline=[],new_products=[]),uni,{"check_incomplete":{}})
-check("가이드: 산식·주의 아이콘·제외 규칙·백테스트 절 포함, 운영값($0.3M) 반영",all(f'id="{k}"' in _g for k in ("mscore","universe","onex","icons","excl","data","cal","bt","limits","pipe")) and "$0.3M" in _g)
+check("가이드: 9개 절·각주·부록 + 운영값($0.3M) 반영",all(f'id="{k}"' in _g for k in ("s1","s2","s3","s4","s5","s6","s7","s8","s9","fn","appx","appxA","appxB","appxC","longterm")) and "$0.3M" in _g)
+check("가이드: 안내 문안(§2 ⑤) 재수록",ms.E(ms.NOTICE) in _g)
+check("가이드: 절 순서 1→9→각주→부록",[_g.index(f'id="s{i}"') for i in range(1,10)]==sorted(_g.index(f'id="s{i}"') for i in range(1,10)) and _g.index('id="s9"')<_g.index('id="fn"')<_g.index('id="appx"'))
+check("가이드: 본문에 코드명·블록 ID 미노출(각주·부록 앞)",not any(x in _g[:_g.index('id="fn"')] for x in ("MM-P","STUCK_NR","R4A","S_A","MSCORE","sha256","eligibility.yaml")) )
+_nav=ms.pg("t","","index.html")
+check("메뉴: 순위·장기순위·종목·Guide 순서, Guide 가 오른쪽 끝(공통 헤더)",[x for x in _re.findall(r'>([^<>]+)</a>',_nav.split("<nav",1)[1].split("</nav>")[0])]==["순위","장기순위","종목","Guide"] and 'class="g"' in _nav.split("</nav>")[0].rsplit("<a",1)[1])
+# ---- 6. 장기순위 ----
+_lt=ms.compute_longterm(pd.read_csv(ms.ROOT/"data"/"scores_latest.csv"),ms.date_list()[2][-1])
+_ok=_lt is not None and [t["k"] for t in _lt["tabs"]]==[5,20,60,120,250] and [t["label"] for t in _lt["tabs"]]==["1주","1달","3달","6달","1년"]
+check("장기순위: 5탭(5·20·60·120·250거래일)",_ok)
+if _ok:
+    t5=_lt["tabs"][0]["rows"]; rk=[r["r"] for r in t5 if r["r"] is not None]
+    check("장기순위: 순위 오름차순·동점 동순위·결측은 맨 아래",rk==sorted(rk) and all(t5[i]["r"] is None for i in range(len(rk),len(t5))) and rk[0]==1)
+    _d5=ms.date_list()[2][-5:]; _x=[pd.read_csv(ms.DOCS/"data"/"scores"/f"{d}.csv",skiprows=1).set_index("ticker") for d in _d5]
+    _t="SOXL"; _m=[x.at[_t,"M"] for x in _x if _t in x.index]
+    _r=[r for r in t5 if r["t"]==_t][0]
+    check("장기순위: 1주 평균 M = 최근 5거래일 일별 M 단순평균",abs(_r["m"]-sum(_m)/len(_m))<1e-4 and _r["v"]==round(sum(x.at[_t,"p_sig"] for x in _x if _t in x.index)/len(_m)*100),f"{_r} {_m}")
+    t250=_lt["tabs"][4]["rows"]; _nb=[r for r in t250 if r["m"] is None]
+    check("장기순위: 창의 80% 미만이면 결측(—) — 1년 탭",all(r["n"]<200 for r in _nb) and all(r["n"]>=200 for r in t250 if r["m"] is not None))
+_lh=ms.build_longterm(_lt,dict(provisional=None))
+check("장기순위: 기준일 표기·달력 없음·탭 컨테이너·내장 데이터",_lt["asof"] in _lh and "calbox" not in _lh and 'id="ltabs"' in _lh and 'id="ltdata"' in _lh)
 print(f"\n{ok} PASS / {len(bad)} FAIL"); sys.exit(1 if bad else 0)

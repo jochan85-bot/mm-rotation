@@ -11,6 +11,8 @@ nav.top{display:flex;gap:6px;margin:2px 0 12px}
 nav.top a{flex:1 1 0;text-align:center;font-size:12px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:6px 2px;white-space:nowrap}
 nav.top a.cur{color:var(--text);border-color:var(--accent);font-weight:600}
 nav.top a:hover{text-decoration:none;border-color:var(--accent)}
+nav.top a.g{flex:0 0 auto;padding:6px 14px;color:var(--accent);border-color:rgba(88,166,255,.5);background:rgba(88,166,255,.08);font-weight:600}
+nav.top a.g.cur{background:#1e3a8a;color:#fff}
 h1{color:var(--accent);font-size:20px;line-height:1.25;margin:2px 0 4px}
 h1 small{display:block;color:var(--muted);font-size:12px;font-weight:400;margin-top:2px}
 h2{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin:22px 0 8px;padding-bottom:6px;border-bottom:1px solid #21262d;font-weight:600}
@@ -85,6 +87,12 @@ table.pl th{background:#1b222c;color:var(--muted);font-size:11px;font-weight:600
 .guide th{background:#1b222c;color:var(--muted);font-size:11px}
 .toc{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
 .toc a{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:2px 10px;color:var(--muted)}
+/* ---- 장기순위 ---- */
+#ltabs .btn{flex:1 1 0;padding:6px 2px}
+table.rk td.sc2{color:var(--text)}
+.fn{font-size:12px;color:var(--muted);line-height:1.6}
+.fn li{margin:3px 0}
+sup.f a{font-size:10px;margin-left:1px}
 /* ---- 종목 페이지 ---- */
 .sub{color:var(--muted);font-size:12.5px;margin:0 0 8px}
 .rangebar{display:flex;gap:6px;margin:6px 0}
