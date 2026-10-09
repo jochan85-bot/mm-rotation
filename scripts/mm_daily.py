@@ -15,6 +15,9 @@ def run(push=True, fetch=True, manual=None):
     need=L.need_tickers(); fails=[]
     if fetch:
         fails=L.fetch_all(need); L.log(f"수신 완료 실패={fails}")
+        try:
+            import mm_nasdaq; mm_nasdaq.apply_after_fetch(L.log)                 # 극저유동 ETN 3배 일봉: 나스닥 1차·야후 2차(MM-WRAP-BT §1)
+        except Exception as e: L.log(f"[mm_nasdaq] 건너뜀: {type(e).__name__}: {str(e)[:150]}")
         binfo=L.build_synthetic(L.log); L.log(f"합성 1x 생성 {sum('error' not in v for v in binfo.values())}/{len(binfo)}")
         fails=fails+[k for k,v in binfo.items() if "error" in v]
     T,prov,dropped=L.clean_all(need+L.synthetic_keys()); L.log(f"기준일 T={T.date()} 잠정={prov} 미확정 행 제거={len(dropped)}종")

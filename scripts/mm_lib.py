@@ -22,17 +22,27 @@ def check_formula():
     got=hashlib.sha256(open(MSCORE_DOC,"rb").read()).hexdigest()
     if got!=MSCORE_SHA: raise FormulaMismatch(f"MSCORE_V1.md sha 불일치: {got}")
 # ---------- 알림 ----------
-def tg_send(text):
-    """텔레그램 1건 (토큰=키체인, chat_id=.local/config.json). 실패는 예외 대신 False."""
-    try:
-        cfg=json.load(open(LOCAL/"config.json")); chat=cfg["chat_id"]
-        tok=subprocess.run(["/usr/bin/security","find-generic-password","-s","mactrader-telegram-bot-token","-a","mactrader","-w"],capture_output=True,text=True,timeout=20).stdout.strip()
-        if not tok: return False
-        body=urllib.parse.urlencode({"chat_id":chat,"text":text[:3900],"disable_web_page_preview":"true"}).encode()
-        r=urllib.request.urlopen(urllib.request.Request(f"https://api.telegram.org/bot{tok}/sendMessage",data=body),timeout=30)
-        return r.status==200
-    except Exception as e:
-        log(f"tg_send 실패: {type(e).__name__}", "alerts"); return False
+def tg_send(text, retries=3, wait=30):
+    """텔레그램 1건 (토큰=키체인, chat_id=.local/config.json). 실패는 예외 대신 False.
+    실패 시 wait 초 간격으로 최대 retries 회 시도하고, 시도마다 예외 전문(종류·메시지·코드·원인·트레이스백)을 alerts 로그에 남긴다(MM-WRAP-BT-20261011 §1)."""
+    import traceback
+    for k in range(1, retries + 1):
+        try:
+            cfg=json.load(open(LOCAL/"config.json")); chat=cfg["chat_id"]
+            tok=subprocess.run(["/usr/bin/security","find-generic-password","-s","mactrader-telegram-bot-token","-a","mactrader","-w"],capture_output=True,text=True,timeout=20).stdout.strip()
+            if not tok: log(f"tg_send 시도 {k}/{retries} 실패: 키체인 토큰 비어 있음","alerts"); return False      # 재시도해도 같은 결과 — 바로 종료
+            body=urllib.parse.urlencode({"chat_id":chat,"text":text[:3900],"disable_web_page_preview":"true"}).encode()
+            r=urllib.request.urlopen(urllib.request.Request(f"https://api.telegram.org/bot{tok}/sendMessage",data=body),timeout=30)
+            if r.status==200:
+                if k>1: log(f"tg_send 시도 {k}/{retries} 에서 성공","alerts")
+                return True
+            log(f"tg_send 시도 {k}/{retries} 실패: HTTP {r.status}","alerts")
+        except Exception as e:
+            extra=f" code={getattr(e,'code',None)} reason={getattr(e,'reason',None)!r}" if isinstance(e,(urllib.error.URLError,)) else ""
+            tb=traceback.format_exc().replace(tok,"<token>") if "tok" in locals() and tok else traceback.format_exc()
+            log(f"tg_send 시도 {k}/{retries} 실패: {type(e).__name__}: {str(e).replace(tok,'<token>') if 'tok' in locals() and tok else str(e)}{extra}\n{tb}","alerts")
+        if k<retries: time.sleep(wait)
+    return False
 # ---------- 설정 ----------
 def load_yaml_simple(p):
     out={}; cur=None

@@ -46,6 +46,9 @@ def main(push=True):
     np_path=L.DATA/"new_products.json"; newp=json.load(open(np_path,encoding="utf-8"))
     ok_src=[]; fail_src=[]; issues=[]; docs=0; found_names=set(); actions=[]; web_fail=[]; subst_src=[]
     fails=L.fetch_all(L.need_tickers()); L.log(f"주간 수신 실패={fails}","weekly")
+    try:
+        import mm_nasdaq; mm_nasdaq.apply_after_fetch(lambda m: L.log(m,"weekly"))   # 극저유동 ETN 3배 일봉: 나스닥 1차·야후 2차(MM-WRAP-BT §1)
+    except Exception as e: L.log(f"[mm_nasdaq] 건너뜀: {type(e).__name__}: {str(e)[:150]}","weekly")
     if fails: fail_src.append('yfinance 시세 수신 실패: '+','.join(fails))
     al=aliases(uni,info)
     known_names={n for names,_ in al.values() for n in names}
