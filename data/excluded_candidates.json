@@ -1,0 +1,56 @@
+{
+ "items": [
+  {
+   "key": "proshares ultrapro gold k 1 free etf",
+   "ticker": "",
+   "name": "ProShares UltraPro Gold K-1 Free ETF",
+   "issuer": "ProShares",
+   "leverage": "3x",
+   "rule": "c",
+   "reason": "원자재 상품 — 주식 지수·섹터·테마 아님",
+   "found": "2026-10-09",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001088/f46374d1.htm",
+   "filed": "2026-02-06",
+   "owner_override": false
+  },
+  {
+   "key": "proshares ultrapro gold miners",
+   "ticker": "",
+   "name": "ProShares UltraPro Gold Miners",
+   "issuer": "ProShares",
+   "leverage": "3x",
+   "rule": "override",
+   "reason": "오너 지시(MM-PAGE-V2.3-20261015 §3): 골드 2종 제외. 참고 — 규칙 (b) 기준(주식 지수·섹터·테마)으로는 통과 가능한 광산주 상품이라 판정이 갈릴 수 있음(GDXU 와 동일 계열)",
+   "found": "2026-10-09",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001088/f46374d1.htm",
+   "filed": "2026-02-06",
+   "owner_override": true
+  },
+  {
+   "key": "dull",
+   "ticker": "DULL",
+   "name": "DULL",
+   "issuer": "BMO MicroSectors",
+   "leverage": "-3x",
+   "rule": "a",
+   "reason": "인버스(-3배) — 롱 +3배 아님",
+   "found": "2026-10-09",
+   "source": "https://microsectors.com/",
+   "filed": "2026-10-09",
+   "owner_override": false
+  },
+  {
+   "key": "wtid",
+   "ticker": "WTID",
+   "name": "WTID",
+   "issuer": "BMO MicroSectors",
+   "leverage": "-3x",
+   "rule": "a",
+   "reason": "인버스(-3배) — 롱 +3배 아님",
+   "found": "2026-10-09",
+   "source": "https://microsectors.com/",
+   "filed": "2026-10-09",
+   "owner_override": false
+  }
+ ]
+}

@@ -1,0 +1,321 @@
+{
+ "fetched": "2026-10-09",
+ "user_agent": "mm-rotation research (jjoychan85@gmail.com)",
+ "fixtures": [
+  {
+   "id": "a",
+   "file": "a_bmo_nrgu_bnku_redemption_20240708.htm",
+   "issuer": "BMO",
+   "cik": "0000927971",
+   "form": "FWP",
+   "filed": "2024-07-09",
+   "accession": "0001214659-24-012103",
+   "doc": "x78240fwp.htm",
+   "event": "NRGU·BNKU(+NRGD·BNKD) ETN 조기상환(call) 공지, 보도자료 일자 2024-07-08",
+   "evidence": [
+    "intends to redeem all of the outstanding securities in each of the series",
+    "will be delisted from the NYSE Arca exchange"
+   ],
+   "note": "",
+   "url": "https://www.sec.gov/Archives/edgar/data/927971/000121465924012103/x78240fwp.htm",
+   "bytes": 15615,
+   "evidence_verified": true,
+   "primary_doc_description": "ETN REDEMPTION PRESS RELEASE",
+   "title": "BANK OF MONTREAL /CAN/ FWP ETN REDEMPTION PRESS RELEASE"
+  },
+  {
+   "id": "b",
+   "file": "b_bmo_fngu_redeem_fngb_launch_20250219.htm",
+   "issuer": "BMO",
+   "cik": "0000927971",
+   "form": "FWP",
+   "filed": "2025-02-19",
+   "accession": "0001214659-25-003129",
+   "doc": "z218250fwp.htm",
+   "event": "FNGU ETN 조기상환 예고 + 티커 FNGA 변경 + 신규 FNGB ETN 발행(같은 공시)",
+   "evidence": [
+    "its intention to redeem all of the outstanding securities",
+    "the launch of a new ETN"
+   ],
+   "note": "같은 날 BNKU·NRGU 재발행 FWP(0001214659-25-003127)는 x1 로 별도 보관(조기상환 아님, 신규 발행)",
+   "url": "https://www.sec.gov/Archives/edgar/data/927971/000121465925003129/z218250fwp.htm",
+   "bytes": 31060,
+   "evidence_verified": true,
+   "primary_doc_description": "FNGU FNGB PRESS RELEASE",
+   "title": "BANK OF MONTREAL /CAN/ FWP FNGU FNGB PRESS RELEASE"
+  },
+  {
+   "id": "c",
+   "file": "c_direxion_erx_gush_nugt_3x_to_2x_20200327.htm",
+   "issuer": "Direxion",
+   "cik": "0001424958",
+   "form": "497",
+   "filed": "2020-03-27",
+   "accession": "0001193125-20-088772",
+   "doc": "d904715d497.htm",
+   "event": "ERX·GUSH·NUGT 등 10개 펀드 3X→2X(투자목적 200%) 변경, 효력 2020-03-31 종가 후",
+   "evidence": [
+    "new investment objective and strategy will be to seek daily leveraged, or daily inverse leveraged, investment results",
+    "of 200% or -200%",
+    "the “3X” in each Fund’s name will be replaced with “2X”"
+   ],
+   "note": "요청 '2020-03경' 일치. 사전 보충서(2020-03-20, 효력일 5/19 → 3/31로 앞당김)는 x4 로 보관",
+   "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312520088772/d904715d497.htm",
+   "bytes": 25927,
+   "evidence_verified": true,
+   "primary_doc_description": "497",
+   "title": "Direxion Shares ETF Trust 497 497"
+  },
+  {
+   "id": "d",
+   "file": "d_direxion_soxs_reverse_split_20260204.htm",
+   "issuer": "Direxion",
+   "cik": "0001424958",
+   "form": "497",
+   "filed": "2026-02-04",
+   "accession": "0001193125-26-037667",
+   "doc": "d80567d497.htm",
+   "event": "SOXS(Semiconductor Bear 3X) 1-for-20 역분할, 효력 2026-03-04 종가 후 (JDST·DUST·HIBS·MUD·TSLS 동시)",
+   "evidence": [
+    "each Fund will effect a reverse split of its issued and outstanding shares",
+    "Direxion Daily Semiconductor Bear 3X Shares 1 for 20"
+   ],
+   "note": "공시일은 2026-02-04(효력 2026-03-04)로 '2026-03경' 의 효력 월과 일치. SOXS 는 2026-06-10 공시(x6, 1-for-10, 효력 2026-07-14)로 한 번 더 역분할",
+   "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312526037667/d80567d497.htm",
+   "bytes": 43363,
+   "evidence_verified": true,
+   "primary_doc_description": "497",
+   "title": "Direxion Shares ETF Trust 497 497"
+  },
+  {
+   "id": "e",
+   "file": "e_bmo_gdxu_financing_spread_fwp_20260130.htm",
+   "issuer": "BMO",
+   "cik": "0000927971",
+   "form": "FWP",
+   "filed": "2026-01-30",
+   "accession": "0001214659-26-001009",
+   "doc": "p1302610fwp.htm",
+   "event": "GDXU Financing Spread 3.25%→5.00% 인상 보도자료 (2026-02-06 효력)",
+   "evidence": [
+    "BMO Announces Upcoming Increase to the Financing Spread",
+    "the Financing Spread will be increased as follows"
+   ],
+   "note": "1차 선정은 424B2 Amendment No.27(x7)이었으나 같은 날 제출된 보도자료 FWP 가 사건의 원공시라 교체. 사유: 일자·내용 동일, 보도자료가 더 직접적",
+   "url": "https://www.sec.gov/Archives/edgar/data/927971/000121465926001009/p1302610fwp.htm",
+   "primary_doc_description": "GDXU 2026 FEE ADJUSTMENT PRESS RELEASE",
+   "title": "BANK OF MONTREAL /CAN/ FWP GDXU 2026 FEE ADJUSTMENT PRESS RELEASE",
+   "bytes": 18245,
+   "evidence_verified": true
+  },
+  {
+   "id": "f",
+   "file": "f_direxion_tpor_index_change_20220602.htm",
+   "issuer": "Direxion",
+   "cik": "0001424958",
+   "form": "497",
+   "filed": "2022-06-02",
+   "accession": "0001193125-22-166274",
+   "doc": "d275490d497.htm",
+   "event": "TPOR 기초지수 Dow Jones Transportation Average → S&P Transportation Select Industry FMC Capped Index, 2022-08-01경 효력",
+   "evidence": [
+    "underlying index will change as shown in the table below",
+    "Dow Jones Transportation Average TM S&P Transportation Select Industry FMC Capped Index"
+   ],
+   "note": "",
+   "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312522166274/d275490d497.htm",
+   "bytes": 38351,
+   "evidence_verified": true,
+   "primary_doc_description": "497",
+   "title": "Direxion Shares ETF Trust 497 497"
+  },
+  {
+   "id": "g",
+   "file": "g_direxion_general_497_20250321.htm",
+   "issuer": "Direxion",
+   "cik": "0001424958",
+   "form": "497",
+   "filed": "2025-03-21",
+   "accession": "0001193125-25-060192",
+   "doc": "d939309d497.htm",
+   "event": "일반 Direxion 497(1X Bear 단일종목 펀드 CAT·CMG·CSCO·LMT·PANW·QCOM·V·XOM 정기 투자설명서, 2025-03-19 보충). 조기상환·청산·배수/지수 변경 공지 없음",
+   "evidence": [
+    "Under certain circumstances, Shares may even be delisted"
+   ],
+   "note": "'문제 공지 없음' 근거: 본문에 liquidat 0회, reverse split 0회. delist/terminate/redeem 은 위험고지·수수료 면제 계약 일반 문구뿐. 스캐너와 동일하게 앞 700000바이트만 저장",
+   "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312525060192/d939309d497.htm",
+   "bytes": 700000,
+   "evidence_verified": true,
+   "primary_doc_description": "497",
+   "title": "Direxion Shares ETF Trust 497 497"
+  },
+  {
+   "id": "x1",
+   "file": "x1_bmo_bnku_nrgu_relaunch_fwp_20250219.htm",
+   "issuer": "BMO",
+   "cik": "0000927971",
+   "form": "FWP",
+   "filed": "2025-02-19",
+   "accession": "0001214659-25-003127",
+   "doc": "o218251fwp.htm",
+   "extra": true,
+   "event": "[보조·음성대조] BNKU·BNKD·NRGU·NRGD 신규 ETN 발행(런칭) 보도자료 — 조치 없음 기대",
+   "evidence": [
+    "announced today the launch of the following U.S. Big Banks and U.S. Big Oil"
+   ],
+   "note": "",
+   "url": "https://www.sec.gov/Archives/edgar/data/927971/000121465925003127/o218251fwp.htm",
+   "bytes": 22536,
+   "evidence_verified": true,
+   "primary_doc_description": "BNKU NRGU PRESS RELEASE",
+   "title": "BANK OF MONTREAL /CAN/ FWP BNKU NRGU PRESS RELEASE"
+  },
+  {
+   "id": "x2",
+   "file": "x2_bmo_fngb_launch_424b2_20250219.htm",
+   "issuer": "BMO",
+   "cik": "0000927971",
+   "form": "424B2",
+   "filed": "2025-02-19",
+   "accession": "0001214659-25-003116",
+   "doc": "x117250424b2.htm",
+   "extra": true,
+   "event": "[보조·음성대조] FNGB ETN 런칭 가격공시서 — 조치 없음 기대(스캐너는 앞 700000바이트만 읽음)",
+   "evidence": [
+    "FNGB ETNS LAUNCH"
+   ],
+   "note": "",
+   "url": "https://www.sec.gov/Archives/edgar/data/927971/000121465925003116/x117250424b2.htm",
+   "bytes": 865302,
+   "evidence_verified": true,
+   "primary_doc_description": "FNGB ETNS LAUNCH",
+   "title": "BANK OF MONTREAL /CAN/ 424B2 FNGB ETNS LAUNCH"
+  },
+  {
+   "id": "x3",
+   "file": "x3_direxion_adbu_exchange_listing_497_20260318.htm",
+   "issuer": "Direxion",
+   "cik": "0001424958",
+   "form": "497",
+   "filed": "2026-03-18",
+   "accession": "0001193125-26-113541",
+   "doc": "d123734d497.htm",
+   "extra": true,
+   "event": "[보조·음성대조] 상장 거래소 변경(NASDAQ→NYSE Arca) 단순 보충서",
+   "evidence": [
+    "will be listed on the NYSE Arca"
+   ],
+   "note": "",
+   "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312526113541/d123734d497.htm",
+   "bytes": 4154,
+   "evidence_verified": true,
+   "primary_doc_description": "497",
+   "title": "Direxion Shares ETF Trust 497 497"
+  },
+  {
+   "id": "x4",
+   "file": "x4_direxion_erx_nugt_gush_3x_to_2x_supp_20200320.htm",
+   "issuer": "Direxion",
+   "cik": "0001424958",
+   "form": "497",
+   "filed": "2020-03-20",
+   "accession": "0001193125-20-080736",
+   "doc": "d847016d497.htm",
+   "extra": true,
+   "event": "[보조] c 의 사전 보충서(3X→2X, 효력 2020-05-19 예정)",
+   "evidence": [
+    "correspond to two times the performance of an underlying index"
+   ],
+   "note": "",
+   "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312520080736/d847016d497.htm",
+   "bytes": 450670,
+   "evidence_verified": true,
+   "primary_doc_description": "497",
+   "title": "Direxion Shares ETF Trust 497 497"
+  },
+  {
+   "id": "x5",
+   "file": "x5_direxion_spxl_497k_20260227.htm",
+   "issuer": "Direxion",
+   "cik": "0001424958",
+   "form": "497K",
+   "filed": "2026-02-27",
+   "accession": "0001193125-26-078624",
+   "doc": "d230576d497k.htm",
+   "extra": true,
+   "event": "[보조·음성대조] SPXL 요약 투자설명서(일반 공시, 유니버스 종목 본문 — 위험고지 boilerplate)",
+   "evidence": [
+    "SPXL"
+   ],
+   "note": "",
+   "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312526078624/d230576d497k.htm",
+   "bytes": 235522,
+   "evidence_verified": true,
+   "primary_doc_description": "497K",
+   "title": "Direxion Shares ETF Trust 497K 497K"
+  },
+  {
+   "id": "x6",
+   "file": "x6_direxion_soxs_reverse_split_20260610.htm",
+   "issuer": "Direxion",
+   "cik": "0001424958",
+   "form": "497",
+   "filed": "2026-06-10",
+   "accession": "0001193125-26-265931",
+   "doc": "d101574d497.htm",
+   "extra": true,
+   "event": "[보조] SOXS 1-for-10 역분할(효력 2026-07-14) — 유지(비고) 기대",
+   "evidence": [
+    "Direxion Daily Semiconductor Bear 3X ETF 1 for 10"
+   ],
+   "note": "",
+   "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312526265931/d101574d497.htm",
+   "bytes": 39989,
+   "evidence_verified": true,
+   "primary_doc_description": "497",
+   "title": "Direxion Shares ETF Trust 497 497"
+  },
+  {
+   "id": "x7",
+   "file": "x7_bmo_gdxu_fee_adjust_424b2_20260130.htm",
+   "issuer": "BMO",
+   "cik": "0000927971",
+   "form": "424B2",
+   "filed": "2026-01-30",
+   "accession": "0001214659-26-001011",
+   "doc": "o130263424b2.htm",
+   "event": "[보조] GDXU 가격공시서 Amendment No. 27 (Financing Spread 3.25%→5.00% 날짜별 병기) — 비고 기대",
+   "evidence": [
+    "Financing Spread: As of the date of this pricing supplement, 3.25% per annum and beginning on and including February 6, 2026 (the Fee Effective Date), 5.00% per annum"
+   ],
+   "note": "e 의 후속 424B2(본문 700KB+ 가격공시서 boilerplate 포함)",
+   "url": "https://www.sec.gov/Archives/edgar/data/927971/000121465926001011/o130263424b2.htm",
+   "bytes": 678248,
+   "evidence_verified": true,
+   "primary_doc_description": "GDXU FEE ADJUSTMENT PRESS RELEASE AMENDMENT NO. 27",
+   "title": "BANK OF MONTREAL /CAN/ 424B2 GDXU FEE ADJUSTMENT PRESS RELEASE AMENDMENT NO. 27",
+   "extra": true
+  },
+  {
+   "id": "x8",
+   "file": "x8_bmo_gdxu_fee_adjust_fwp_20251114.htm",
+   "issuer": "BMO",
+   "cik": "0000927971",
+   "form": "FWP",
+   "filed": "2025-11-14",
+   "accession": "0001214659-25-016738",
+   "doc": "j1113250fwp.htm",
+   "extra": true,
+   "event": "[보조] GDXU Financing Spread 2.25%→3.25% 인상 보도자료 (2025-11-21 효력) — 비고 기대",
+   "evidence": [
+    "the Financing Spread will be increased as follows"
+   ],
+   "url": "https://www.sec.gov/Archives/edgar/data/927971/000121465925016738/j1113250fwp.htm",
+   "primary_doc_description": "GDXU FEE ADJUSTMENT PRESS RELEASE",
+   "title": "BANK OF MONTREAL /CAN/ FWP GDXU FEE ADJUSTMENT PRESS RELEASE",
+   "note": "",
+   "bytes": 18747,
+   "evidence_verified": true
+  }
+ ]
+}

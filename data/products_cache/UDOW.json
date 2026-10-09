@@ -1,0 +1,42 @@
+{
+ "ticker": "UDOW",
+ "input_hash": "3f1793d2e0c8b0c5",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:02:34",
+ "feature_input": {
+  "티커": "UDOW",
+  "유형": "ETF",
+  "발행사": "ProShares (운용: ProShare Advisors LLC; 497K 명시)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "Dow Jones Industrial Average SM",
+  "지수 제공사": "S&P Dow Jones Indices LLC - 497K: \"The Index is constructed and maintained by S&P Dow Jones Indices LLC.\"",
+  "섹터/테마": "미국 대형 우량주 30종 (다우존스 산업평균, 가격가중)",
+  "지수 가중방식": "PRICE-weighted: the 30 companies \"are then weighted based on their price\"",
+  "리밸런스": "no scheduled rebalance stated: \"Companies may be added or removed from the Index at any time\"",
+  "지수 종목 수": "30 (497K 서술)",
+  "상위 구성": [
+   "GS 10.48%",
+   "CAT 9.44%",
+   "MSFT 5.97%",
+   "AMGN 4.91%",
+   "UNH 4.27%"
+  ],
+  "상위 구성 기준": "1x ETF DIA 상위 보유 (지수 구성과 동일 가정)",
+  "비용 요약": "총 0.94% (면제 없음) · 운용보수 0.75% (497K 2026-09-28)",
+  "상장일(ISO)": "2010-02-09",
+  "분할 이력(Yahoo)": "2012-05-11 정분할 3:1; 2015-05-20 정분할 2:1; 2017-07-17 정분할 2:1; 2021-05-25 정분할 2:1; 2025-11-20 정분할 2:1",
+  "구조 사실": [
+   "497K 명시(Compounding/Volatility Risk): 1일을 넘는 보유기간의 펀드 성과는 일간 목표(Daily Target)와 다를 수 있으며 그 차이가 클 수 있다"
+  ]
+ },
+ "feature_text": "UDOW는 ProShares(운용: ProShare Advisors LLC)가 발행한 ETF로, S&P Dow Jones Indices LLC가 구성·관리하는 Dow Jones Industrial Average SM의 일간 수익률 3배(일간 리셋)를 추종하는 미국 대형 우량주 30종 대상 상품이다.\n지수는 30개 종목을 가격 기준으로 가중하는 가격가중 방식이며, 정기 리밸런스는 명시되어 있지 않고 \"Companies may be added or removed from the Index at any time\"로 서술돼 있다. 상위 구성은 1x ETF DIA 상위 보유(지수 구성과 동일 가정) 기준으로 GS 10.48%, CAT 9.44%, MSFT 5.97%, AMGN 4.91%, UNH 4.27%이다.\n497K에는 1일을 넘는 보유기간의 펀드 성과가 일간 목표(Daily Target)와 다를 수 있으며 그 차이가 클 수 있다고 명시돼 있고, 총보수는 0.94%(면제 없음), 운용보수는 0.75%로 기재돼 있다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "UDOW는 ProShares(운용: ProShare Advisors LLC)가 발행한 ETF로, S&P Dow Jones Indices LLC가 구성·관리하는 Dow Jones Industrial Average SM의 일간 수익률 3배(일간 리셋)를 추종하는 미국 대형 우량주 30종 대상 상품이다.\n지수는 30개 종목을 가격 기준으로 가중하는 가격가중 방식이며, 정기 리밸런스는 명시되어 있지 않고 \"Companies may be added or removed from the Index at any time\"로 서술돼 있다. 상위 구성은 1x ETF DIA 상위 보유(지수 구성과 동일 가정) 기준으로 GS 10.48%, CAT 9.44%, MSFT 5.97%, AMGN 4.91%, UNH 4.27%이다.\n497K에는 1일을 넘는 보유기간의 펀드 성과가 일간 목표(Daily Target)와 다를 수 있으며 그 차이가 클 수 있다고 명시돼 있고, 총보수는 0.94%(면제 없음), 운용보수는 0.75%로 기재돼 있다.",
+   "violations": []
+  }
+ ]
+}

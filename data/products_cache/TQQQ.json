@@ -1,0 +1,43 @@
+{
+ "ticker": "TQQQ",
+ "input_hash": "99a4fb03672b5a08",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:04:57",
+ "feature_input": {
+  "티커": "TQQQ",
+  "유형": "ETF",
+  "발행사": "ProShares (운용: ProShare Advisors LLC; 497K 명시)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "Nasdaq-100® Index",
+  "지수 제공사": "Nasdaq Inc. - 497K: \"The Index is constructed and maintained by Nasdaq Inc.\"",
+  "섹터/테마": "미국 나스닥 상장 비금융 대형주 100종 (Nasdaq-100)",
+  "지수 가중방식": "\"weighted based on market capitalization\" (top 100 non-financial Nasdaq-listed companies)",
+  "리밸런스": "\"reevaluated every December, with additional weight adjustments occurring in March, June, and September\"",
+  "지수 종목 수": "100 (497K 서술)",
+  "상위 구성": [
+   "NVDA 8.33%",
+   "AAPL 7.35%",
+   "MSFT 5.76%",
+   "MU 5.02%",
+   "AMD 4.17%"
+  ],
+  "상위 구성 기준": "1x ETF QQQ 상위 보유 (지수 구성과 동일 가정)",
+  "비용 요약": "총 0.94% → 면제·상한 적용 후 0.78% · 운용보수 0.75% (497K 2026-09-28)",
+  "상장일(ISO)": "2010-02-09",
+  "분할 이력(Yahoo)": "2011-02-25 정분할 2:1; 2012-05-11 정분할 2:1; 2014-01-24 정분할 2:1; 2017-01-12 정분할 2:1; 2018-05-24 정분할 3:1; 2021-01-21 정분할 2:1; 2022-01-13 정분할 2:1; 2025-11-20 정분할 2:1",
+  "구조 사실": [
+   "497K 명시(Compounding/Volatility Risk): 1일을 넘는 보유기간의 펀드 성과는 일간 목표(Daily Target)와 다를 수 있으며 그 차이가 클 수 있다",
+   "운용보수 면제/비용상한 계약 기한 September 30, 2027 (497K 보수표 각주) — 497K: 이사회 승인 없이 기한 전 종료 불가, 면제분은 5년 내 환수 가능"
+  ]
+ },
+ "feature_text": "TQQQ는 ProShares(운용: ProShare Advisors LLC)가 발행한 ETF로, Nasdaq Inc.가 구성·관리하는 Nasdaq-100® Index의 일간 수익률 3배(일간 리셋)를 목표로 한다.\n지수는 나스닥 상장 비금융 대형주 100종을 시가총액 기준으로 가중하며, 매년 12월에 재평가하고 3월·6월·9월에 추가로 가중치를 조정한다. 1배 ETF인 QQQ의 상위 보유 기준(지수 구성과 동일 가정)으로 NVDA 8.33%, AAPL 7.35%, MSFT 5.76%, MU 5.02%, AMD 4.17% 순이다.\n497K에는 1일을 넘는 보유기간의 성과가 일간 목표와 다를 수 있고 그 차이가 클 수 있다고 명시돼 있으며, 총보수 0.94%는 면제·상한 적용 후 0.78%이고 해당 계약 기한은 2027년 9월 30일이다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "TQQQ는 ProShares(운용: ProShare Advisors LLC)가 발행한 ETF로, Nasdaq Inc.가 구성·관리하는 Nasdaq-100® Index의 일간 수익률 3배(일간 리셋)를 목표로 한다.\n지수는 나스닥 상장 비금융 대형주 100종을 시가총액 기준으로 가중하며, 매년 12월에 재평가하고 3월·6월·9월에 추가로 가중치를 조정한다. 1배 ETF인 QQQ의 상위 보유 기준(지수 구성과 동일 가정)으로 NVDA 8.33%, AAPL 7.35%, MSFT 5.76%, MU 5.02%, AMD 4.17% 순이다.\n497K에는 1일을 넘는 보유기간의 성과가 일간 목표와 다를 수 있고 그 차이가 클 수 있다고 명시돼 있으며, 총보수 0.94%는 면제·상한 적용 후 0.78%이고 해당 계약 기한은 2027년 9월 30일이다.",
+   "violations": []
+  }
+ ]
+}

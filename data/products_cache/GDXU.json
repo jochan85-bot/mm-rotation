@@ -1,0 +1,61 @@
+{
+ "ticker": "GDXU",
+ "input_hash": "19ce5f710df1dcc9",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:07:06",
+ "feature_input": {
+  "티커": "GDXU",
+  "유형": "ETN",
+  "발행사": "Bank of Montreal(BMO) 발행 · MicroSectors 브랜드 (구조화·마케팅 REX Shares, LLC; 계산대리인 BMO Capital Markets Corp.)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "S-Network MicroSectors(TM) Gold Miners Index",
+  "지수 제공사": "VettaFi LLC (Index Sponsor; end-of-day closing level)",
+  "섹터/테마": "금광 (S-Network MicroSectors Gold Miners; GDX·GDXJ 추종)",
+  "지수 가중방식": "market-capitalisation weighted across the two ETFs (GDX, GDXJ) via Index Shares; no cap stated",
+  "리밸런스": "quarterly review/rebalance effective at close of 3rd Friday of the \"Rebalancing Month\" (third month of each calendar quarter); snapshot date = last trading day of 2nd month of quarter; weight date = 2nd Friday",
+  "지수 종목 수": "2 to date (GDX, GDXJ); universe reviewed each quarter",
+  "상위 구성": [
+   "VANECK GOLD MINERS ETF 76.2%",
+   "VANECK JUNIOR GOLD MINERS 23.8%"
+  ],
+  "상위 구성 기준": "지수 구성종목 (microsectors.com 상품 페이지)",
+  "비용 요약": "투자자 수수료 연 0.95% + 금융비용 = Prime Rate + 스프레드 5.00%(PS 2026-07-07 고정 5.00%, 상한 5.00%); 스프레드 이력 2.25%→3.25%(2025-11-21)→5.00%(2026-02-06)",
+  "ETN 최초 거래일(PS Initial Trade Date; 상장일과 다를 수 있음)": "2020-12-02",
+  "분할 이력(Yahoo)": "2022-10-31 역분할 1:10",
+  "구조 사실": [
+   "BMO 발행 선순위 무담보 채무 — 발행사 신용위험에 노출(PS: senior unsecured debt obligations of Bank of Montreal; 예금자보호·FDIC 대상 아님)",
+   "만기 2040-06-29; 발행사 콜권(call right) 있음; 투자자 조기상환은 최소 25,000 ETN 단위(발행사가 면제 가능)이고 상환수수료 0.125%",
+   "BMO 는 상장 유지 의무가 없으며 사유 불문 상장 폐지를 결정할 수 있음(PS)",
+   "2022-10-31 — BMO, 1-for-10 역분할 시행(공지 2022-10-21)",
+   "2025-11-21 — BMO 계산대리인, 금융 스프레드 2.25% → 3.25% 인상(공지 2025-11-14, 시행 예정 2025-11-21)",
+   "2026-02-06 — BMO 계산대리인, 금융 스프레드 3.25% → 5.00% 인상(공지 2026-01-30, 시행 예정 2026-02-06)"
+  ],
+  "종목 선정 규칙": "[부재] PS 별도 선정 규칙 미명시",
+  "구성 ETF 상위 보유": {
+   "GDX": [
+    "NEM 11.07%",
+    "AEM 10.99%",
+    "B 7.92%",
+    "WPM 5.53%",
+    "FNV 5.08%"
+   ],
+   "GDXJ": [
+    "CDE 6.64%",
+    "AGI 6.45%",
+    "EQX 5.87%",
+    "EDV LN 5.53%",
+    "IAG 5.07%"
+   ]
+  }
+ },
+ "feature_text": "GDXU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 운용되는 ETN으로, VettaFi LLC가 산출하는 S-Network MicroSectors Gold Miners Index의 일간 수익률을 3배(일간 리셋)로 추종하는 금광 섹터 상품이다.\n지수는 GDX와 GDXJ 두 ETF를 시가총액 가중 방식으로 담으며 별도의 비중 상한은 명시돼 있지 않고, 구성 비중은 지수 구성종목 기준으로 VANECK GOLD MINERS ETF 76.2%, VANECK JUNIOR GOLD MINERS 23.8%이다.\nBMO 발행 선순위 무담보 채무로 발행사 신용위험에 노출되며, 만기는 2040-06-29이고 발행사 콜권이 있으며, 투자자 수수료 연 0.95%에 더해 Prime Rate에 스프레드 5.00%를 적용한 금융비용이 부과되고 이 스프레드는 2025-11-21 3.25%, 2026-02-06 5.00%로 인상됐다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "GDXU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 운용되는 ETN으로, VettaFi LLC가 산출하는 S-Network MicroSectors Gold Miners Index의 일간 수익률을 3배(일간 리셋)로 추종하는 금광 섹터 상품이다.\n지수는 GDX와 GDXJ 두 ETF를 시가총액 가중 방식으로 담으며 별도의 비중 상한은 명시돼 있지 않고, 구성 비중은 지수 구성종목 기준으로 VANECK GOLD MINERS ETF 76.2%, VANECK JUNIOR GOLD MINERS 23.8%이다.\nBMO 발행 선순위 무담보 채무로 발행사 신용위험에 노출되며, 만기는 2040-06-29이고 발행사 콜권이 있으며, 투자자 수수료 연 0.95%에 더해 Prime Rate에 스프레드 5.00%를 적용한 금융비용이 부과되고 이 스프레드는 2025-11-21 3.25%, 2026-02-06 5.00%로 인상됐다.",
+   "violations": []
+  }
+ ]
+}

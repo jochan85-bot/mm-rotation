@@ -1,0 +1,44 @@
+{
+ "ticker": "DRN",
+ "input_hash": "dc0fc32a58e72eec",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:04:08",
+ "feature_input": {
+  "티커": "DRN",
+  "유형": "ETF",
+  "발행사": "Direxion (운용: Rafferty Asset Management, LLC; 497K 명시)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "Real Estate Select Sector Index",
+  "지수 제공사": "S&P Dow Jones Indices (the \"Index Provider\")",
+  "섹터/테마": "부동산 섹터 (Real Estate Select Sector)",
+  "지수 가중방식": "Select Sector: \"modified market capitalization\" weights (single-stock weight modifications to conform to Internal Revenue Code requirements); all constituents are S&P 500 members",
+  "리밸런스": "\"The Index is rebalanced quarterly\"",
+  "지수 종목 수": "31 (497K 서술)",
+  "상위 구성": [
+   "WELL 11.68%",
+   "PLD 8.68%",
+   "EQIX 7.02%",
+   "AMT 5.37%",
+   "SPG 4.65%"
+  ],
+  "상위 구성 기준": "1x ETF XLRE 상위 보유 (지수 구성과 동일 가정)",
+  "비용 요약": "총 0.98% (면제 없음) · 운용보수 0.75% (497K 2026-02-27)",
+  "상장일(ISO)": "2009-07-16",
+  "분할 이력(Yahoo)": "2010-05-05 정분할 4:1; 2013-04-02 정분할 2:1; 2016-08-25 정분할 4:1",
+  "구조 사실": [
+   "497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다",
+   "지수(추종 목표) 변경 이력 — The performance shown prior to August 1, 2019, reflects the Fund’s previous daily leveraged investment objective, before fees and expenses, of 300% of the MSCI US REIT Index. From August 1, 2019 to February 28, 2022, the Fund sought a daily leveraged investment objective, before fees and expenses, of 300% of the MSCI US IMI Real Estate 25/50 Index. After February 28, 2022, the Fund began to seek a daily leveraged investment objective, before fees and expenses, of 300% of the Real Estate Select Sector Index.",
+   "펀드명 표기 변경: 497K(2026-02-27)는 '(formerly the Direxion Daily Real Estate Bull 3X Shares)'로 표기 — 상품명에서 'Shares'→'ETF'"
+  ]
+ },
+ "feature_text": "DRN은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, S&P Dow Jones Indices가 제공하는 부동산 섹터 지수인 Real Estate Select Sector Index의 일간 수익률 3배(일간 리셋)를 추종 목표로 한다.\n지수는 모든 구성종목이 S&P 500 편입 종목이며 Internal Revenue Code 요건에 맞춘 종목별 비중 조정이 들어간 \"modified market capitalization\" 방식으로 가중하고 분기별로 리밸런스하며, 497K는 지수 종목 수를 31개로 서술한다. 상위 구성은 1x ETF XLRE 상위 보유(지수 구성과 동일 가정) 기준으로 WELL 11.68%, PLD 8.68%, EQIX 7.02%, AMT 5.37%, SPG 4.65%이다.\n추종 지수는 2019년 8월 1일 이전 MSCI US REIT Index, 2019년 8월 1일부터 2022년 2월 28일까지 MSCI US IMI Real Estate 25/50 Index였고 2022년 2월 28일 이후 Real Estate Select Sector Index로 바뀌었으며, 총보수는 0.98%(면제 없음, 운용보수 0.75%)이다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "DRN은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, S&P Dow Jones Indices가 제공하는 부동산 섹터 지수인 Real Estate Select Sector Index의 일간 수익률 3배(일간 리셋)를 추종 목표로 한다.\n지수는 모든 구성종목이 S&P 500 편입 종목이며 Internal Revenue Code 요건에 맞춘 종목별 비중 조정이 들어간 \"modified market capitalization\" 방식으로 가중하고 분기별로 리밸런스하며, 497K는 지수 종목 수를 31개로 서술한다. 상위 구성은 1x ETF XLRE 상위 보유(지수 구성과 동일 가정) 기준으로 WELL 11.68%, PLD 8.68%, EQIX 7.02%, AMT 5.37%, SPG 4.65%이다.\n추종 지수는 2019년 8월 1일 이전 MSCI US REIT Index, 2019년 8월 1일부터 2022년 2월 28일까지 MSCI US IMI Real Estate 25/50 Index였고 2022년 2월 28일 이후 Real Estate Select Sector Index로 바뀌었으며, 총보수는 0.98%(면제 없음, 운용보수 0.75%)이다.",
+   "violations": []
+  }
+ ]
+}

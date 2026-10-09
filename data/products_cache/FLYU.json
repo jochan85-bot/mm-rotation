@@ -1,0 +1,44 @@
+{
+ "ticker": "FLYU",
+ "input_hash": "4509935cdfedffca",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:05:47",
+ "feature_input": {
+  "티커": "FLYU",
+  "유형": "ETN",
+  "발행사": "Bank of Montreal(BMO) 발행 · MicroSectors 브랜드 (구조화·마케팅 REX Shares, LLC; 계산대리인 BMO Capital Markets Corp.)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "MerQube MicroSectors(TM) U.S. Travel Index",
+  "지수 제공사": "MerQube, Inc. (Index Sponsor; publishes the level)",
+  "섹터/테마": "미국 여행·관광 (MerQube MicroSectors U.S. Travel)",
+  "지수 가중방식": "liquidity weighted: each component weighted by average of (close x total volume) over preceding 12 months, subject to caps",
+  "리밸런스": "monthly rebalance; component selection on last business day of Feb/May/Aug/Nov (quarterly)",
+  "지수 종목 수": "variable (not fixed in PS; rules differ for <25 vs >=25 components; web page 2026-10-08 shows 34 names)",
+  "상위 구성": [
+   "UBER TECHNOLOGIES INC 10.73%",
+   "BOOKING HOLDINGS INC 9.57%",
+   "WALT DISNEY CO/THE 8.09%",
+   "AMERICAN AIRLINES GROUP INC 7.59%",
+   "ROYAL CARIBBEAN CRUISES LTD 5.83%"
+  ],
+  "상위 구성 기준": "지수 구성종목 (microsectors.com 상품 페이지)",
+  "비용 요약": "투자자 수수료 연 0.95% + 금융비용 = Prime Rate + 스프레드(PS 최초 2.75%, 상한 5.00%) — 2022-06-21 PS 기준",
+  "ETN 최초 거래일(PS Initial Trade Date; 상장일과 다를 수 있음)": "2022-06-21",
+  "분할 이력(Yahoo)": "없음 (Yahoo splits)",
+  "구조 사실": [
+   "BMO 발행 선순위 무담보 채무 — 발행사 신용위험에 노출(PS: senior unsecured debt obligations of Bank of Montreal; 예금자보호·FDIC 대상 아님)",
+   "만기 2042-05-29; 발행사 콜권(call right) 있음; 투자자 조기상환은 최소 25,000 ETN 단위(발행사가 면제 가능)이고 상환수수료 0.125%"
+  ],
+  "종목 선정 규칙": "[부재] PS 별도 선정 규칙 미명시"
+ },
+ "feature_text": "FLYU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 운용되는 ETN으로, MerQube MicroSectors U.S. Travel Index의 일간 수익률을 3배(일간 리셋)로 추종하는 미국 여행·관광 섹터 상품이다.\n지수는 각 구성종목을 직전 12개월 (종가 × 총거래량) 평균으로 가중하되 상한을 적용하는 유동성 가중 방식이며, 매월 리밸런스하고 2·5·8·11월 마지막 영업일에 종목을 선정한다. microsectors.com 상품 페이지의 지수 구성종목 기준 상위 구성은 UBER TECHNOLOGIES INC 10.73%, BOOKING HOLDINGS INC 9.57%, WALT DISNEY CO/THE 8.09%, AMERICAN AIRLINES GROUP INC 7.59%, ROYAL CARIBBEAN CRUISES LTD 5.83%이다.\nBMO의 선순위 무담보 채무로 발행사 신용위험에 노출되며 예금자보호·FDIC 대상이 아니고, 만기는 2042-05-29이며 발행사 콜권이 있고 투자자 수수료는 연 0.95%에 Prime Rate에 스프레드를 더한 금융비용이 별도로 부과되는 것으로 2022-06-21 PS에 명시돼 있다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "FLYU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 운용되는 ETN으로, MerQube MicroSectors U.S. Travel Index의 일간 수익률을 3배(일간 리셋)로 추종하는 미국 여행·관광 섹터 상품이다.\n지수는 각 구성종목을 직전 12개월 (종가 × 총거래량) 평균으로 가중하되 상한을 적용하는 유동성 가중 방식이며, 매월 리밸런스하고 2·5·8·11월 마지막 영업일에 종목을 선정한다. microsectors.com 상품 페이지의 지수 구성종목 기준 상위 구성은 UBER TECHNOLOGIES INC 10.73%, BOOKING HOLDINGS INC 9.57%, WALT DISNEY CO/THE 8.09%, AMERICAN AIRLINES GROUP INC 7.59%, ROYAL CARIBBEAN CRUISES LTD 5.83%이다.\nBMO의 선순위 무담보 채무로 발행사 신용위험에 노출되며 예금자보호·FDIC 대상이 아니고, 만기는 2042-05-29이며 발행사 콜권이 있고 투자자 수수료는 연 0.95%에 Prime Rate에 스프레드를 더한 금융비용이 별도로 부과되는 것으로 2022-06-21 PS에 명시돼 있다.",
+   "violations": []
+  }
+ ]
+}

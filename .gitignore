@@ -2,3 +2,5 @@
 __pycache__/
 *.pyc
 data/raw/
+tests/fp_cache/
+data/products_cache/raw/

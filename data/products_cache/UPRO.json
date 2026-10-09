@@ -1,0 +1,42 @@
+{
+ "ticker": "UPRO",
+ "input_hash": "a29f839dd21e544f",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:02:34",
+ "feature_input": {
+  "티커": "UPRO",
+  "유형": "ETF",
+  "발행사": "ProShares (운용: ProShare Advisors LLC; 497K 명시)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "S&P 500® Index",
+  "지수 제공사": "S&P Dow Jones Indices LLC - 497K: \"The Index is constructed and maintained by S&P Dow Jones Indices LLC.\"",
+  "섹터/테마": "미국 대형주 광역 (S&P 500)",
+  "지수 가중방식": "\"weighted based on market capitalization\" (500 of the largest U.S. companies)",
+  "리밸런스": "\"composition and the assigned weights are reevaluated every September with additional weight adjustments in March, June, and December\"",
+  "지수 종목 수": "500 (497K 서술)",
+  "상위 구성": [
+   "NVDA 8.36%",
+   "AAPL 7.35%",
+   "MSFT 5.76%",
+   "AMZN 3.7%",
+   "GOOGL 3.05%"
+  ],
+  "상위 구성 기준": "1x ETF SPY 상위 보유 (지수 구성과 동일 가정)",
+  "비용 요약": "총 0.88% (면제 없음) · 운용보수 0.75% (497K 2026-09-28)",
+  "상장일(ISO)": "2009-06-23",
+  "분할 이력(Yahoo)": "2011-02-25 정분할 3:1; 2013-06-10 정분할 2:1; 2015-05-20 정분할 2:1; 2018-05-24 정분할 3:1; 2022-01-13 정분할 2:1",
+  "구조 사실": [
+   "497K 명시(Compounding/Volatility Risk): 1일을 넘는 보유기간의 펀드 성과는 일간 목표(Daily Target)와 다를 수 있으며 그 차이가 클 수 있다"
+  ]
+ },
+ "feature_text": "UPRO는 ProShare Advisors LLC가 운용하는 ProShares의 ETF로, S&P Dow Jones Indices LLC가 구성·관리하는 S&P 500® Index의 일간 수익률 3배(일간 리셋)를 목표로 하는 미국 대형주 광역 상품이다.\n지수는 시가총액 기준으로 가중되는 미국 대형주 500종목으로 이루어지며, 구성과 가중치는 매년 9월에 재평가되고 3월·6월·12월에 가중치가 추가로 조정된다고 명시돼 있다. 1x ETF인 SPY의 상위 보유 기준(지수 구성과 동일 가정)으로 NVDA 8.36%, AAPL 7.35%, MSFT 5.76%, AMZN 3.7%, GOOGL 3.05% 순이다.\n497K에는 1일을 넘는 보유기간의 펀드 성과가 일간 목표와 다를 수 있으며 그 차이가 클 수 있다고 명시돼 있고, 총보수는 0.88%(면제 없음), 운용보수는 0.75%이다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "UPRO는 ProShare Advisors LLC가 운용하는 ProShares의 ETF로, S&P Dow Jones Indices LLC가 구성·관리하는 S&P 500® Index의 일간 수익률 3배(일간 리셋)를 목표로 하는 미국 대형주 광역 상품이다.\n지수는 시가총액 기준으로 가중되는 미국 대형주 500종목으로 이루어지며, 구성과 가중치는 매년 9월에 재평가되고 3월·6월·12월에 가중치가 추가로 조정된다고 명시돼 있다. 1x ETF인 SPY의 상위 보유 기준(지수 구성과 동일 가정)으로 NVDA 8.36%, AAPL 7.35%, MSFT 5.76%, AMZN 3.7%, GOOGL 3.05% 순이다.\n497K에는 1일을 넘는 보유기간의 펀드 성과가 일간 목표와 다를 수 있으며 그 차이가 클 수 있다고 명시돼 있고, 총보수는 0.88%(면제 없음), 운용보수는 0.75%이다.",
+   "violations": []
+  }
+ ]
+}

@@ -1,0 +1,47 @@
+{
+ "ticker": "BULZ",
+ "input_hash": "f5941da8faeb210d",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:05:36",
+ "feature_input": {
+  "티커": "BULZ",
+  "유형": "ETN",
+  "발행사": "Bank of Montreal(BMO) 발행 · MicroSectors 브랜드 (구조화·마케팅 REX Shares, LLC; 계산대리인 BMO Capital Markets Corp.)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "Solactive FANG Innovation Index",
+  "지수 제공사": "Solactive AG (Index Sponsor; publishes the level)",
+  "섹터/테마": "FANG·혁신 성장주 (Solactive FANG Innovation)",
+  "지수 가중방식": "equal weight, re-equalised monthly",
+  "리밸런스": "monthly equal-weight rebalance after close on 3rd Friday; constituents (re)selected on first day of Mar/Jun/Sep/Dec (quarterly reconstitution)",
+  "지수 종목 수": 15,
+  "상위 구성": [
+   "ADVANCED MICRO DEVICES 7.4%",
+   "PALANTIR TECHNOLOGIES INC-A 7.01%",
+   "META PLATFORMS INC-CLASS A 6.95%",
+   "MICROSOFT CORP 6.88%",
+   "MICRON TECHNOLOGY INC 6.87%"
+  ],
+  "상위 구성 기준": "지수 구성종목 (microsectors.com 상품 페이지)",
+  "비용 요약": "투자자 수수료 연 0.95% + 금융비용 = Prime Rate + 스프레드(PS 최초 2.25%, 상한 5.00%)",
+  "ETN 최초 거래일(PS Initial Trade Date; 상장일과 다를 수 있음)": "2021-08-17",
+  "분할 이력(Yahoo)": "2022-10-31 역분할 1:10; 2026-02-24 정분할 10:1",
+  "구조 사실": [
+   "BMO 발행 선순위 무담보 채무 — 발행사 신용위험에 노출(PS: senior unsecured debt obligations of Bank of Montreal; 예금자보호·FDIC 대상 아님)",
+   "만기 2041-06-28; 발행사 콜권(call right) 있음; 투자자 조기상환은 최소 25,000 ETN 단위(발행사가 면제 가능)이고 상환수수료 0.125%",
+   "BMO 는 상장 유지 의무가 없으며 사유 불문 상장 폐지를 결정할 수 있음(PS)",
+   "2022-10-31 — BMO, 1-for-10 역분할 시행(공지 2022-10-21)",
+   "2026-02-24 — BMO, 10-for-1 분할(split) 시행 예정 공지(2026-02-12)"
+  ],
+  "종목 선정 규칙": "8 fixed Core Components (AAPL, AMZN, META, GOOGL, MSFT, NFLX, NVDA, TSLA) if eligible; other 7 = from top-30 by free-float mkt cap among FactSet-industry-eligible US stocks, ranked by 12m ADV"
+ },
+ "feature_text": "BULZ는 Bank of Montreal(BMO)이 발행하고 REX Shares가 구조화·마케팅을 맡은 MicroSectors 브랜드의 ETN으로, Solactive FANG Innovation Index의 일간 수익률을 3배(일간 리셋)로 추종하는 FANG·혁신 성장주 테마 상품이다.\n지수는 15개 종목을 동일가중으로 구성해 매월 셋째 금요일 장 마감 후 재조정하며, 지수 구성종목 기준 상위 비중은 ADVANCED MICRO DEVICES 7.4%, PALANTIR TECHNOLOGIES INC-A 7.01%, META PLATFORMS INC-CLASS A 6.95%, MICROSOFT CORP 6.88%, MICRON TECHNOLOGY INC 6.87%이다.\nBMO가 발행한 선순위 무담보 채무로 발행사 신용위험에 노출되며 예금자보호 대상이 아니고, 만기는 2041-06-28이며 발행사 콜권이 있고 비용은 투자자 수수료 연 0.95%와 Prime Rate에 스프레드(최초 2.25%, 상한 5.00%)를 더한 금융비용으로 명시돼 있다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "BULZ는 Bank of Montreal(BMO)이 발행하고 REX Shares가 구조화·마케팅을 맡은 MicroSectors 브랜드의 ETN으로, Solactive FANG Innovation Index의 일간 수익률을 3배(일간 리셋)로 추종하는 FANG·혁신 성장주 테마 상품이다.\n지수는 15개 종목을 동일가중으로 구성해 매월 셋째 금요일 장 마감 후 재조정하며, 지수 구성종목 기준 상위 비중은 ADVANCED MICRO DEVICES 7.4%, PALANTIR TECHNOLOGIES INC-A 7.01%, META PLATFORMS INC-CLASS A 6.95%, MICROSOFT CORP 6.88%, MICRON TECHNOLOGY INC 6.87%이다.\nBMO가 발행한 선순위 무담보 채무로 발행사 신용위험에 노출되며 예금자보호 대상이 아니고, 만기는 2041-06-28이며 발행사 콜권이 있고 비용은 투자자 수수료 연 0.95%와 Prime Rate에 스프레드(최초 2.25%, 상한 5.00%)를 더한 금융비용으로 명시돼 있다.",
+   "violations": []
+  }
+ ]
+}

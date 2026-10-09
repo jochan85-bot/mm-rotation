@@ -1,0 +1,50 @@
+{
+ "ticker": "SMHU",
+ "input_hash": "61878d2fcb2f71ff",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:05:42",
+ "feature_input": {
+  "티커": "SMHU",
+  "유형": "ETN",
+  "발행사": "Bank of Montreal(BMO) 발행 · MicroSectors 브랜드 (구조화·마케팅 REX Shares, LLC; 계산대리인 BMO Capital Markets Corp.)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "VettaFi Semiconductor Fund-Tracking Index",
+  "지수 제공사": "VettaFi LLC (Index Sponsor; calculates and publishes)",
+  "섹터/테마": "반도체 (VettaFi Semiconductor Fund-Tracking; SMH 추종)",
+  "지수 가중방식": "single constituent, target weight 100%",
+  "리밸런스": "quarterly rebalance & reconstitution at close of 3rd Friday of each calendar quarter (trivial for 1 constituent)",
+  "지수 종목 수": "1 (VanEck Semiconductor ETF \"SMH\"); the ETF holds 25 stocks via target index",
+  "상위 구성": [
+   "VANECK SEMICONDUCTOR ETF 100.0%"
+  ],
+  "상위 구성 기준": "지수 구성종목 (microsectors.com 상품 페이지)",
+  "비용 요약": "투자자 수수료 2027-01-31까지 면제 후 연 0.70% + 금융비용 = Prime Rate + 스프레드(PS 최초 3.25%, 상한 7.50%)",
+  "ETN 최초 거래일(PS Initial Trade Date; 상장일과 다를 수 있음)": "2026-08-03",
+  "분할 이력(Yahoo)": "없음 (Yahoo splits)",
+  "구조 사실": [
+   "BMO 발행 선순위 무담보 채무 — 발행사 신용위험에 노출(PS: senior unsecured debt obligations of Bank of Montreal; 예금자보호·FDIC 대상 아님)",
+   "만기 2046-07-31; 발행사 콜권(call right) 있음; 투자자 조기상환은 최소 25,000 ETN 단위(발행사가 면제 가능)이고 상환수수료 0.125%",
+   "BMO 는 상장 유지 의무가 없으며 사유 불문 상장 폐지를 결정할 수 있음(PS)"
+  ],
+  "종목 선정 규칙": "[부재] PS 별도 선정 규칙 미명시",
+  "구성 ETF 상위 보유": {
+   "SMH": [
+    "NVDA 19.31%",
+    "TSM 9.28%",
+    "AMD 5.54%",
+    "AVGO 5.27%",
+    "MU 4.92%"
+   ]
+  }
+ },
+ "feature_text": "SMHU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 판매되는 ETN으로, VettaFi가 산출하는 VettaFi Semiconductor Fund-Tracking Index의 일간 수익률을 3배(일간 리셋)로 추종하는 반도체 섹터 상품이다.\n지수는 VanEck Semiconductor ETF(SMH) 1개를 목표 비중 100%로 담는 단일 구성 방식이며, 지수 구성종목 기준 상위 구성도 SMH 100.0%이고 SMH가 보유한 상위 종목은 NVDA 19.31%, TSM 9.28%, AMD 5.54%, AVGO 5.27%, MU 4.92%이다.\nBMO 발행 선순위 무담보 채무로 발행사 신용위험에 노출되며, 만기는 2046-07-31이고 발행사 콜권이 있고, 투자자 수수료는 2027-01-31까지 면제된 뒤 연 0.70%와 금융비용(Prime Rate + 스프레드, 최초 3.25%, 상한 7.50%)이 적용되는 것으로 명시돼 있다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "SMHU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 판매되는 ETN으로, VettaFi가 산출하는 VettaFi Semiconductor Fund-Tracking Index의 일간 수익률을 3배(일간 리셋)로 추종하는 반도체 섹터 상품이다.\n지수는 VanEck Semiconductor ETF(SMH) 1개를 목표 비중 100%로 담는 단일 구성 방식이며, 지수 구성종목 기준 상위 구성도 SMH 100.0%이고 SMH가 보유한 상위 종목은 NVDA 19.31%, TSM 9.28%, AMD 5.54%, AVGO 5.27%, MU 4.92%이다.\nBMO 발행 선순위 무담보 채무로 발행사 신용위험에 노출되며, 만기는 2046-07-31이고 발행사 콜권이 있고, 투자자 수수료는 2027-01-31까지 면제된 뒤 연 0.70%와 금융비용(Prime Rate + 스프레드, 최초 3.25%, 상한 7.50%)이 적용되는 것으로 명시돼 있다.",
+   "violations": []
+  }
+ ]
+}

@@ -1,0 +1,103 @@
+# 수작업 보강값 — scripts/mm_products_gen.py 가 products.yaml 생성 시 이 파일의 값으로 덮어쓴다(우선).
+# 형식: 종목 티커 → {필드: 값}. 중첩 dict 는 재귀 병합, 리스트·문자열은 통째 교체.
+# sector_theme 는 공식 지수명(index_specs.yaml official_name)을 한국어로 옮긴 표기이며 평가·전망 표현을 쓰지 않는다.
+# 출처 표기: 각 항목에 사유를 주석으로 남긴다.
+# ETN fee.summary 는 PS 본문 인용·BMO FWP 보도자료 기준 수작업 정리 — 숫자는 생성기가 fee.items[].quote·events 와 대조 검증한다.
+SPXL:
+  sector_theme: 미국 대형주 광역 (S&P 500)
+UPRO:
+  sector_theme: 미국 대형주 광역 (S&P 500)
+TQQQ:
+  sector_theme: 미국 나스닥 상장 비금융 대형주 100종 (Nasdaq-100)
+UDOW:
+  sector_theme: 미국 대형 우량주 30종 (다우존스 산업평균, 가격가중)
+TNA:
+  sector_theme: 미국 소형주 (Russell 2000)
+URTY:
+  sector_theme: 미국 소형주 (Russell 2000)
+MIDU:
+  sector_theme: 미국 중형주 (S&P MidCap 400)
+UMDD:
+  sector_theme: 미국 중형주 (S&P MidCap 400)
+HIBL:
+  sector_theme: 미국 대형주 중 고베타 100종 (S&P 500 High Beta)
+SOXL:
+  sector_theme: 반도체 (NYSE Semiconductor Index)
+TECL:
+  sector_theme: 정보기술 섹터 (Technology Select Sector)
+WEBL:
+  sector_theme: 인터넷 (Dow Jones Internet Composite)
+CURE:
+  sector_theme: 헬스케어 섹터 (Health Care Select Sector)
+PILL:
+  sector_theme: 제약 (S&P Pharmaceuticals Select Industry)
+LABU:
+  sector_theme: 바이오테크 (S&P Biotechnology Select Industry)
+FAS:
+  sector_theme: 금융 섹터 (Financial Select Sector)
+DPST:
+  sector_theme: 지역은행 (S&P Regional Banks Select Industry)
+DFEN:
+  sector_theme: 항공우주·방위 (Dow Jones U.S. Select Aerospace & Defense)
+DUSL:
+  sector_theme: 산업재 섹터 (Industrials Select Sector)
+TPOR:
+  sector_theme: 운송 (S&P Transportation Select Industry FMC Capped)
+RETL:
+  sector_theme: 소매 (S&P Retail Select Industry)
+WANT:
+  sector_theme: 경기소비재 섹터 (Consumer Discretionary Select Sector)
+NAIL:
+  sector_theme: 주택건설 (Dow Jones U.S. Select Home Construction)
+DRN:
+  sector_theme: 부동산 섹터 (Real Estate Select Sector)
+UTSL:
+  sector_theme: 유틸리티 섹터 (Utilities Select Sector)
+FNGU:
+  sector_theme: 대형 성장·기술 10종 동일가중 (NYSE FANG+)
+  fee:
+    summary: 투자자 수수료 연 0.95%(2025-08-20부터; 앞선 6개월은 연 0.35% 할인) + 금융비용 = 연준 Prime Rate + 스프레드(PS 최초 2.25%, 상한 4.00%)
+BULZ:
+  sector_theme: FANG·혁신 성장주 (Solactive FANG Innovation)
+  fee:
+    summary: 투자자 수수료 연 0.95% + 금융비용 = Prime Rate + 스프레드(PS 최초 2.25%, 상한 5.00%)
+BNKU:
+  sector_theme: 미국 대형 은행·투자서비스 10종 (Solactive MicroSectors U.S. Big Banks)
+  fee:
+    summary: 투자자 수수료 연 0.95% + 금융비용 = Prime Rate + 스프레드(PS 최초 2.25%, 상한 4.00%)
+NRGU:
+  sector_theme: 미국 대형 석유 10종 (Solactive MicroSectors U.S. Big Oil)
+  fee:
+    summary: 투자자 수수료 연 0.95%(2025-02-19 Initial Trade Date 후 6개월은 연 0.35% 할인) + 금융비용 = Prime Rate + 스프레드(PS 최초 2.25%, 상한 4.00%)
+OILU:
+  sector_theme: 석유·가스 탐사·생산 (Solactive MicroSectors Oil & Gas E&P)
+  fee:
+    summary: 투자자 수수료 연 0.95% + 금융비용 = Prime Rate + 스프레드(PS 최초 2.75%, 상한 5.00%) — 2023-03-17 PS 기준
+GDXU:
+  sector_theme: 금광 (S-Network MicroSectors Gold Miners; GDX·GDXJ 추종)
+  fee:
+    summary: 투자자 수수료 연 0.95% + 금융비용 = Prime Rate + 스프레드 5.00%(PS 2026-07-07 고정 5.00%, 상한 5.00%); 스프레드 이력 2.25%→3.25%(2025-11-21)→5.00%(2026-02-06)
+AIQU:
+  sector_theme: 인공지능 리더 25종 (BITA AI Leaders Select NTR US)
+  fee:
+    summary: 투자자 수수료 연 0.95% + 금융비용 = Prime Rate + 스프레드(PS 최초 2.50%, 상한 7.50%)
+SMHU:
+  sector_theme: 반도체 (VettaFi Semiconductor Fund-Tracking; SMH 추종)
+  fee:
+    summary: 투자자 수수료 2027-01-31까지 면제 후 연 0.70% + 금융비용 = Prime Rate + 스프레드(PS 최초 3.25%, 상한 7.50%)
+MNGU:
+  sector_theme: 대형 기술 10종, 비상장사 제외 (NYSE MaNGoS+)
+  fee:
+    summary: 투자자 수수료 2027-01-31까지 면제 후 연 0.95% + 금융비용 = Prime Rate + 스프레드(PS 최초 3.00%, 상한 10.00%)
+XLCU:
+  sector_theme: 커뮤니케이션 서비스 (VettaFi US Communications Fund-Tracking; XLC 추종)
+  fee:
+    summary: 투자자 수수료 연 0.95%(면제 규정 없음) + 금융비용 = Prime Rate + 스프레드(PS 최초 2.25%, 상한 7.50%)
+XLPU:
+  sector_theme: 필수소비재 (VettaFi US Consumer Staples Fund-Tracking; XLP 추종)
+  fee:
+    summary: 투자자 수수료 연 0.95%(면제 규정 없음) + 금융비용 = Prime Rate + 스프레드(PS 최초 2.25%, 상한 7.50%)
+FLYU:
+  sector_theme: 미국 여행·관광 (MerQube MicroSectors U.S. Travel)
+  fee:
+    summary: 투자자 수수료 연 0.95% + 금융비용 = Prime Rate + 스프레드(PS 최초 2.75%, 상한 5.00%) — 2022-06-21 PS 기준

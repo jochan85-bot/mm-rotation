@@ -1,0 +1,43 @@
+{
+ "ticker": "NAIL",
+ "input_hash": "3b18bf343867db9a",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:04:08",
+ "feature_input": {
+  "티커": "NAIL",
+  "유형": "ETF",
+  "발행사": "Direxion (운용: Rafferty Asset Management, LLC; 497K 명시)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "Dow Jones U.S. Select Home Construction Index",
+  "지수 제공사": "NOT NAMED in the 497K strategy text; \"Index Information\" cites only Dow Jones & Company trademarks. unverified.",
+  "섹터/테마": "주택건설 (Dow Jones U.S. Select Home Construction)",
+  "지수 가중방식": "Capped; underlying weighting basis NOT stated. Rules: single company max 22.5% (excess redistributed iteratively); aggregate of companies with weight >4.5% capped at 45%; companies classified Building Materials & Fixtures, Furnishings, and Home Improvement Retailers capped at 35% in aggregate",
+  "리밸런스": "\"The Index is rebalanced quarterly\"",
+  "지수 종목 수": "46 (497K 서술)",
+  "상위 구성": [
+   "DHI 17.76%",
+   "PHM 11.11%",
+   "LEN 8.07%",
+   "NVR 7.96%",
+   "TOL 4.61%"
+  ],
+  "상위 구성 기준": "1x ETF ITB 상위 보유 (지수 구성과 동일 가정)",
+  "비용 요약": "총 0.96% (면제 없음) · 운용보수 0.75% (497K 2026-02-27)",
+  "상장일(ISO)": "2015-08-19",
+  "분할 이력(Yahoo)": "없음 (Yahoo splits)",
+  "구조 사실": [
+   "497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다",
+   "펀드명 표기 변경: 497K(2026-02-27)는 '(formerly the Direxion Daily Homebuilders & Supplies Bull 3X Shares)'로 표기 — 상품명에서 'Shares'→'ETF'"
+  ]
+ },
+ "feature_text": "NAIL은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, Dow Jones U.S. Select Home Construction Index의 일간 성과를 3배(일간 리셋)로 추종하는 주택건설 섹터 상품이다.\n지수는 46종목으로 구성되며 분기마다 리밸런스하고, 단일 종목은 최대 22.5%, 비중 4.5% 초과 종목의 합계는 45%, Building Materials & Fixtures·Furnishings·Home Improvement Retailers 분류 종목의 합계는 35%로 제한하는 캡 방식이다. 상위 구성은 1x ETF ITB 상위 보유 기준(지수 구성과 동일 가정)으로 DHI 17.76%, PHM 11.11%, LEN 8.07%, NVR 7.96%, TOL 4.61%이다.\n총보수는 0.96%(면제 없음), 운용보수는 0.75%이며, 497K(2026-02-27)에는 1일을 넘게 보유한 수익률이 일별 수익률의 복리 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "NAIL은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, Dow Jones U.S. Select Home Construction Index의 일간 성과를 3배(일간 리셋)로 추종하는 주택건설 섹터 상품이다.\n지수는 46종목으로 구성되며 분기마다 리밸런스하고, 단일 종목은 최대 22.5%, 비중 4.5% 초과 종목의 합계는 45%, Building Materials & Fixtures·Furnishings·Home Improvement Retailers 분류 종목의 합계는 35%로 제한하는 캡 방식이다. 상위 구성은 1x ETF ITB 상위 보유 기준(지수 구성과 동일 가정)으로 DHI 17.76%, PHM 11.11%, LEN 8.07%, NVR 7.96%, TOL 4.61%이다.\n총보수는 0.96%(면제 없음), 운용보수는 0.75%이며, 497K(2026-02-27)에는 1일을 넘게 보유한 수익률이 일별 수익률의 복리 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있다.",
+   "violations": []
+  }
+ ]
+}

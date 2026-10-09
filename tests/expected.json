@@ -1,0 +1,89 @@
+{
+ "_doc": "기대 조치. kind: exclude(즉시 제외·영구) | exclude_revalidate(제외 후 재확인 복귀) | note(비고만, 제외 아님) | none(조치 없음). 목록에 없는 별칭 티커는 모두 none 으로 취급(다른 티커가 조치되면 불일치). 키 a~g 가 본 7건, x* 는 보조 대조.",
+ "a": {
+  "event": "BMO 2024-07 NRGU·BNKU ETN 조기상환",
+  "tickers": {
+   "NRGU": "exclude",
+   "BNKU": "exclude"
+  }
+ },
+ "b": {
+  "event": "BMO 2025-02 FNGU 조기상환 + FNGB 신규 발행",
+  "tickers": {
+   "FNGU": "exclude",
+   "FNGB": "none"
+  }
+ },
+ "c": {
+  "event": "Direxion 2020-03 ERX·GUSH·NUGT 3X→2X",
+  "tickers": {
+   "ERX": "exclude_revalidate",
+   "GUSH": "exclude_revalidate",
+   "NUGT": "exclude_revalidate"
+  }
+ },
+ "d": {
+  "event": "Direxion 2026 SOXS 역분할",
+  "tickers": {
+   "SOXS": "note"
+  }
+ },
+ "e": {
+  "event": "BMO 2026-01-30 GDXU 금융비용(Financing Spread) 인상",
+  "tickers": {
+   "GDXU": "note"
+  }
+ },
+ "f": {
+  "event": "Direxion 2022 TPOR 기초지수 변경",
+  "tickers": {
+   "TPOR": "exclude_revalidate"
+  }
+ },
+ "g": {
+  "event": "일반 Direxion 497 (문제 공지 없음)",
+  "tickers": {}
+ },
+ "x1": {
+  "event": "[보조] BNKU·NRGU 신규 ETN 런칭 FWP — 조치 없음",
+  "tickers": {}
+ },
+ "x2": {
+  "event": "[보조] FNGB 런칭 424B2 — 조치 없음",
+  "tickers": {}
+ },
+ "x3": {
+  "event": "[보조] Direxion 상장 거래소 변경 497 — 조치 없음",
+  "tickers": {}
+ },
+ "x4": {
+  "event": "[보조] c 의 사전 보충서",
+  "tickers": {
+   "ERX": "exclude_revalidate",
+   "GUSH": "exclude_revalidate",
+   "NUGT": "exclude_revalidate"
+  }
+ },
+ "x5": {
+  "event": "[보조] SPXL 497K 일반 투자설명서 — 조치 없음",
+  "tickers": {}
+ },
+ "x6": {
+  "event": "[보조] SOXS 2026-06 1-for-10 역분할",
+  "tickers": {
+   "SOXS": "note"
+  }
+ },
+ "x7": {
+  "event": "[보조] GDXU 424B2 Amendment 27 — 비고",
+  "tickers": {
+   "GDXU": "note"
+  }
+ },
+ "x8": {
+  "event": "[보조] GDXU 2025-11 Financing Spread 인상 보도자료 — 비고",
+  "tickers": {
+   "GDXU": "note"
+  }
+ }
+}

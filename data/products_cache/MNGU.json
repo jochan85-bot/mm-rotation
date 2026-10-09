@@ -1,0 +1,45 @@
+{
+ "ticker": "MNGU",
+ "input_hash": "4727f33698051b85",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:05:46",
+ "feature_input": {
+  "티커": "MNGU",
+  "유형": "ETN",
+  "발행사": "Bank of Montreal(BMO) 발행 · MicroSectors 브랜드 (구조화·마케팅 REX Shares, LLC; 계산대리인 BMO Capital Markets Corp.)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "NYSE(R) MaNGoS+ Index - net total return version",
+  "지수 제공사": "ICE Data Indices, LLC (Index Sponsor / administrator)",
+  "섹터/테마": "대형 기술 10종, 비상장사 제외 (NYSE MaNGoS+)",
+  "지수 가중방식": "equal weight, 10% each at quarterly reconstitution",
+  "리밸런스": "quarterly reconstitution after close of 3rd Friday of Mar/Jun/Sep/Dec; reference date = last index business day of preceding month; announcement 2nd Friday; share reference date = 2nd index business day before 3rd Friday; plus fast-entry for newly listed MaNGoS securities",
+  "지수 종목 수": 10,
+  "상위 구성": [
+   "ADVANCED MICRO DEVICES 11.27%",
+   "MICRON TECHNOLOGY INC 10.5%",
+   "TAIWAN SEMICONDUCTOR-SP ADR 10.11%",
+   "PALANTIR TECHNOLOGIES INC-A 9.96%",
+   "SPACE EXPLORATION TECHN-CL A 9.93%"
+  ],
+  "상위 구성 기준": "지수 구성종목 (microsectors.com 상품 페이지)",
+  "비용 요약": "투자자 수수료 2027-01-31까지 면제 후 연 0.95% + 금융비용 = Prime Rate + 스프레드(PS 최초 3.00%, 상한 10.00%)",
+  "ETN 최초 거래일(PS Initial Trade Date; 상장일과 다를 수 있음)": "2026-08-26",
+  "분할 이력(Yahoo)": "없음 (Yahoo splits)",
+  "구조 사실": [
+   "BMO 발행 선순위 무담보 채무 — 발행사 신용위험에 노출(PS: senior unsecured debt obligations of Bank of Montreal; 예금자보호·FDIC 대상 아님)",
+   "만기 2046-07-31; 발행사 콜권(call right) 있음; 투자자 조기상환은 최소 25,000 ETN 단위(발행사가 면제 가능)이고 상환수수료 0.125%",
+   "BMO 는 상장 유지 의무가 없으며 사유 불문 상장 폐지를 결정할 수 있음(PS)"
+  ],
+  "종목 선정 규칙": "[부재] PS 별도 선정 규칙 미명시"
+ },
+ "feature_text": "MNGU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 REX Shares, LLC가 구조화·마케팅하는 ETN으로, ICE Data Indices, LLC가 제공하는 NYSE(R) MaNGoS+ Index의 net total return version 일간 수익률을 3배(일간 리셋)로 추종하며 비상장사를 제외한 대형 기술 10종을 대상으로 한다.\n지수는 10개 종목을 분기 재구성 시점에 각각 10%씩 동일가중하며, microsectors.com 상품 페이지의 지수 구성종목 기준 상위 구성은 ADVANCED MICRO DEVICES 11.27%, MICRON TECHNOLOGY INC 10.5%, TAIWAN SEMICONDUCTOR-SP ADR 10.11%, PALANTIR TECHNOLOGIES INC-A 9.96%, SPACE EXPLORATION TECHN-CL A 9.93%이다.\nBMO 발행 선순위 무담보 채무로 발행사 신용위험에 노출되며 예금자보호·FDIC 대상이 아니고, 만기는 2046-07-31이며 발행사 콜권이 있고 BMO는 사유 불문 상장 폐지를 결정할 수 있다고 명시돼 있다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "MNGU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 REX Shares, LLC가 구조화·마케팅하는 ETN으로, ICE Data Indices, LLC가 제공하는 NYSE(R) MaNGoS+ Index의 net total return version 일간 수익률을 3배(일간 리셋)로 추종하며 비상장사를 제외한 대형 기술 10종을 대상으로 한다.\n지수는 10개 종목을 분기 재구성 시점에 각각 10%씩 동일가중하며, microsectors.com 상품 페이지의 지수 구성종목 기준 상위 구성은 ADVANCED MICRO DEVICES 11.27%, MICRON TECHNOLOGY INC 10.5%, TAIWAN SEMICONDUCTOR-SP ADR 10.11%, PALANTIR TECHNOLOGIES INC-A 9.96%, SPACE EXPLORATION TECHN-CL A 9.93%이다.\nBMO 발행 선순위 무담보 채무로 발행사 신용위험에 노출되며 예금자보호·FDIC 대상이 아니고, 만기는 2046-07-31이며 발행사 콜권이 있고 BMO는 사유 불문 상장 폐지를 결정할 수 있다고 명시돼 있다.",
+   "violations": []
+  }
+ ]
+}

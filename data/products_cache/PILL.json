@@ -1,0 +1,45 @@
+{
+ "ticker": "PILL",
+ "input_hash": "6488ad1d2a11e065",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:05:06",
+ "feature_input": {
+  "티커": "PILL",
+  "유형": "ETF",
+  "발행사": "Direxion (운용: Rafferty Asset Management, LLC; 497K 명시)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "S&P Pharmaceuticals Select Industry Index",
+  "지수 제공사": "S&P Dow Jones Indices LLC (SPDJI) - per 497K \"Index Information\" section",
+  "섹터/테마": "제약 (S&P Pharmaceuticals Select Industry)",
+  "지수 가중방식": "modified equal-weighted (the 497K gives only size/liquidity eligibility thresholds, not the weight-modification/cap rules)",
+  "리밸런스": "\"The Index is rebalanced quarterly\"",
+  "지수 종목 수": "59 (497K 서술)",
+  "상위 구성": [
+   "XERS 2.46%",
+   "MANE 2.42%",
+   "AMRX 2.32%",
+   "LGND 2.15%",
+   "VTRS 2.13%"
+  ],
+  "상위 구성 기준": "1x ETF XPH 상위 보유 (지수 구성과 동일 가정)",
+  "비용 요약": "총 1.22% → 면제·상한 적용 후 0.98% · 운용보수 0.75% (497K 2026-02-27)",
+  "상장일(ISO)": "2017-11-15",
+  "분할 이력(Yahoo)": "없음 (Yahoo splits)",
+  "구조 사실": [
+   "497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다",
+   "지수(추종 목표) 변경 이력 — The performance shown prior to August 1, 2019 reflects the Fund’s previous daily leveraged investment objective, before fees and expenses, of 300% of the Dynamic Pharmaceutical Intellidex Index. As of August 1, 2019, the Fund began to seek a daily leveraged investment objective, before fees and expenses, of 300% of the S&P Pharmaceuticals Select Industry Index.",
+   "펀드명 표기 변경: 497K(2026-02-27)는 '(formerly the Direxion Daily Pharmaceutical & Medical Bull 3X Shares)'로 표기 — 상품명에서 'Shares'→'ETF'",
+   "운용보수 면제/비용상한 계약 기한 September 1, 2027 (497K 보수표 각주) — 497K: 이사회 동의로 종료·변경될 수 있음"
+  ]
+ },
+ "feature_text": "PILL은 Rafferty Asset Management, LLC가 운용하는 Direxion의 ETF로, S&P Dow Jones Indices LLC가 제공하는 S&P Pharmaceuticals Select Industry Index의 일간 수익률을 3배(일간 리셋)로 추종하는 제약 섹터 상품이다.\n지수는 modified equal-weighted 방식이며 분기마다 리밸런스하고 59개 종목으로 서술돼 있다. 1x ETF XPH의 상위 보유(지수 구성과 동일 가정) 기준으로 XERS 2.46%, MANE 2.42%, AMRX 2.32%, LGND 2.15%, VTRS 2.13% 순이다.\n497K(2026-02-27)에는 총보수 1.22%가 면제·상한 적용 후 0.98%이며 운용보수는 0.75%로, 면제·상한 계약 기한은 September 1, 2027이고 이사회 동의로 종료·변경될 수 있다고 명시돼 있다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "PILL은 Rafferty Asset Management, LLC가 운용하는 Direxion의 ETF로, S&P Dow Jones Indices LLC가 제공하는 S&P Pharmaceuticals Select Industry Index의 일간 수익률을 3배(일간 리셋)로 추종하는 제약 섹터 상품이다.\n지수는 modified equal-weighted 방식이며 분기마다 리밸런스하고 59개 종목으로 서술돼 있다. 1x ETF XPH의 상위 보유(지수 구성과 동일 가정) 기준으로 XERS 2.46%, MANE 2.42%, AMRX 2.32%, LGND 2.15%, VTRS 2.13% 순이다.\n497K(2026-02-27)에는 총보수 1.22%가 면제·상한 적용 후 0.98%이며 운용보수는 0.75%로, 면제·상한 계약 기한은 September 1, 2027이고 이사회 동의로 종료·변경될 수 있다고 명시돼 있다.",
+   "violations": []
+  }
+ ]
+}

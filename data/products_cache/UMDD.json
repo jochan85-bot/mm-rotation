@@ -1,0 +1,43 @@
+{
+ "ticker": "UMDD",
+ "input_hash": "18a64d185eb5c8e3",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:05:03",
+ "feature_input": {
+  "티커": "UMDD",
+  "유형": "ETF",
+  "발행사": "ProShares (운용: ProShare Advisors LLC; 497K 명시)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "S&P MidCap 400® Index",
+  "지수 제공사": "S&P Dow Jones Indices LLC - 497K: \"The Index is constructed and maintained by S&P Dow Jones Indices LLC.\"",
+  "섹터/테마": "미국 중형주 (S&P MidCap 400)",
+  "지수 가중방식": "\"weighted based on market capitalization\" (400 mid-cap companies)",
+  "리밸런스": "\"reevaluated every September with additional weight adjustments in March, June, and December\"",
+  "지수 종목 수": "400 (497K 서술)",
+  "상위 구성": [
+   "TWLO 1.32%",
+   "OKTA 1.02%",
+   "FTI 0.78%",
+   "NVT 0.76%",
+   "ATI 0.76%"
+  ],
+  "상위 구성 기준": "1x ETF IJH 상위 보유 (지수 구성과 동일 가정)",
+  "비용 요약": "총 1.39% → 면제·상한 적용 후 0.95% · 운용보수 0.75% (497K 2026-09-28)",
+  "상장일(ISO)": "2010-02-09",
+  "분할 이력(Yahoo)": "2011-02-25 정분할 2:1; 2013-06-10 정분할 2:1; 2015-05-20 정분할 2:1; 2021-05-25 정분할 5:1",
+  "구조 사실": [
+   "497K 명시(Compounding/Volatility Risk): 1일을 넘는 보유기간의 펀드 성과는 일간 목표(Daily Target)와 다를 수 있으며 그 차이가 클 수 있다",
+   "운용보수 면제/비용상한 계약 기한 September 30, 2027 (497K 보수표 각주) — 497K: 이사회 승인 없이 기한 전 종료 불가, 면제분은 5년 내 환수 가능"
+  ]
+ },
+ "feature_text": "UMDD는 ProShares(운용: ProShare Advisors LLC)가 발행한 ETF로, S&P Dow Jones Indices LLC가 구성·관리하는 S&P MidCap 400® Index(미국 중형주)의 일간 수익률 3배(일간 리셋)를 목표로 한다.\n지수는 시가총액 기준으로 가중되는 400개 중형주로 이루어지며 매년 9월에 재평가되고 3월·6월·12월에 가중치가 추가 조정된다. 1x ETF IJH의 상위 보유 종목(지수 구성과 동일하다고 가정) 기준 상위 구성은 TWLO 1.32%, OKTA 1.02%, FTI 0.78%, NVT 0.76%, ATI 0.76%이다.\n총보수는 1.39%이나 면제·상한 적용 후 0.95%(운용보수 0.75%)이며, 면제·비용상한 계약 기한은 2027년 9월 30일로 명시돼 있고, 1일을 넘는 보유기간의 성과는 일간 목표와 다를 수 있으며 그 차이가 클 수 있다고 497K에 기재돼 있다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "UMDD는 ProShares(운용: ProShare Advisors LLC)가 발행한 ETF로, S&P Dow Jones Indices LLC가 구성·관리하는 S&P MidCap 400® Index(미국 중형주)의 일간 수익률 3배(일간 리셋)를 목표로 한다.\n지수는 시가총액 기준으로 가중되는 400개 중형주로 이루어지며 매년 9월에 재평가되고 3월·6월·12월에 가중치가 추가 조정된다. 1x ETF IJH의 상위 보유 종목(지수 구성과 동일하다고 가정) 기준 상위 구성은 TWLO 1.32%, OKTA 1.02%, FTI 0.78%, NVT 0.76%, ATI 0.76%이다.\n총보수는 1.39%이나 면제·상한 적용 후 0.95%(운용보수 0.75%)이며, 면제·비용상한 계약 기한은 2027년 9월 30일로 명시돼 있고, 1일을 넘는 보유기간의 성과는 일간 목표와 다를 수 있으며 그 차이가 클 수 있다고 497K에 기재돼 있다.",
+   "violations": []
+  }
+ ]
+}

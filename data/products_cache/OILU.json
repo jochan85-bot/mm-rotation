@@ -1,0 +1,44 @@
+{
+ "ticker": "OILU",
+ "input_hash": "e3ab53c88c8b2be3",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:05:41",
+ "feature_input": {
+  "티커": "OILU",
+  "유형": "ETN",
+  "발행사": "Bank of Montreal(BMO) 발행 · MicroSectors 브랜드 (구조화·마케팅 REX Shares, LLC; 계산대리인 BMO Capital Markets Corp.)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "Solactive MicroSectors(TM) Oil & Gas Exploration & Production Index",
+  "지수 제공사": "Solactive AG (Index Sponsor; calculates level to 2 decimals)",
+  "섹터/테마": "석유·가스 탐사·생산 (Solactive MicroSectors Oil & Gas E&P)",
+  "지수 가중방식": "NOT equal weight: weight by lower of 1m / 6m average daily value traded, ranked; max 15% per component; sector aggregate targets Integrated O&G 30% / Upstream 50% / Downstream & Midstream 20%; constraints eased to 25% max if infeasible",
+  "리밸런스": "monthly rebalance; component selection on first day of Mar/Jun/Sep/Dec (quarterly)",
+  "지수 종목 수": 25,
+  "상위 구성": [
+   "EXXONMOBIL HOLDINGS CORP 15.24%",
+   "CHEVRON CORP 14.87%",
+   "CONOCOPHILLIPS 8.0%",
+   "SLB LTD 5.44%",
+   "VALERO ENERGY CORP 4.37%"
+  ],
+  "상위 구성 기준": "지수 구성종목 (microsectors.com 상품 페이지)",
+  "비용 요약": "투자자 수수료 연 0.95% + 금융비용 = Prime Rate + 스프레드(PS 최초 2.75%, 상한 5.00%) — 2023-03-17 PS 기준",
+  "ETN 최초 거래일(PS Initial Trade Date; 상장일과 다를 수 있음)": "2021-11-08",
+  "분할 이력(Yahoo)": "없음 (Yahoo splits)",
+  "구조 사실": [
+   "BMO 발행 선순위 무담보 채무 — 발행사 신용위험에 노출(PS: senior unsecured debt obligations of Bank of Montreal; 예금자보호·FDIC 대상 아님)",
+   "만기 2041-06-28; 발행사 콜권(call right) 있음; 투자자 조기상환은 최소 25,000 ETN 단위(발행사가 면제 가능)이고 상환수수료 0.125%"
+  ],
+  "종목 선정 규칙": "[부재] PS 별도 선정 규칙 미명시"
+ },
+ "feature_text": "OILU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 판매되는 ETN으로, Solactive AG가 산출하는 Solactive MicroSectors Oil & Gas Exploration & Production Index의 일간 수익률을 3배(일간 리셋)로 추종하는 석유·가스 탐사·생산 섹터 상품이다.\n지수는 25개 종목으로 구성되며 동일가중이 아니라 1개월·6개월 평균 거래대금 중 낮은 값을 기준으로 순위를 매겨 가중하고, 종목당 최대 15%, 섹터별 목표는 통합 석유·가스 30%, 업스트림 50%, 다운스트림·미드스트림 20%이다. 상위 구성은 EXXONMOBIL HOLDINGS CORP 15.24%, CHEVRON CORP 14.87%, CONOCOPHILLIPS 8.0%, SLB LTD 5.44%, VALERO ENERGY CORP 4.37%이다(microsectors.com 상품 페이지의 지수 구성종목 기준).\nBMO의 선순위 무담보 채무로 발행사 신용위험에 노출되며, 만기는 2041-06-28이고 발행사 콜권이 있으며 투자자 수수료는 연 0.95%에 Prime Rate에 스프레드를 더한 금융비용이 별도로 부과된다고 명시돼 있다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "OILU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 판매되는 ETN으로, Solactive AG가 산출하는 Solactive MicroSectors Oil & Gas Exploration & Production Index의 일간 수익률을 3배(일간 리셋)로 추종하는 석유·가스 탐사·생산 섹터 상품이다.\n지수는 25개 종목으로 구성되며 동일가중이 아니라 1개월·6개월 평균 거래대금 중 낮은 값을 기준으로 순위를 매겨 가중하고, 종목당 최대 15%, 섹터별 목표는 통합 석유·가스 30%, 업스트림 50%, 다운스트림·미드스트림 20%이다. 상위 구성은 EXXONMOBIL HOLDINGS CORP 15.24%, CHEVRON CORP 14.87%, CONOCOPHILLIPS 8.0%, SLB LTD 5.44%, VALERO ENERGY CORP 4.37%이다(microsectors.com 상품 페이지의 지수 구성종목 기준).\nBMO의 선순위 무담보 채무로 발행사 신용위험에 노출되며, 만기는 2041-06-28이고 발행사 콜권이 있으며 투자자 수수료는 연 0.95%에 Prime Rate에 스프레드를 더한 금융비용이 별도로 부과된다고 명시돼 있다.",
+   "violations": []
+  }
+ ]
+}

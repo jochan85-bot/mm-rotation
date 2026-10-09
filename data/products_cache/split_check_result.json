@@ -1,0 +1,119 @@
+[
+ {
+  "ticker": "HIBL",
+  "date": "2020-04-23",
+  "kind": "reverse",
+  "found": null
+ },
+ {
+  "ticker": "DPST",
+  "date": "2020-04-23",
+  "kind": "reverse",
+  "found": null
+ },
+ {
+  "ticker": "RETL",
+  "date": "2020-04-23",
+  "kind": "reverse",
+  "found": {
+   "filed": "2020-04-08",
+   "form": "497",
+   "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312520101426/d856187d497.htm",
+   "snippet": "ificial Intelligence & Automation Index Bull 3X Shares (UBOT) Direxion Daily Retail Bull 3X Shares (RETL) (the &#8220;Funds&#8221;) Supplement dated April 8, 2020 to the Summary Prospectuses, Prospectuses, and Statements of Additional Information (&#8220;SAI&#8221;) The Board of Trustees of the Direxion Shares ETF Trust (&#8220;Trust&#8221;) has approved, based on the recommendation of Rafferty Asset Management, LLC, the investment adviser to the Funds, reverse splits of the issued and outstanding shares of the Funds. After the close of the markets on April 22, 2020 (the &#8220;Record Date&#8221;), each Fund will affect reverse splits of its issued and outstanding shares as follows: Fund Name Reverse Split Ratio Approxima"
+  }
+ },
+ {
+  "ticker": "RETL",
+  "date": "2021-01-11",
+  "kind": "forward",
+  "found": null
+ },
+ {
+  "ticker": "SOXL",
+  "date": "2021-03-02",
+  "kind": "forward",
+  "found": null
+ },
+ {
+  "ticker": "TECL",
+  "date": "2021-03-02",
+  "kind": "forward",
+  "found": null
+ },
+ {
+  "ticker": "HIBL",
+  "date": "2021-03-02",
+  "kind": "forward",
+  "found": null
+ },
+ {
+  "ticker": "DPST",
+  "date": "2021-10-25",
+  "kind": "forward",
+  "found": null
+ },
+ {
+  "ticker": "RETL",
+  "date": "2021-10-25",
+  "kind": "forward",
+  "found": null
+ },
+ {
+  "ticker": "DPST",
+  "date": "2023-06-05",
+  "kind": "reverse",
+  "found": {
+   "filed": "2023-05-12",
+   "form": "497",
+   "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312523143511/d497298d497.htm",
+   "snippet": "7 1 d497298d497.htm 497 497 DIREXION SHARES ETF TRUST Direxion Daily Regional Banks Bull 3X Shares (DPST) Direxion Daily Electric and Autonomous Vehicles Bull 2X Shares (EVAV) (the &#8220;Funds&#8221;) Supplement dated May 12, 2023 to the Summary Prospectuses, Prospectuses, and Statements of Additional Information (&#8220;SAI&#8221;) dated February 28, 2023 After the close of the markets on June 2, 2023 (the &#8220;Record Date&#8221;), each Fund will effect reverse splits of its issued and outstanding shares as follows: &#8195; Fund Name Reverse Split Ratio Approximate decrease in total number of outstanding shares Direxion Daily Regional Banks Bull 3X Shares 1 for 10 90% Direxion Daily Electric and Autonomous Vehicles Bull 2"
+  }
+ },
+ {
+  "ticker": "LABU",
+  "date": "2023-12-04",
+  "kind": "reverse",
+  "found": {
+   "filed": "2023-11-03",
+   "form": "497",
+   "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312523270419/d528188d497.htm",
+   "snippet": "ST DIREXION DAILY 20+ YEAR TREASURY BULL 3X SHARES (TMF) DIREXION DAILY S&P BIOTECH BULL 3X SHARES (LABU) (the &#8220;FUNDS&#8221;) Supplement dated November 3, 2023 to the Summary Prospectuses, Prospectus, and Statement of Additional Information (&#8220;SAI&#8221;) dated February 28, 2023, as last supplemented After the close of the markets on December 1, 2023 (the &#8220;Effective Date&#8221;), each Fund will effect a reverse split of its issued and outstanding shares as follows: &#8195; Fund Name Reverse Split Ratio Approximate decrease in total number of outstanding shares Direxion Daily 20+ Year Treasury Bull 3X Shares 1 for 10 90% Direxion Daily S&P Biotech Bull 3X Shares 1 for 20 9"
+  }
+ },
+ {
+  "ticker": "TQQQ",
+  "date": "2025-11-20",
+  "kind": "forward",
+  "found": null
+ },
+ {
+  "ticker": "UDOW",
+  "date": "2025-11-20",
+  "kind": "forward",
+  "found": null
+ },
+ {
+  "ticker": "UMDD",
+  "date": "2021-05-25",
+  "kind": "forward",
+  "found": null
+ },
+ {
+  "ticker": "UDOW",
+  "date": "2021-05-25",
+  "kind": "forward",
+  "found": null
+ },
+ {
+  "ticker": "TQQQ",
+  "date": "2022-01-13",
+  "kind": "forward",
+  "found": null
+ },
+ {
+  "ticker": "UPRO",
+  "date": "2022-01-13",
+  "kind": "forward",
+  "found": null
+ }
+]

@@ -1,0 +1,46 @@
+{
+ "ticker": "BNKU",
+ "input_hash": "bcac6356dd0db7e0",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:05:37",
+ "feature_input": {
+  "티커": "BNKU",
+  "유형": "ETN",
+  "발행사": "Bank of Montreal(BMO) 발행 · MicroSectors 브랜드 (구조화·마케팅 REX Shares, LLC; 계산대리인 BMO Capital Markets Corp.)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "Solactive MicroSectors(TM) U.S. Big Banks Index - gross total return version",
+  "지수 제공사": "Solactive AG (Index Sponsor; calculates and publishes; developed in collaboration with REX Shares)",
+  "섹터/테마": "미국 대형 은행·투자서비스 10종 (Solactive MicroSectors U.S. Big Banks)",
+  "지수 가중방식": "equal weight, reset on each monthly Adjustment Day",
+  "리밸런스": "monthly: Selection Day = first business day of month; Adjustment Day = 3rd Friday; full re-selection each March, monthly buffer review (top-13 rank rule) otherwise",
+  "지수 종목 수": 10,
+  "상위 구성": [
+   "CITIGROUP INC 10.32%",
+   "JPMORGAN CHASE & CO 10.12%",
+   "US BANCORP 10.08%",
+   "GOLDMAN SACHS GROUP INC 10.06%",
+   "MORGAN STANLEY 10.0%"
+  ],
+  "상위 구성 기준": "지수 구성종목 (microsectors.com 상품 페이지)",
+  "비용 요약": "투자자 수수료 연 0.95% + 금융비용 = Prime Rate + 스프레드(PS 최초 2.25%, 상한 4.00%)",
+  "ETN 최초 거래일(PS Initial Trade Date; 상장일과 다를 수 있음)": "2025-02-19",
+  "분할 이력(Yahoo)": "없음 (Yahoo splits)",
+  "구조 사실": [
+   "BMO 발행 선순위 무담보 채무 — 발행사 신용위험에 노출(PS: senior unsecured debt obligations of Bank of Montreal; 예금자보호·FDIC 대상 아님)",
+   "만기 2045-02-17; 발행사 콜권(call right) 있음; 투자자 조기상환은 최소 25,000 ETN 단위(발행사가 면제 가능)이고 상환수수료 0.125%",
+   "BMO 는 상장 유지 의무가 없으며 사유 불문 상장 폐지를 결정할 수 있음(PS)",
+   "2024-07-08 — BMO, 구 BNKU(Big Banks 3X, 만기 2039-03-25) 등 4개 ETN 전량 상환(콜) 발표 — 콜결제일 2024-07-25 예정"
+  ],
+  "종목 선정 규칙": "[부재] PS 별도 선정 규칙 미명시"
+ },
+ "feature_text": "BNKU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 REX Shares가 구조화·마케팅하는 ETN으로, Solactive MicroSectors U.S. Big Banks Index(gross total return version)의 일간 수익률을 3배(일간 리셋)로 추종하는 미국 대형 은행·투자서비스 섹터 상품이다.\n지수는 Solactive AG가 산출·발표하는 10종목 동일가중 방식이며 매월 셋째 금요일(Adjustment Day)에 비중을 재설정하고, 매년 3월에 전체 종목을 재선정하고 그 외 달에는 상위 13위 규칙의 버퍼 심사를 적용한다. 지수 구성종목 기준 상위 구성은 CITIGROUP INC 10.32%, JPMORGAN CHASE & CO 10.12%, US BANCORP 10.08%, GOLDMAN SACHS GROUP INC 10.06%, MORGAN STANLEY 10.0%이다.\nBMO 발행 선순위 무담보 채무로 발행사 신용위험에 노출되며, 2024-07-08 BMO가 만기 2039-03-25인 구 BNKU를 포함한 4개 ETN의 전량 상환(콜)을 발표했고 현 ETN의 만기는 2045-02-17이며 발행사 콜권이 있다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "BNKU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 REX Shares가 구조화·마케팅하는 ETN으로, Solactive MicroSectors U.S. Big Banks Index(gross total return version)의 일간 수익률을 3배(일간 리셋)로 추종하는 미국 대형 은행·투자서비스 섹터 상품이다.\n지수는 Solactive AG가 산출·발표하는 10종목 동일가중 방식이며 매월 셋째 금요일(Adjustment Day)에 비중을 재설정하고, 매년 3월에 전체 종목을 재선정하고 그 외 달에는 상위 13위 규칙의 버퍼 심사를 적용한다. 지수 구성종목 기준 상위 구성은 CITIGROUP INC 10.32%, JPMORGAN CHASE & CO 10.12%, US BANCORP 10.08%, GOLDMAN SACHS GROUP INC 10.06%, MORGAN STANLEY 10.0%이다.\nBMO 발행 선순위 무담보 채무로 발행사 신용위험에 노출되며, 2024-07-08 BMO가 만기 2039-03-25인 구 BNKU를 포함한 4개 ETN의 전량 상환(콜)을 발표했고 현 ETN의 만기는 2045-02-17이며 발행사 콜권이 있다.",
+   "violations": []
+  }
+ ]
+}

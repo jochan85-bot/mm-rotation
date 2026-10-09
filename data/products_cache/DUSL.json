@@ -1,0 +1,44 @@
+{
+ "ticker": "DUSL",
+ "input_hash": "ea70fdd18cdec33f",
+ "model": "claude-sonnet-5-5",
+ "prompt_version": "v1",
+ "status": "ok",
+ "generated": "2026-10-09T12:05:08",
+ "feature_input": {
+  "티커": "DUSL",
+  "유형": "ETF",
+  "발행사": "Direxion (운용: Rafferty Asset Management, LLC; 497K 명시)",
+  "배수": "3x (일간 리셋)",
+  "공식 지수명": "Industrials Select Sector Index",
+  "지수 제공사": "S&P Dow Jones Indices (the \"Index Provider\")",
+  "섹터/테마": "산업재 섹터 (Industrials Select Sector)",
+  "지수 가중방식": "Select Sector: \"modified market capitalization\" weights (single-stock weight modifications to conform to Internal Revenue Code requirements); all constituents are S&P 500 members",
+  "리밸런스": "\"The Index is rebalanced quarterly\"",
+  "지수 종목 수": "80 (497K 서술)",
+  "상위 구성": [
+   "CAT 7.01%",
+   "GE 6.09%",
+   "GEV 4.76%",
+   "RTX 4.71%",
+   "DE 3.17%"
+  ],
+  "상위 구성 기준": "1x ETF XLI 상위 보유 (지수 구성과 동일 가정)",
+  "비용 요약": "총 0.98% → 면제·상한 적용 후 0.97% · 운용보수 0.75% (497K 2026-02-27)",
+  "상장일(ISO)": "2017-05-03",
+  "분할 이력(Yahoo)": "없음 (Yahoo splits)",
+  "구조 사실": [
+   "497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다",
+   "펀드명 표기 변경: 497K(2026-02-27)는 '(formerly the Direxion Daily Industrials Bull 3X Shares)'로 표기 — 상품명에서 'Shares'→'ETF'",
+   "운용보수 면제/비용상한 계약 기한 September 1, 2027 (497K 보수표 각주) — 497K: 이사회 동의로 종료·변경될 수 있음"
+  ]
+ },
+ "feature_text": "DUSL은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, S&P Dow Jones Indices가 제공하는 Industrials Select Sector Index(산업재 섹터)의 일간 수익률을 3배(일간 리셋)로 추종하며 2017-05-03에 상장됐다.\n지수는 S&P 500 구성 종목만으로 이뤄진 80개 종목에 수정 시가총액 가중 방식(Internal Revenue Code 요건에 맞춘 개별 종목 비중 조정)을 적용하고 분기별로 리밸런스하며, 1x ETF XLI의 상위 보유 기준(지수 구성과 동일 가정)으로 CAT 7.01%, GE 6.09%, GEV 4.76%, RTX 4.71%, DE 3.17% 순이다.\n497K(2026-02-27)에는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있고, 총보수 0.98%는 면제·상한 적용 후 0.97%(운용보수 0.75%)이며 이 계약 기한은 September 1, 2027이다.",
+ "attempts": [
+  {
+   "n": 1,
+   "text": "DUSL은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, S&P Dow Jones Indices가 제공하는 Industrials Select Sector Index(산업재 섹터)의 일간 수익률을 3배(일간 리셋)로 추종하며 2017-05-03에 상장됐다.\n지수는 S&P 500 구성 종목만으로 이뤄진 80개 종목에 수정 시가총액 가중 방식(Internal Revenue Code 요건에 맞춘 개별 종목 비중 조정)을 적용하고 분기별로 리밸런스하며, 1x ETF XLI의 상위 보유 기준(지수 구성과 동일 가정)으로 CAT 7.01%, GE 6.09%, GEV 4.76%, RTX 4.71%, DE 3.17% 순이다.\n497K(2026-02-27)에는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있고, 총보수 0.98%는 면제·상한 적용 후 0.97%(운용보수 0.75%)이며 이 계약 기한은 September 1, 2027이다.",
+   "violations": []
+  }
+ ]
+}
