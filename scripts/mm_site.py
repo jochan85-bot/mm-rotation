@@ -430,51 +430,6 @@ def rebuild_guide_only():
     (DOCS / "guide.html").write_text(build_guide(df, meta, uni), encoding="utf-8")
 
 
-
-# ---------- 백테스트 그래프 페이지 (MM-BT-CHARTS-20261011) ----------
-def build_backtest():
-    """docs/backtest.html — 정적 뼈대(조건·한계 문구) + assets/bt.js 가 data/bt/*.json 으로 그린다. 상단 메뉴에는 넣지 않고 Guide 7절에서만 진입."""
-    mj = DOCS / "data" / "bt" / "meta.json"
-    M = json.load(open(mj, encoding="utf-8")) if mj.exists() else {}
-    sy = M.get("synth_start_share_main", {}); er = M.get("etn_recon", {})
-    synth = " · ".join(f"{k} {sy[k]:.1f}%" for k in ("B1", "B2", "B3-1", "B3-3", "B3-5", "B3-7") if k in sy)
-    er_t = f"MNGU {er.get('MNGU', 86)}% · SMHU·XLCU·XLPU {er.get('SMHU', 75)}% · AIQU {er.get('AIQU', 60)}%"
-    reps = M.get("r2_reps", 1000); seed = M.get("r2_seed_base", 20261013)
-    def card(n, title, extra="", legend=True, tab=False, ro=True):
-        lg = f'<div class="legend" id="l{n}"{" data-shade=1" if n in ("1", "2", "7") else ""}></div>' if legend else ""
-        return (f'<div class="card btc"><h3>{title}</h3>{lg}{extra}</div>')
-    ts = lambda n: f'<div class="ro" id="r{n}"></div>'
-    tabl = lambda n: f'<details class="bttab"><summary>표로 보기</summary><div class="wrap"><table class="rk bt" id="t{n}"></table></div></details>'
-    body = f"""<h1>백테스트 그래프<small>무매 M-score 상위 N 교체 × 역할3 경보 4단계 · 과거 시뮬레이션</small></h1>
-<p class="meta"><b>V2.2</b>(40분할·별% = 12 − 0.6·T) · 익절 12% · 손절 없음 · 총자금 1 · 슬롯당 1/N · 순위 = 1x 공식 지수 기준 M-score 상위 N 교체. 수치는 총자금 1.0 대비 비율(1.852 = +185.2%).<br>
-주 구간 2020-01-02~2026-10-08 · 참고 구간 2010-01-04~2026-10-08 · 음영 = 역할3 US 상태 4 구간.</p>
-<div class="banner">과거 시뮬레이션이며 미래 성과를 뜻하지 않음</div>
-<div class="btbar"><span class="mu">구간</span><button class="btn on" data-period="main">주 구간 2020~</button><button class="btn" data-period="ref">참고 구간 2010~</button>
-<span class="mu" style="margin-left:8px">경보</span><button class="btn on" data-var="C">지속(C)</button><button class="btn" data-var="H1">신규 동결(H1)</button><button class="btn" data-var="H2">매수 정지(H2)</button></div>
-<p class="meta" id="pnote"></p>
-{card("1", "1. 누적 실현이익", ts("1") + '<div class="cbox" id="c1"></div><p class="btsum" id="s1"></p>')}
-{card("2", "2. 평가손익 경로(실현+미실현)와 낙폭", ts("2a") + '<div class="cbox" id="c2a"></div><div class="mu sub">낙폭(최고점 대비, 총자금 비율)</div>' + ts("2b") + '<div class="cbox" id="c2b"></div><p class="btsum" id="s2"></p>')}
-{card("3", "3. 2021-11 ~ 2023-12 확대 (월별, 2021-10-29 대비) · 주 구간", ts("3") + '<div class="cbox" id="c3"></div><p class="btsum" id="s3"></p>' + tabl("3"))}
-{card("4", "4. 연도별 실현이익 · 주 구간", ts("4") + '<div class="cbox" id="c4"></div><p class="btsum" id="s4"></p>' + tabl("4"))}
-{card("5", "5. 경보 변형 비교", '<div class="legend vleg"><span class="lg"><i style="background:#8b97a7"></i>지속(C)</span><span class="lg"><i style="background:#f59e0b"></i>신규 동결(H1)</span><span class="lg"><i style="background:#3b82f6"></i>매수 정지(H2)</span></div>'
-      + '<div class="sub">총 실현이익</div>' + ts("5a") + '<div class="cbox" id="c5a"></div><div class="sub">최대 낙폭</div>' + ts("5b") + '<div class="cbox" id="c5b"></div><div class="sub">2022 최저 (2021-11-01 직전 대비)</div>' + ts("5c") + '<div class="cbox" id="c5c"></div><p class="btsum" id="s5"></p>' + tabl("5"), legend=False)}
-{card("6", "6. 무작위 1,000회 분포와 B3-5 · B3-7 위치", ts("6") + '<div class="hg"><div class="cbox" id="c6r5"></div><div class="cbox" id="c6r7"></div><div class="cbox" id="c6d5"></div><div class="cbox" id="c6d7"></div></div><p class="btsum" id="s6"></p>', legend=False)}
-{card("7", "7. 동시 STUCK 슬롯 수", ts("7") + '<div class="cbox" id="c7"></div><p class="btsum" id="s7"></p>')}
-<h2>한계</h2>
-<ul class="lim">
-<li>합성 구간에서 시작한 사이클 비율(주 구간, 지속): {E(synth)}.</li>
-<li>신규 ETN 의 지수 일부는 재구성값(점수 창 비중): {E(er_t)}.</li>
-<li>2022 한 번의 하락이 2022 최저 등 저점 지표를 좌우합니다.</li>
-<li>무작위(R2)는 단일 시드({seed}+반복번호) {reps:,}회입니다.</li>
-</ul>
-<p class="meta"><a href="guide.html#s7">← Guide 7절로 돌아가기</a></p>"""
-    return pg("백테스트 그래프", body, "guide.html", scripts='<script src="assets/bt.js"></script>')
-
-
-def rebuild_backtest_only():
-    """backtest.html 만 다시 그린다(docs/data 무접촉)."""
-    (DOCS / "backtest.html").write_text(build_backtest(), encoding="utf-8")
-
 def build_all(latest_df, uni, meta, p0, score_files):
     DOCS.mkdir(exist_ok=True)
     try:
@@ -493,7 +448,6 @@ def build_all(latest_df, uni, meta, p0, score_files):
     items = load_page_items(); hold = load_holdings(); rmap = recon_map(latest_df)
     (DOCS / "index.html").write_text(build_index(latest_df, meta), encoding="utf-8")
     (DOCS / "guide.html").write_text(build_guide(latest_df, meta, uni), encoding="utf-8")
-    rebuild_backtest_only()
     lt = compute_longterm(latest_df, meta["asof"])
     if lt is not None:
         json.dump(lt, open(DOCS / "data" / "longterm.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
