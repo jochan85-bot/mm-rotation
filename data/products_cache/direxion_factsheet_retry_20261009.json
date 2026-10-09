@@ -1,0 +1,61 @@
+{
+ "checked": "2026-10-09",
+ "method": "curl -L, 일반 브라우저형 User-Agent (Chrome/124), 리다이렉트 추적. SPXL·DRN 에 Cache-Control: no-cache 재시도, SPXL 에 Referer/Accept 변형·URL 변형(?x=1 → 404, .PDF 대문자 → 403) 시험",
+ "note": "같은 URL 형식으로 Direxion 11종(MIDU·CURE·PILL·DPST·DFEN·DUSL·TPOR·RETL·WANT·NAIL·UTSL)은 HTTP 200 application/pdf. 아래 9종만 HTTP 301 → 내부 호스트 minio:9000 (외부 DNS 해석 불가, curl rc=6)",
+ "results": {
+  "SPXL": {
+   "url": "https://www.direxion.com/uploads/SPXL-Fact-Sheet.pdf",
+   "http": 301,
+   "location": "http://minio:9000/uploads/SPXL-Fact-Sheet.pdf",
+   "ok": false
+  },
+  "TNA": {
+   "url": "https://www.direxion.com/uploads/TNA-Fact-Sheet.pdf",
+   "http": 301,
+   "location": "http://minio:9000/uploads/TNA-Fact-Sheet.pdf",
+   "ok": false
+  },
+  "HIBL": {
+   "url": "https://www.direxion.com/uploads/HIBL-Fact-Sheet.pdf",
+   "http": 301,
+   "location": "http://minio:9000/uploads/HIBL-Fact-Sheet.pdf",
+   "ok": false
+  },
+  "SOXL": {
+   "url": "https://www.direxion.com/uploads/SOXL-Fact-Sheet.pdf",
+   "http": 301,
+   "location": "http://minio:9000/uploads/SOXL-Fact-Sheet.pdf",
+   "ok": false
+  },
+  "TECL": {
+   "url": "https://www.direxion.com/uploads/TECL-Fact-Sheet.pdf",
+   "http": 301,
+   "location": "http://minio:9000/uploads/TECL-Fact-Sheet.pdf",
+   "ok": false
+  },
+  "WEBL": {
+   "url": "https://www.direxion.com/uploads/WEBL-Fact-Sheet.pdf",
+   "http": 301,
+   "location": "http://minio:9000/uploads/WEBL-Fact-Sheet.pdf",
+   "ok": false
+  },
+  "LABU": {
+   "url": "https://www.direxion.com/uploads/LABU-Fact-Sheet.pdf",
+   "http": 301,
+   "location": "http://minio:9000/uploads/LABU-Fact-Sheet.pdf",
+   "ok": false
+  },
+  "FAS": {
+   "url": "https://www.direxion.com/uploads/FAS-Fact-Sheet.pdf",
+   "http": 301,
+   "location": "http://minio:9000/uploads/FAS-Fact-Sheet.pdf",
+   "ok": false
+  },
+  "DRN": {
+   "url": "https://www.direxion.com/uploads/DRN-Fact-Sheet.pdf",
+   "http": 301,
+   "location": "http://minio:9000/uploads/DRN-Fact-Sheet.pdf",
+   "ok": false
+  }
+ }
+}

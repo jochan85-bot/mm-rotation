@@ -13,6 +13,15 @@ UDOW:
   sector_theme: 미국 대형 우량주 30종 (다우존스 산업평균, 가격가중)
 TNA:
   sector_theme: 미국 소형주 (Russell 2000)
+  # 가중방식 보강 2026-10-09 (MM-PAGE-V2.3-FOLLOWUP-20261016 §6-A): Direxion 497K 는 가중방식 미명시 → 제공사(FTSE Russell) 방법론 원문으로 확인
+  construction:
+    weighting: 유동주식 조정 시가총액 가중 (float-adjusted market-cap weighted)
+    weighting_source:
+      url: https://research.ftserussell.com/products/downloads/Russell-US-indexes.pdf
+      form: 'FTSE Russell, Russell US Equity Indexes Construction and Methodology v7.2 (August 2026) §1.1.1 "float-adjusted, market capitalization-weighted indexes", §7.1.1 "Stocks in the Russell US indexes are weighted by their available (also called float-adjusted) market capitalization"'
+      doc_date: '2026-08'
+      note: 제공사 방법론 원문 직접 확인(대체 출처 아님). 보조 확인 — iShares Russell 2000 ETF(IWM) 497K 2026-07-31 "float-adjusted capitalization-weighted index of equity securities issued by the approximately 1,933 smallest issuers in the Russell 3000 Index" (https://www.sec.gov/Archives/edgar/data/1100663/000119312526327900/d25568d497k.htm)
+    weighting_note: 'Direxion 497K 는 가중방식을 적지 않음. 방법론 v7.2 §6.10.1 은 Russell 2000 을 Russell 3000E 시총 순위 #1,001-3,000 으로 정의. 재구성 주기는 방법론 §4.1.2·§4.2.3 이 "semi-annual"(6월 넷째 금요일·12월 둘째 금요일)이라 적은 반면 Direxion 497K 는 "reconstituted annually"로 서술 — 두 문서가 다르며 rebalance 필드는 497K 서술 그대로 둠'
 URTY:
   sector_theme: 미국 소형주 (Russell 2000)
 MIDU:
@@ -21,12 +30,30 @@ UMDD:
   sector_theme: 미국 중형주 (S&P MidCap 400)
 HIBL:
   sector_theme: 미국 대형주 중 고베타 100종 (S&P 500 High Beta)
+  # 가중방식 보강 2026-10-09 (§6-A): Direxion 497K 가중방식 미명시 → S&P DJI 방법론(라이브 URL 403 → Wayback 보존본) + SPHB 투자설명서로 확인
+  construction:
+    weighting: 베타 비례 가중 (종목 i 의 비중 = Beta_i ÷ 구성종목 Beta 합; 시가총액 가중 아님)
+    weighting_source:
+      url: https://web.archive.org/web/20230701160959/https://spglobal.com/spdji/en/documents/methodologies/methodology-sp-high-beta-indices.pdf
+      form: 'S&P Dow Jones Indices, S&P High Beta Indices Methodology (January 2023판) "Constituent Weightings": "the weight, w_i, for each index constituent i is set proportional to its beta" — S&P 500 High Beta Index N = 100 (p.6)'
+      doc_date: '2023-01'
+      note: 출처 — S&P DJI 방법론 원문의 Wayback 보존본(제공사 라이브 URL https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-high-beta-indices.pdf 는 403 으로 대체). 보존본은 2023-01판이라 현행 일치 여부를 현행 문서로 교차확인 — Invesco S&P 500 High Beta ETF(SPHB, Invesco Exchange-Traded Fund Trust II) 485BPOS 2025-12-18 "The Underlying Index weights each constituent security in proportion to its beta, with the highest beta securities receiving the greatest weights" (https://www.sec.gov/Archives/edgar/data/1378872/000110465925122454/tm2532525d1_485bpos.htm)
+    weighting_note: 'Direxion 497K 는 가중방식을 적지 않음(선정 규칙만 서술). 베타 비례 가중이 맞음을 방법론·SPHB 투자설명서 두 문서로 확인'
 SOXL:
   sector_theme: 반도체 (NYSE Semiconductor Index)
 TECL:
   sector_theme: 정보기술 섹터 (Technology Select Sector)
 WEBL:
   sector_theme: 인터넷 (Dow Jones Internet Composite)
+  # 가중방식 보강 2026-10-09 (§6-A): Direxion 497K 가중방식 미명시. S&P DJI 방법론 URL 403(spglobal.com 전 경로 403, 추정 파일명의 Wayback 조회는 404) → 동일 지수 1x 추종 상품 투자설명서로 대체
+  construction:
+    weighting: 유동주식 조정 시가총액 가중 (float-adjusted market-cap weighted) · 단일 종목 상한 10% · 비중 4.5% 초과 종목들의 누적 비중 상한 45%
+    weighting_source:
+      url: https://www.sec.gov/Archives/edgar/data/1329377/000144554626003279/etf1_fdn497k.htm
+      form: 'First Trust Dow Jones Internet Index Fund(FDN, First Trust Exchange-Traded Fund) 497K 2026-05-01 Principal Investment Strategies: "Securities selected for inclusion in the Index are then weighted by float-adjusted market capitalization, subject to a single security weight cap of 10%. The cumulative weight of all companies within the Index with a weight greater than 4.5% cannot exceed 45% of the Index."'
+      doc_date: '2026-05-01'
+      note: 출처 — EDGAR 497K (제공사 방법론 403 으로 대체). FDN 은 Dow Jones Internet Composite Index 를 1x 로 추종하는 펀드이며 지수 구성 서술은 해당 문서의 것이다
+    weighting_note: 'Direxion 497K 는 가중방식을 적지 않음(40종목 float-adjusted 시총 순위 선정까지만 서술). 가중 규칙은 FDN 497K 서술로 확인했고 제공사 방법론 원문으로는 확인하지 못함'
 CURE:
   sector_theme: 헬스케어 섹터 (Health Care Select Sector)
 PILL:

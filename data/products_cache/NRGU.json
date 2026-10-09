@@ -1,10 +1,10 @@
 {
  "ticker": "NRGU",
- "input_hash": "0908c29b71ca4123",
+ "input_hash": "e05a036e826b22ea",
  "model": "claude-sonnet-5-5",
  "prompt_version": "v1",
  "status": "ok",
- "generated": "2026-10-09T12:05:37",
+ "generated": "2026-10-09T12:59:24",
  "feature_input": {
   "티커": "NRGU",
   "유형": "ETN",
@@ -31,15 +31,16 @@
    "BMO 발행 선순위 무담보 채무 — 발행사 신용위험에 노출(PS: senior unsecured debt obligations of Bank of Montreal; 예금자보호·FDIC 대상 아님)",
    "만기 2045-02-17; 발행사 콜권(call right) 있음; 투자자 조기상환은 최소 25,000 ETN 단위(발행사가 면제 가능)이고 상환수수료 0.125%",
    "BMO 는 상장 유지 의무가 없으며 사유 불문 상장 폐지를 결정할 수 있음(PS)",
+   "현행 시리즈 2025-02 발행, 구 시리즈 상환 이력(2024-07)은 동일 티커·동일 지수의 선행 상품 (아래 공시 이벤트 참조)",
    "2024-07-08 — BMO, 구 NRGU(Big Oil 3X) 등 4개 ETN 전량 상환(콜) 발표 — 콜결제일 2024-07-25 예정"
   ],
   "종목 선정 규칙": "[부재] PS 별도 선정 규칙 미명시"
  },
- "feature_text": "NRGU는 Bank of Montreal(BMO)이 발행하고 REX Shares가 구조화·마케팅하는 MicroSectors 브랜드의 ETN으로, Solactive MicroSectors U.S. Big Oil Index의 gross total return 버전 일간 수익률을 3배(일간 리셋)로 추종하는 미국 대형 석유 섹터 상품이다.\n지수는 10개 종목을 동일가중으로 구성하며 매월 세 번째 금요일(Adjustment Day)에 비중을 재설정하고, 지수 구성종목 기준 상위 구성은 Marathon Petroleum 10.45%, Valero Energy 10.3%, ExxonMobil Holdings 10.07%, EOG Resources 10.04%, Phillips 66 9.98%이다.\nBMO의 선순위 무담보 채무로 발행사 신용위험에 노출되며, 발행사 콜권이 있고 2024-07-08에 BMO가 구 NRGU(Big Oil 3X) 등 4개 ETN의 전량 상환(콜)을 발표해 콜결제일을 2024-07-25로 예정한 이력이 있다.",
+ "feature_text": "NRGU는 Bank of Montreal(BMO)이 발행하고 REX Shares가 구조화·마케팅하는 MicroSectors 브랜드의 3배 일간 리셋 ETN으로, Solactive MicroSectors U.S. Big Oil Index의 gross total return 버전을 추종하는 미국 대형 석유 섹터 상품이다.\n지수는 10개 종목을 동일가중으로 구성하며 매월 3번째 금요일(Adjustment Day)에 가중치를 재설정하고, 지수 구성종목 기준 상위 구성은 Marathon Petroleum 10.45%, Valero Energy 10.3%, ExxonMobil Holdings 10.07%, EOG Resources 10.04%, Phillips 66 9.98%이다.\nBMO의 선순위 무담보 채무로 발행사 신용위험에 노출되며, 발행사 콜권이 있고 동일 티커의 구 시리즈는 2024-07-08 전량 상환(콜) 발표 이력이 있다.",
  "attempts": [
   {
    "n": 1,
-   "text": "NRGU는 Bank of Montreal(BMO)이 발행하고 REX Shares가 구조화·마케팅하는 MicroSectors 브랜드의 ETN으로, Solactive MicroSectors U.S. Big Oil Index의 gross total return 버전 일간 수익률을 3배(일간 리셋)로 추종하는 미국 대형 석유 섹터 상품이다.\n지수는 10개 종목을 동일가중으로 구성하며 매월 세 번째 금요일(Adjustment Day)에 비중을 재설정하고, 지수 구성종목 기준 상위 구성은 Marathon Petroleum 10.45%, Valero Energy 10.3%, ExxonMobil Holdings 10.07%, EOG Resources 10.04%, Phillips 66 9.98%이다.\nBMO의 선순위 무담보 채무로 발행사 신용위험에 노출되며, 발행사 콜권이 있고 2024-07-08에 BMO가 구 NRGU(Big Oil 3X) 등 4개 ETN의 전량 상환(콜)을 발표해 콜결제일을 2024-07-25로 예정한 이력이 있다.",
+   "text": "NRGU는 Bank of Montreal(BMO)이 발행하고 REX Shares가 구조화·마케팅하는 MicroSectors 브랜드의 3배 일간 리셋 ETN으로, Solactive MicroSectors U.S. Big Oil Index의 gross total return 버전을 추종하는 미국 대형 석유 섹터 상품이다.\n지수는 10개 종목을 동일가중으로 구성하며 매월 3번째 금요일(Adjustment Day)에 가중치를 재설정하고, 지수 구성종목 기준 상위 구성은 Marathon Petroleum 10.45%, Valero Energy 10.3%, ExxonMobil Holdings 10.07%, EOG Resources 10.04%, Phillips 66 9.98%이다.\nBMO의 선순위 무담보 채무로 발행사 신용위험에 노출되며, 발행사 콜권이 있고 동일 티커의 구 시리즈는 2024-07-08 전량 상환(콜) 발표 이력이 있다.",
    "violations": []
   }
  ]

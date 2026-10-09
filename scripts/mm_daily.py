@@ -6,10 +6,6 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 import numpy as np, pandas as pd
 import mm_lib as L, mm_site
 def _timeout(sig,frm): raise TimeoutError("상한 5분 초과")
-HIST_DAYS=62
-def _ver_ok(path):
-    try: return "rule_ver" in open(path,encoding="utf-8").readline() and pd.read_csv(path,usecols=["rule_ver"]).rule_ver.iloc[0]==L.RULE_VER
-    except Exception: return False
 def is_manual():
     return os.environ.get("XPC_SERVICE_NAME","") not in ("com.mm.rotation_daily","com.mm.rotation_weekly") and os.environ.get("MM_AUTO")!="1"
 def run(push=True, fetch=True, manual=None):
@@ -31,25 +27,22 @@ def run(push=True, fetch=True, manual=None):
         for t,v in upd.items(): pq=pq[pq.ticker!=t]; pq=pd.concat([pq,pd.DataFrame([v])],ignore_index=True)
         pq.to_csv(L.DATA/"proxy_quality.csv",index=False); L.log(f"E4 재측정 갱신: {list(upd)}")
         df,_=L.compute(S,T,T,cfg,status,uni,pq,remeasure=False)           # 갱신된 품질 값으로 배지 재계산
-    spy=S.loadp("SPY"); dates=[d for d in spy.index if d<=T][-HIST_DAYS:]
-    (L.DATA/"scores").mkdir(exist_ok=True)
-    for d in dates[:-1]:                       # 이력 보충(없거나 규칙 버전이 다른 날짜만; E4·E5 는 현재 상태 적용)
-        p=L.DATA/"scores"/f"{d.date()}.csv"
-        if not p.exists() or not _ver_ok(p):
-            h,_=L.compute(S,d,T,cfg,status,uni,pq,remeasure=False); h["backfill"]=1; h.to_csv(p,index=False)
-    prev=None
-    if len(dates)>=6:
-        pp=L.DATA/"scores"/f"{dates[-6].date()}.csv"
-        if pp.exists(): prev=pd.read_csv(pp)
-    drk=[]
-    for r in df.itertuples():
-        if r.table!="순위" or pd.isna(r.rank): drk.append(""); continue
-        if prev is None: drk.append("신규"); continue
-        q=prev[(prev.ticker==r.ticker)&(prev.table=="순위")]
-        drk.append(str(int(q.iloc[0]["rank"]-r.rank)) if len(q) and not pd.isna(q.iloc[0]["rank"]) else "신규")
-    df["d_rank"]=drk; df["provisional"]=int(prov is not None); df["backfill"]=0
-    df=L.period_ranks(df,dates,lambda d: pd.read_csv(L.DATA/"scores"/f"{d.date()}.csv") if (L.DATA/"scores"/f"{d.date()}.csv").exists() else None)
-    df.to_csv(L.DATA/"scores"/f"{T.date()}.csv",index=False); df.to_csv(L.DATA/"scores_latest.csv",index=False)
+    spy=S.loadp("SPY"); cal=[d for d in spy.index if d<=T]; pos={d:i for i,d in enumerate(cal)}
+    # 소급·이력 보충: 2020-01-02 ~ T 중 파일이 없거나 규칙 버전이 다른 날짜(T 제외)를 산출 — 윈도우 선행분(약 64거래일)은 기록 없이 메모리로만
+    first=L.RETRO_START
+    def stale_day(d):
+        h=L.day_header(L.day_path(d)); return h is None or h[2]!=L.RULE_VER
+    todo=[d for d in cal if first<=d<T and stale_day(d)]
+    if todo:
+        i0=pos[todo[0]]; warm=[d for d in cal[max(0,i0-64):i0] if stale_day(d) or d<first]
+        L.log(f"날짜별 파일 산출 {len(todo)}일 (워밍업 {len(warm)}일)")
+        L.fill_days(S,cfg,uni,pq,cal,warm+todo,write_from=todo[0],log=L.log)
+    def _load(d):
+        return L.read_day(d)
+    df=L.finish_day(df,T,cal,pos,_load)
+    df["provisional"]=int(prov is not None); df["backfill"]=0
+    L.write_day(T,df); df.to_csv(L.DATA/"scores_latest.csv",index=False)
+    idx=L.rebuild_index(); L.log(f"index.json {idx['count']}일 ({idx['first']}~{idx['last']})")
     an=L.scan_anomalies(S,uni,cfg); an.to_csv(L.DATA/"anomalies.csv",index=False)
     import json
     np_path=L.DATA/"new_products.json"
@@ -58,8 +51,7 @@ def run(push=True, fetch=True, manual=None):
     pipe=json.load(open(pipe_path,encoding="utf-8")).get("items",[]) if pipe_path.exists() else []
     meta=dict(asof=str(T.date()),generated=L.now_kst().strftime("%Y-%m-%d %H:%M"),provisional=prov,new_products=newp,pipeline=pipe,dropped=dropped,manual=manual,anomalies=an)
     p0=pd.read_csv(L.DATA/"product_info.csv")
-    files=sorted((L.DATA/"scores").glob("*.csv")); files=[f for f in files if f.stem<=str(T.date())]
-    mm_site.build_all(df,uni,meta,p0,files)
+    mm_site.build_all(df,uni,meta,p0,[])
     n_el=int((df.table=="순위").sum()); L.log(f"산출 완료 순위 {n_el}/{len(df)} 제외 {(df.table=='제외').sum()} ⚠ {(df.table=='⚠').sum()} 배지 종목 {(df.badges.fillna('')!='').sum()} 이상봉 {len(an)}건")
     if push: git_push(T)
     return df

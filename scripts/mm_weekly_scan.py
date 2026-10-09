@@ -6,7 +6,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 import numpy as np, pandas as pd
 import mm_lib as L
 UA="mm-rotation research (jjoychan85@gmail.com)"
-CIKS={"Direxion":["0001424958","0001450922"],"ProShares":["0001415311","0001174610"],"BMO":["0000927971"]}
+CIKS={"Direxion":["0001424958"],"ProShares":["0001415311","0001174610"],"BMO":["0000927971"]}
 FORMS={"497","497K","497J","497AD","485APOS","485BPOS","485BXT","8-A12B","FWP","424B2","424B3","424B5","8-K"}
 LOOKBACK=8
 def get(url,timeout=30,maxb=900_000):

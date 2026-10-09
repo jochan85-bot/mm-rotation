@@ -5,6 +5,7 @@ import numpy as np, pandas as pd
 warnings.filterwarnings("ignore")
 ROOT=Path(__file__).resolve().parent.parent
 DATA=ROOT/"data"; LOCAL=ROOT/".local"; RAW=LOCAL/"p0view"; FETCHED=LOCAL/"fetched"; DOCS=ROOT/"docs"; LOGS=LOCAL/"logs"
+SCORES=DOCS/"data"/"scores"; INDEX_JSON=DOCS/"data"/"index.json"   # GitHub Pages 는 /docs 만 서빙 — 달력 뷰(JS)가 읽으려면 docs 아래에 둔다
 STUDY=Path.home()/"studies"/"mm_rotation_20261007"
 MSCORE_DOC=STUDY/"MSCORE_V1_1.md"
 MSCORE_SHA="69de08d1f26936f347f16d4e91832fb7e304de38ef8908deb76f4eb9d82bdaa2"   # v1.1(+V2.3 후속 기록): 산식 불변; 직전 sha 2c2b8f73…c590, v1 sha (v1 sha 41e4f209f338ba7ebb09bc7905be081f99e6b5abfef3170b84494bb223a9c83a 는 MSCORE_V1.md 에 보존)
@@ -70,8 +71,12 @@ def build_synthetic(log=print):
     fails=mm_proxy.fetch_recent(mm_proxy.tail_fetch_tickers(DATA),FETCHED/"tail")
     if fails: log(f"꼬리 소스 수신 실패 {fails}")
     return mm_proxy.build_all(DATA,FETCHED,LOCAL,log)
+_PI=None
 def proxy_info():
-    p=LOCAL/"proxy_build_info.json"; return json.load(open(p,encoding="utf-8")) if p.exists() else {}
+    global _PI
+    if _PI is None:
+        p=LOCAL/"proxy_build_info.json"; _PI=json.load(open(p,encoding="utf-8")) if p.exists() else {}
+    return _PI
 def fetch_all(tickers):
     import yfinance as yf
     FETCHED.mkdir(parents=True,exist_ok=True); fails=[]
@@ -125,6 +130,11 @@ def load_study(T):
     sys.path.insert(0,str(STUDY/"p4"/"sim"))
     import p4lib
     assert p4lib.SPEC["S_A"]==("sig","rsA","f1b")
+    _orig=p4lib.loadp; _cache={}
+    def cached(t):                       # 소급 산출 속도용 — compute 는 반환 프레임을 수정하지 않는다
+        if t not in _cache: _cache[t]=_orig(t)
+        return _cache[t]
+    p4lib.loadp=cached
     _study=p4lib; return p4lib
 KEY={"sig":"s60","rsA":"f2a","f1b":"f1b"}
 # ---------- E4 대리 품질 ----------
@@ -281,3 +291,65 @@ def period_ranks(df, dates, load_day):
 def init_from_raw():
     """주간 점검 등: 저장된 RAW 데이터만으로 연구 모듈 로딩 (T = SPY 마지막 확정 봉)"""
     T,prov,dropped=clean_all(need_tickers()+synthetic_keys()); return T, load_study(T)
+
+# ---------- 날짜별 저장 (달력 뷰 · MM-PAGE-V2.3-FOLLOWUP-20261016 §4) ----------
+RETRO_START=pd.Timestamp("2020-01-02")
+MINCOLS=["ticker","rank","M","r5","r20","r60","d_rank","badges","sig","p_sig","rsA","p_rsA","f1b","p_f1b","c1_ma200","above200","close3","adtv","listed_days","beta","r2","n_beta","proxy"]
+def day_path(d): return SCORES/f"{pd.Timestamp(d).date()}.csv"
+def write_day(d, df):
+    """순위 모집단 행만, 표1 열만. 첫 줄 '# date=… N=… rule=…'"""
+    r=df[(df.table=="순위")&df.M.notna()].sort_values(["rank","ticker"]).copy()
+    out=r[MINCOLS].copy()
+    for c in out.columns:
+        if out[c].dtype.kind=="f": out[c]=out[c].round(6)
+    for c in ("rank","r5","r20","r60","listed_days","n_beta","above200"): out[c]=out[c].astype("Int64")
+    SCORES.mkdir(parents=True,exist_ok=True)
+    with open(day_path(d),"w",encoding="utf-8") as f:
+        f.write(f"# date={pd.Timestamp(d).date()} N={len(r)} rule={RULE_VER}\n"); out.to_csv(f,index=False)
+    return len(r)
+def day_header(path):
+    try:
+        h=open(path,encoding="utf-8").readline(); import re as _re
+        m=_re.match(r"# date=(\S+) N=(\d+) rule=(\S+)",h); return (m.group(1),int(m.group(2)),m.group(3)) if m else None
+    except Exception: return None
+def read_day(d):
+    p=day_path(d)
+    if not p.exists() or day_header(p) is None: return None
+    x=pd.read_csv(p,skiprows=1,keep_default_na=False,na_values=[""]); x["table"]="순위"; return x
+def make_dranks(df, prev):
+    out=[]
+    for r in df.itertuples():
+        if r.table!="순위" or pd.isna(r.rank): out.append(""); continue
+        if prev is None: out.append("신규"); continue
+        q=prev[prev.ticker==r.ticker]
+        out.append(str(int(q.iloc[0]["rank"]-r.rank)) if len(q) and not pd.isna(q.iloc[0]["rank"]) else "신규")
+    return out
+def finish_day(df, d, cal, pos, load):
+    """Δ순위(5거래일 전 대비) + 5/20/60일 평균 순위. load(date)->그날 DataFrame(table·M·rank 포함) 또는 None"""
+    i=pos[pd.Timestamp(d)]
+    df["d_rank"]=make_dranks(df, load(cal[i-5]) if i>=5 else None)
+    return period_ranks(df,cal[max(0,i-max(PERIODS)+1):i+1],lambda x: load(x))
+def fill_days(S,cfg,uni,pq,cal,targets,write_from=None,write=True,log=print):
+    """targets(오름차순 Timestamp) 를 순서대로 산출 — 윈도우는 앞선 산출분(메모리) 또는 저장된 파일에서 읽는다. E5 는 소급 적용하지 않는다(빈 status)."""
+    pos={d:i for i,d in enumerate(cal)}; mem={}
+    def load(d):
+        if d in mem: return mem[d]
+        return read_day(d)
+    n=0
+    for d in targets:
+        df,_=compute(S,d,d,cfg,{"excluded":{}},uni,pq,remeasure=False)
+        df=finish_day(df,d,cal,pos,load)
+        mem[d]=df[(df.table=="순위")&df.M.notna()][["ticker","table","M","rank"]].copy()
+        if write and (write_from is None or d>=write_from): write_day(d,df); n+=1
+        if n and n%200==0: log(f"  소급 {n}일 기록 (현재 {d.date()})")
+    return n
+def rebuild_index():
+    """docs/data/index.json — 날짜 목록·N (각 파일 첫 줄에서 읽음)"""
+    rows=[]
+    for p in sorted(SCORES.glob("*.csv")):
+        h=day_header(p)
+        if h: rows.append(dict(d=h[0],n=h[1]))
+    rule=RULE_VER
+    obj=dict(rule=rule,first=rows[0]["d"] if rows else None,last=rows[-1]["d"] if rows else None,count=len(rows),dates=rows)
+    INDEX_JSON.parent.mkdir(parents=True,exist_ok=True); json.dump(obj,open(INDEX_JSON,"w",encoding="utf-8"),ensure_ascii=False,separators=(",",":"))
+    return obj

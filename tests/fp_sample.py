@@ -10,7 +10,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 import run_fixtures as RF
 ROOT=RF.ROOT; T=RF.T; CACHE=T/"fp_cache"; LIST=T/"fp_sample.json"
 UA="mm-rotation research (jjoychan85@gmail.com)"; SEED=20261009
-CIKS={"Direxion":["0001424958","0001450922"],"ProShares":["0001415311","0001174610"],"BMO":["0000927971"]}
+CIKS={"Direxion":["0001424958"],"ProShares":["0001415311","0001174610"],"BMO":["0000927971"]}
 FORMS={"497","497K","497J","497AD","485APOS","485BPOS","485BXT","8-A12B","FWP","424B2","424B3","424B5","8-K"}
 def get(url,maxb=RF.MAXB):
     time.sleep(0.25); req=urllib.request.Request(url,headers={"User-Agent":UA,"Accept":"*/*"})

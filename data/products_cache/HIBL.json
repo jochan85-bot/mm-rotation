@@ -1,10 +1,10 @@
 {
  "ticker": "HIBL",
- "input_hash": "c75af54db177c3e8",
+ "input_hash": "d5e0d477dbb0133c",
  "model": "claude-sonnet-5-5",
  "prompt_version": "v1",
  "status": "ok",
- "generated": "2026-10-09T12:06:10",
+ "generated": "2026-10-09T12:59:20",
  "feature_input": {
   "티커": "HIBL",
   "유형": "ETF",
@@ -13,7 +13,7 @@
   "공식 지수명": "S&P 500® High Beta Index",
   "지수 제공사": "S&P Dow Jones Indices (the \"Index Provider\") - 497K strategy text; SPDJI also in \"Index Information\"",
   "섹터/테마": "미국 대형주 중 고베타 100종 (S&P 500 High Beta)",
-  "지수 가중방식": "[부재] 497K 가중방식 미명시",
+  "지수 가중방식": "베타 비례 가중 (종목 i 의 비중 = Beta_i ÷ 구성종목 Beta 합; 시가총액 가중 아님)",
   "리밸런스": "\"reviewed and rebalanced quarterly\"",
   "지수 종목 수": "100 (497K 서술)",
   "상위 구성": [
@@ -33,11 +33,11 @@
    "운용보수 면제/비용상한 계약 기한 September 1, 2027 (497K 보수표 각주) — 497K: 이사회 동의로 종료·변경될 수 있음"
   ]
  },
- "feature_text": "HIBL은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, S&P Dow Jones Indices가 제공하는 S&P 500® High Beta Index의 일간 수익률 3배(일간 리셋)를 추종하며 미국 대형주 중 고베타 100종을 대상으로 한다.\n지수는 분기별로 검토·리밸런스되고 종목 수는 100개로 서술돼 있으며 가중방식은 497K에 명시돼 있지 않고, 1x ETF SPHB의 상위 보유(지수 구성과 동일 가정) 기준으로 SNDK 2.88%, MRNA 2.69%, AMD 2.06%, MU 2.05%, SMCI 2.0% 순이다.\n총보수는 1.01%이고 면제·상한 적용 후 0.98%(운용보수 0.75%)이며, 면제·비용상한 계약 기한은 2027년 9월 1일로 이사회 동의로 종료·변경될 수 있다고 497K(2026-02-27)에 명시돼 있다.",
+ "feature_text": "HIBL은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, S&P Dow Jones Indices가 제공하는 S&P 500® High Beta Index의 일간 수익률을 3배(일간 리셋)로 추종하며 미국 대형주 중 고베타 100종을 대상으로 한다.\n지수는 베타 비례 가중 방식으로 종목 i의 비중을 Beta_i ÷ 구성종목 Beta 합으로 정하며 시가총액 가중이 아니고, \"reviewed and rebalanced quarterly\"로 명시돼 있다. 1x ETF SPHB의 상위 보유(지수 구성과 동일 가정) 기준 상위 구성은 SNDK 2.88%, MRNA 2.69%, AMD 2.06%, MU 2.05%, SMCI 2.0%이다.\n497K(2026-02-27)에는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며, 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있다.",
  "attempts": [
   {
    "n": 1,
-   "text": "HIBL은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, S&P Dow Jones Indices가 제공하는 S&P 500® High Beta Index의 일간 수익률 3배(일간 리셋)를 추종하며 미국 대형주 중 고베타 100종을 대상으로 한다.\n지수는 분기별로 검토·리밸런스되고 종목 수는 100개로 서술돼 있으며 가중방식은 497K에 명시돼 있지 않고, 1x ETF SPHB의 상위 보유(지수 구성과 동일 가정) 기준으로 SNDK 2.88%, MRNA 2.69%, AMD 2.06%, MU 2.05%, SMCI 2.0% 순이다.\n총보수는 1.01%이고 면제·상한 적용 후 0.98%(운용보수 0.75%)이며, 면제·비용상한 계약 기한은 2027년 9월 1일로 이사회 동의로 종료·변경될 수 있다고 497K(2026-02-27)에 명시돼 있다.",
+   "text": "HIBL은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, S&P Dow Jones Indices가 제공하는 S&P 500® High Beta Index의 일간 수익률을 3배(일간 리셋)로 추종하며 미국 대형주 중 고베타 100종을 대상으로 한다.\n지수는 베타 비례 가중 방식으로 종목 i의 비중을 Beta_i ÷ 구성종목 Beta 합으로 정하며 시가총액 가중이 아니고, \"reviewed and rebalanced quarterly\"로 명시돼 있다. 1x ETF SPHB의 상위 보유(지수 구성과 동일 가정) 기준 상위 구성은 SNDK 2.88%, MRNA 2.69%, AMD 2.06%, MU 2.05%, SMCI 2.0%이다.\n497K(2026-02-27)에는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며, 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있다.",
    "violations": []
   }
  ]

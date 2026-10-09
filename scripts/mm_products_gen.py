@@ -35,6 +35,18 @@ FORBIDDEN = [r'추천', r'유망', r'전망', r'기대', r'매력', r'우수', r
              r'바람직', r'적합', r'가능성', r'유력', r'안정적', r'위험이 (낮|적|크)', r'리스크가 (낮|적|크)']
 FORBID_RE = re.compile('|'.join(FORBIDDEN))
 
+_fs = f'{CACHE}/direxion_factsheet_retry_20261009.json'
+FS_RETRY = json.load(open(_fs, encoding='utf-8')) if os.path.exists(_fs) else {}
+
+# 조기상환(콜) 이력 통일 문구 (MM-PAGE-V2.3-FOLLOWUP-20261016 §6-C1). 귀속 날짜는 기존 공시 이벤트(structural_risk)에서 이미 확인된 것만 사용:
+#   BNKU·NRGU 구 시리즈 = 2024-07 (BMO FWP 2024-07-08 공지, 콜결제 2024-07-25 예정) / FNGU 구 시리즈 = 2025-05 (FWP 2025-02-19 공지, 콜결제 2025-05-15 예정)
+REDEEM_UNIFIED = {
+    'BNKU': ('2024-07', 'https://www.sec.gov/Archives/edgar/data/927971/000121465924012103/x78240fwp.htm'),
+    'NRGU': ('2024-07', 'https://www.sec.gov/Archives/edgar/data/927971/000121465924012103/x78240fwp.htm'),
+    'FNGU': ('2025-05', 'https://www.sec.gov/Archives/edgar/data/927971/000121465925003129/z218250fwp.htm'),
+}
+YF_TAG = '(yfinance 분할 데이터 기준)'
+
 SCHEMA_DOC = """\
 # =====================================================================================================
 # products.yaml — 유니버스 37종 상품 특징표 데이터 (scripts/mm_products_gen.py 가 생성. 직접 편집 금지:
@@ -201,6 +213,10 @@ def build(t, u, info, pq, ix, fa, split_res):
                              "산정 시점 차이로 추정되나 공시상 사유 미확인; 두 값 병기")
         else:
             notes.append(absent('발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용'))
+            rr = FS_RETRY.get('results', {}).get(t)
+            if rr:
+                notes.append(f"재시도 {FS_RETRY['checked']}: {rr['url']} → HTTP {rr['http']}, Location {rr['location']} (내부 호스트·외부 접근 불가), "
+                             "브라우저형 User-Agent·리다이렉트 추적에도 PDF 미수신 — 497K 값 유지")
         if f7.get('waiver_note'): notes.append(f7['waiver_note'])
         fee['note'] = ' / '.join(notes) if notes else None
         rec['fee'] = fee
@@ -244,6 +260,8 @@ def build(t, u, info, pq, ix, fa, split_res):
                    "구 FNGU(만기 2038-01-08, 2018-01 출시)는 BMO 가 2025-05 콜(상환) — 아래 structural_risk 참조")
         elif t in ('BNKU', 'NRGU'):
             rel = ("현행 시리즈는 2025-02-19 신규 발행(만기 2045-02-17). 구 시리즈는 BMO 가 2024-07-25 콜결제 예정으로 전량 상환 공지(2024-07-08)")
+        if t in REDEEM_UNIFIED:
+            rel = f"현행 시리즈 2025-02 발행, 구 시리즈 상환 이력({REDEEM_UNIFIED[t][0]})은 동일 티커·동일 지수의 선행 상품 — " + rel
         if rel: rec['inception']['relisting'] = rel
         if t in ('XLCU', 'XLPU'):
             rec['inception']['note'] = ('PS Initial Trade Date 2026-09-09, 보도자료상 거래 개시 "다음날"(2026-09-10) vs Yahoo 첫 봉 2026-09-11 — '
@@ -259,7 +277,14 @@ def build(t, u, info, pq, ix, fa, split_res):
             corr.append({'date': e['date'], 'event': e['event'], 'url': e['url']})
     sp['corroboration'] = corr
     old_sp = [x.strip() for x in (txt or '').split(';') if x.strip() and x.strip() != '없음']
-    sp['note'] = (f'Yahoo 분할 {len(old_sp)}건 중 발행사 공시로 대조된 것 {len(corr)}건; 나머지는 공시 미대조(Yahoo 값 그대로)'
+    # 공시 미대조 분할의 출처 표기 통일(§6-C2): 전부 미대조면 값 뒤에 한 번, 일부만 대조됐으면 미대조 항목마다 표기
+    cdates = {c['date'] for c in corr}
+    unc = [x for x in old_sp if x[:10] not in cdates]
+    if unc:
+        sp['text'] = (f"{sp['text']} {YF_TAG}" if len(unc) == len(old_sp)
+                      else '; '.join(x if x[:10] in cdates else f'{x} {YF_TAG}' for x in old_sp))
+    sp['note'] = (f'Yahoo 분할 {len(old_sp)}건 중 발행사 공시로 대조된 것 {len(corr)}건'
+                  + (f'; 나머지 {len(unc)}건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로' if unc else ' (전건 대조)')
                   if old_sp else ('Yahoo 기록 없음' + ('; 구 시리즈 이력 별도(structural_risk)' if t in ('FNGU', 'BNKU', 'NRGU') else '')))
     rec['split_history'] = sp
 
@@ -284,6 +309,8 @@ def build(t, u, info, pq, ix, fa, split_res):
         sr.append({'fact': f"만기 {iso(tm.get('maturity_text'))}; 발행사 콜권(call right) {'있음' if tm.get('issuer_call_right') else absent('PS 미확인')}; 투자자 조기상환은 최소 {tm.get('min_redemption', absent('PS 미확인'))} ETN 단위(발행사가 면제 가능)이고 상환수수료 {tm.get('redemption_fee_pct', absent('PS 미확인'))}%", 'source_url': psu})
         if tm.get('no_listing_obligation'):
             sr.append({'fact': 'BMO 는 상장 유지 의무가 없으며 사유 불문 상장 폐지를 결정할 수 있음(PS)', 'source_url': psu})
+        if t in REDEEM_UNIFIED:
+            sr.append({'fact': f"현행 시리즈 2025-02 발행, 구 시리즈 상환 이력({REDEEM_UNIFIED[t][0]})은 동일 티커·동일 지수의 선행 상품 (아래 공시 이벤트 참조)", 'source_url': REDEEM_UNIFIED[t][1]})
         for e in fa.get('events', []):
             if re.search(r'상환|콜|티커|스프레드|분할', e['event']):
                 sr.append({'fact': f"{e['date']} — {e['event']}", 'source_url': e['url']})
@@ -326,7 +353,7 @@ def feature_input(rec):
          '상위 구성': items(r['top_constituents']) if isinstance(r['top_constituents'], dict) else r['top_constituents'],
          '상위 구성 기준': r['top_constituents'].get('basis') if isinstance(r['top_constituents'], dict) else None,
          '비용 요약': r['fee']['summary'],
-         ('ETN 최초 거래일(PS Initial Trade Date; 상장일과 다를 수 있음)' if r['type']=='ETN' else '상장일(ISO)'): r['inception'].get('date'), '분할 이력(Yahoo)': r['split_history']['text'],
+         ('ETN 최초 거래일(PS Initial Trade Date; 상장일과 다를 수 있음)' if r['type']=='ETN' else '상장일(ISO)'): r['inception'].get('date'), '분할 이력(Yahoo)': r['split_history']['text'].replace(' ' + YF_TAG, '').replace(YF_TAG, '').strip(),
          '구조 사실': [s['fact'] for s in r['structural_risk']]}
     if r['construction'].get('selection_rule'): d['종목 선정 규칙'] = r['construction']['selection_rule']
     lt = r['top_constituents'].get('lookthrough') if isinstance(r['top_constituents'], dict) else None

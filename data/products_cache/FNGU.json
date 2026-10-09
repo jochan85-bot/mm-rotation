@@ -1,10 +1,10 @@
 {
  "ticker": "FNGU",
- "input_hash": "c6de226ca2f8f811",
+ "input_hash": "f8cbc564ea54acb5",
  "model": "claude-sonnet-5-5",
  "prompt_version": "v1",
  "status": "ok",
- "generated": "2026-10-09T12:05:36",
+ "generated": "2026-10-09T12:59:20",
  "feature_input": {
   "티커": "FNGU",
   "유형": "ETN",
@@ -31,17 +31,18 @@
    "BMO 발행 선순위 무담보 채무 — 발행사 신용위험에 노출(PS: senior unsecured debt obligations of Bank of Montreal; 예금자보호·FDIC 대상 아님)",
    "만기 2045-02-17; 발행사 콜권(call right) 있음; 투자자 조기상환은 최소 25,000 ETN 단위(발행사가 면제 가능)이고 상환수수료 0.125%",
    "BMO 는 상장 유지 의무가 없으며 사유 불문 상장 폐지를 결정할 수 있음(PS)",
+   "현행 시리즈 2025-02 발행, 구 시리즈 상환 이력(2025-05)은 동일 티커·동일 지수의 선행 상품 (아래 공시 이벤트 참조)",
    "2025-02-19 — BMO, 구 FNGU(FANG+ Index 3x, 만기 2038-01-08, 2018-01 출시) 전량 상환(콜) 발표·티커를 FNGA 로 변경 예고(2025-03-03 예정)·콜결제일 2025-05-15 예정; 신규 ETN FNGB 론칭(만기 2045) — 사유: \"레버리지 지원 비용 증가로 기존 수수료가 시장 환경을 반영하지 못함\"",
    "2025-05-01 — BMO, 구 FNGU(당시 티커 FNGA) 콜권 행사·콜 측정기간 2025-05-02 시작 공지",
    "2025-06-02 — BMO, 현행 ETN(구 FNGB, 만기 2045-02-17, CUSIP 063679385) 티커를 2025-06-24 개장 시점부로 FNGU 로 변경한다고 공지(2025-02-19 최초 공지의 \"2025-06-02 예정\"에서 일정 변경; PS 부록 2025-06-02 와 일치)"
   ],
   "종목 선정 규칙": "6 fixed FAANMG names (AAPL, AMZN, GOOGL, META, NFLX, MSFT) if eligible + 4 highest-ranked non-FAANMG by 35% mkt cap / 35% ADTV / 15% P/S / 15% sales growth rank"
  },
- "feature_text": "FNGU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 판매되는 ETN으로, ICE Data Indices가 산출하는 NYSE FANG+ Index(총수익 버전)의 일간 수익률을 3배로 추종하는 상품이다.\n지수는 대형 성장·기술주 10종목을 분기 재구성 시점에 각 10%로 동일가중하며, 지수 구성종목 기준 상위 구성은 Micron Technology 11.01%, Palantir Technologies 10.44%, NVIDIA 10.41%, Broadcom 10.4%, Microsoft 10.13% 순이다.\nBMO의 선순위 무담보 채무라 발행사 신용위험에 노출되며, 만기는 2045-02-17이고 발행사 콜권이 있으며, 2025-02-19에 발표된 구 FNGU 전량 상환(콜) 이후 현행 ETN(구 FNGB)이 2025-06-24 개장 시점부터 FNGU 티커를 사용한다.",
+ "feature_text": "FNGU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 판매되는 ETN으로, ICE Data Indices가 산출하는 NYSE FANG+ Index(총수익 버전)의 일간 수익률을 3배로 추종하는 대형 성장·기술주 10종 대상 상품이다.\n지수는 10종목을 분기 재구성 시점에 각 10%로 동일가중하며, 지수 구성종목 기준 상위 구성은 MICRON TECHNOLOGY 11.01%, PALANTIR TECHNOLOGIES 10.44%, NVIDIA 10.41%, BROADCOM 10.4%, MICROSOFT 10.13% 순이다.\nBMO가 발행한 선순위 무담보 채무라 발행사 신용위험에 노출되며, 만기는 2045-02-17이고 발행사 콜권이 있으며, 2025-02에 발행된 현행 시리즈는 2025-06-24 개장 시점부로 구 FNGB에서 FNGU로 티커가 변경된 것이다.",
  "attempts": [
   {
    "n": 1,
-   "text": "FNGU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 판매되는 ETN으로, ICE Data Indices가 산출하는 NYSE FANG+ Index(총수익 버전)의 일간 수익률을 3배로 추종하는 상품이다.\n지수는 대형 성장·기술주 10종목을 분기 재구성 시점에 각 10%로 동일가중하며, 지수 구성종목 기준 상위 구성은 Micron Technology 11.01%, Palantir Technologies 10.44%, NVIDIA 10.41%, Broadcom 10.4%, Microsoft 10.13% 순이다.\nBMO의 선순위 무담보 채무라 발행사 신용위험에 노출되며, 만기는 2045-02-17이고 발행사 콜권이 있으며, 2025-02-19에 발표된 구 FNGU 전량 상환(콜) 이후 현행 ETN(구 FNGB)이 2025-06-24 개장 시점부터 FNGU 티커를 사용한다.",
+   "text": "FNGU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 판매되는 ETN으로, ICE Data Indices가 산출하는 NYSE FANG+ Index(총수익 버전)의 일간 수익률을 3배로 추종하는 대형 성장·기술주 10종 대상 상품이다.\n지수는 10종목을 분기 재구성 시점에 각 10%로 동일가중하며, 지수 구성종목 기준 상위 구성은 MICRON TECHNOLOGY 11.01%, PALANTIR TECHNOLOGIES 10.44%, NVIDIA 10.41%, BROADCOM 10.4%, MICROSOFT 10.13% 순이다.\nBMO가 발행한 선순위 무담보 채무라 발행사 신용위험에 노출되며, 만기는 2045-02-17이고 발행사 콜권이 있으며, 2025-02에 발행된 현행 시리즈는 2025-06-24 개장 시점부로 구 FNGB에서 FNGU로 티커가 변경된 것이다.",
    "violations": []
   }
  ]

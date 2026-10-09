@@ -27,7 +27,7 @@
 #   생성 메타 data/products_cache/_gen_stats.json (금지어 검출·재생성 통계)
 # =====================================================================================================
 meta:
-  generated: '2026-10-09T12:10:15'
+  generated: '2026-10-09T12:59:25'
   checked: '2026-10-09'
   block: MM-PAGE-V2.3-20261015 §6
   count: 37
@@ -122,7 +122,8 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078624/d230576d497k.htm
         form: 497K (Summary Prospectus)
         doc_date: '2026-02-27'
-      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용'
+      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용 / 재시도 2026-10-09: https://www.direxion.com/uploads/SPXL-Fact-Sheet.pdf
+        → HTTP 301, Location http://minio:9000/uploads/SPXL-Fact-Sheet.pdf (내부 호스트·외부 접근 불가), 브라우저형 User-Agent·리다이렉트 추적에도 PDF 미수신 — 497K 값 유지'
     inception:
       date: '2008-11-05'
       kind: 497K(2017-02-28) 성과표 Since Inception 일자(당시 설정 10년 미만)
@@ -130,10 +131,10 @@ products:
       first_trade_yahoo: '2008-11-05'
       note: null
     split_history:
-      text: 2013-04-02 정분할 3:1; 2017-05-01 정분할 4:1
+      text: 2013-04-02 정분할 3:1; 2017-05-01 정분할 4:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 0건; 나머지 2건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라
         지수의 300%와 크게 다를 수 있다'
@@ -231,10 +232,10 @@ products:
       first_trade_yahoo: '2009-06-25'
       note: 발행사 설정일과 Yahoo 첫 봉(2009-06-25)의 차이는 설정일↔거래 개시일 차이 가능
     split_history:
-      text: 2011-02-25 정분할 3:1; 2013-06-10 정분할 2:1; 2015-05-20 정분할 2:1; 2018-05-24 정분할 3:1; 2022-01-13 정분할 2:1
+      text: 2011-02-25 정분할 3:1; 2013-06-10 정분할 2:1; 2015-05-20 정분할 2:1; 2018-05-24 정분할 3:1; 2022-01-13 정분할 2:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 5건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 5건 중 발행사 공시로 대조된 것 0건; 나머지 5건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시(Compounding/Volatility Risk): 1일을 넘는 보유기간의 펀드 성과는 일간 목표(Daily Target)와 다를 수 있으며 그 차이가 클 수 있다'
       source_url: https://www.sec.gov/Archives/edgar/data/1174610/000117461026001031/f46114d1.htm
@@ -329,10 +330,10 @@ products:
       note: 발행사 설정일과 Yahoo 첫 봉(2010-02-11)의 차이는 설정일↔거래 개시일 차이 가능
     split_history:
       text: 2011-02-25 정분할 2:1; 2012-05-11 정분할 2:1; 2014-01-24 정분할 2:1; 2017-01-12 정분할 2:1; 2018-05-24 정분할 3:1; 2021-01-21 정분할 2:1; 2022-01-13
-        정분할 2:1; 2025-11-20 정분할 2:1
+        정분할 2:1; 2025-11-20 정분할 2:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 8건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 8건 중 발행사 공시로 대조된 것 0건; 나머지 8건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시(Compounding/Volatility Risk): 1일을 넘는 보유기간의 펀드 성과는 일간 목표(Daily Target)와 다를 수 있으며 그 차이가 클 수 있다'
       source_url: https://www.sec.gov/Archives/edgar/data/1174610/000117461026001035/f46111d1.htm
@@ -428,10 +429,10 @@ products:
       first_trade_yahoo: '2010-02-11'
       note: 발행사 설정일과 Yahoo 첫 봉(2010-02-11)의 차이는 설정일↔거래 개시일 차이 가능
     split_history:
-      text: 2012-05-11 정분할 3:1; 2015-05-20 정분할 2:1; 2017-07-17 정분할 2:1; 2021-05-25 정분할 2:1; 2025-11-20 정분할 2:1
+      text: 2012-05-11 정분할 3:1; 2015-05-20 정분할 2:1; 2017-07-17 정분할 2:1; 2021-05-25 정분할 2:1; 2025-11-20 정분할 2:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 5건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 5건 중 발행사 공시로 대조된 것 0건; 나머지 5건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시(Compounding/Volatility Risk): 1일을 넘는 보유기간의 펀드 성과는 일간 목표(Daily Target)와 다를 수 있으며 그 차이가 클 수 있다'
       source_url: https://www.sec.gov/Archives/edgar/data/1174610/000117461026001038/f46084d1.htm
@@ -470,7 +471,7 @@ products:
       verdict: OK
     sector_theme: 미국 소형주 (Russell 2000)
     construction:
-      weighting: '[부재] 497K 가중방식 미명시'
+      weighting: 유동주식 조정 시가총액 가중 (float-adjusted market-cap weighted)
       rebalance: 'Not a rebalance statement: "reconstituted annually and enhanced by initial public offerings quarterly"'
       n_constituents: 1,958 (497K 서술)
       description: The Index measures the performance of approximately 2,000 small-capitalization companies in the Russell 3000 ® Index, based
@@ -481,8 +482,15 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078554/d69000d497k.htm
         form: 497K Principal Investment Strategy
         doc_date: '2026-02-27'
-      weighting_note: 'NOT STATED in the Direxion 497K (describes ~2,000 smallest Russell 3000 members by market cap and current membership).
-        Cross-ref only: ProShares URTY 497K says selected companies are weighted based on market capitalization.'
+      weighting_note: 'Direxion 497K 는 가중방식을 적지 않음. 방법론 v7.2 §6.10.1 은 Russell 2000 을 Russell 3000E 시총 순위 #1,001-3,000 으로 정의. 재구성 주기는 방법론 §4.1.2·§4.2.3
+        이 "semi-annual"(6월 넷째 금요일·12월 둘째 금요일)이라 적은 반면 Direxion 497K 는 "reconstituted annually"로 서술 — 두 문서가 다르며 rebalance 필드는 497K 서술 그대로 둠'
+      weighting_source:
+        url: https://research.ftserussell.com/products/downloads/Russell-US-indexes.pdf
+        form: FTSE Russell, Russell US Equity Indexes Construction and Methodology v7.2 (August 2026) §1.1.1 "float-adjusted, market capitalization-weighted
+          indexes", §7.1.1 "Stocks in the Russell US indexes are weighted by their available (also called float-adjusted) market capitalization"
+        doc_date: 2026-08
+        note: 제공사 방법론 원문 직접 확인(대체 출처 아님). 보조 확인 — iShares Russell 2000 ETF(IWM) 497K 2026-07-31 "float-adjusted capitalization-weighted index
+          of equity securities issued by the approximately 1,933 smallest issuers in the Russell 3000 Index" (https://www.sec.gov/Archives/edgar/data/1100663/000119312526327900/d25568d497k.htm)
     top_constituents:
       basis: 1x ETF IWM 상위 보유 (지수 구성과 동일 가정)
       as_of: '2026-10-09'
@@ -513,7 +521,8 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078554/d69000d497k.htm
         form: 497K (Summary Prospectus)
         doc_date: '2026-02-27'
-      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용'
+      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용 / 재시도 2026-10-09: https://www.direxion.com/uploads/TNA-Fact-Sheet.pdf
+        → HTTP 301, Location http://minio:9000/uploads/TNA-Fact-Sheet.pdf (내부 호스트·외부 접근 불가), 브라우저형 User-Agent·리다이렉트 추적에도 PDF 미수신 — 497K 값 유지'
     inception:
       date: '2008-11-05'
       kind: 497K(2017-02-28) 성과표 Since Inception 일자(당시 설정 10년 미만)
@@ -521,10 +530,10 @@ products:
       first_trade_yahoo: '2008-11-19'
       note: 발행사 설정일과 Yahoo 첫 봉(2008-11-19)의 차이는 설정일↔거래 개시일 차이 가능
     split_history:
-      text: 2013-04-02 정분할 2:1; 2017-05-01 정분할 2:1
+      text: 2013-04-02 정분할 2:1; 2017-05-01 정분할 2:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 0건; 나머지 2건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라
         지수의 300%와 크게 다를 수 있다'
@@ -538,9 +547,9 @@ products:
     - https://www.sec.gov/Archives/edgar/data/1424958/000119312517059524/d330843d497k.htm
     checked: '2026-10-09'
     feature_text: |-
-      TNA는 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, 미국 소형주 지수인 Russell 2000® Index의 일간 수익률 3배(일간 리셋)를 추종한다.
-      497K는 지수가 1,958개 종목으로 구성되며 연 1회 재구성되고 신규 상장(IPO)이 분기마다 반영된다고 서술하며, 가중방식은 명시하지 않았다. 1배 ETF인 IWM의 상위 보유 기준(지수 구성과 동일 가정)으로 상위 구성은 XTSLA 0.48%, TWST 0.43%, MOG-A 0.37%, FROG 0.36%, TXG 0.36% 순이다.
-      총보수는 1.07%이며 면제·상한 적용 후 1.05%(운용보수 0.75%)이고, 면제·비용상한 계약 기한은 2027년 9월 1일로 이사회 동의에 따라 종료·변경될 수 있다고 497K(2026-02-27)에 명시돼 있다.
+      TNA는 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, 미국 소형주 지수인 Russell 2000® Index의 일간 성과를 3배(일간 리셋)로 추종한다.
+      지수는 유동주식 조정 시가총액 가중 방식이며 497K 서술 기준 종목 수는 1,958개이고, 연 1회 재구성되며 신규 상장(IPO)은 분기별로 반영된다고 명시돼 있다. 상위 구성은 1x ETF IWM 상위 보유 기준(지수 구성과 동일 가정)으로 XTSLA 0.48%, TWST 0.43%, MOG-A 0.37%, FROG 0.36%, TXG 0.36% 순이다.
+      497K(2026-02-27)에는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며, 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있다.
   URTY:
     ticker: URTY
     issuer: 'ProShares (운용: ProShare Advisors LLC; 497K 명시)'
@@ -623,10 +632,10 @@ products:
       first_trade_yahoo: '2010-02-11'
       note: 발행사 설정일과 Yahoo 첫 봉(2010-02-11)의 차이는 설정일↔거래 개시일 차이 가능
     split_history:
-      text: 2011-02-25 정분할 2:1; 2013-06-10 정분할 2:1; 2017-07-17 정분할 2:1
+      text: 2011-02-25 정분할 2:1; 2013-06-10 정분할 2:1; 2017-07-17 정분할 2:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 3건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 3건 중 발행사 공시로 대조된 것 0건; 나머지 3건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시(Compounding/Volatility Risk): 1일을 넘는 보유기간의 펀드 성과는 일간 목표(Daily Target)와 다를 수 있으며 그 차이가 클 수 있다'
       source_url: https://www.sec.gov/Archives/edgar/data/1174610/000117461026001039/f46112d1.htm
@@ -722,10 +731,10 @@ products:
       first_trade_yahoo: '2009-01-08'
       note: null
     split_history:
-      text: 2010-05-05 정분할 3:1; 2015-05-20 정분할 4:1
+      text: 2010-05-05 정분할 3:1; 2015-05-20 정분할 4:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 0건; 나머지 2건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라
         지수의 300%와 크게 다를 수 있다'
@@ -823,10 +832,10 @@ products:
       first_trade_yahoo: '2010-02-11'
       note: 발행사 설정일과 Yahoo 첫 봉(2010-02-11)의 차이는 설정일↔거래 개시일 차이 가능
     split_history:
-      text: 2011-02-25 정분할 2:1; 2013-06-10 정분할 2:1; 2015-05-20 정분할 2:1; 2021-05-25 정분할 5:1
+      text: 2011-02-25 정분할 2:1; 2013-06-10 정분할 2:1; 2015-05-20 정분할 2:1; 2021-05-25 정분할 5:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 4건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 4건 중 발행사 공시로 대조된 것 0건; 나머지 4건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시(Compounding/Volatility Risk): 1일을 넘는 보유기간의 펀드 성과는 일간 목표(Daily Target)와 다를 수 있으며 그 차이가 클 수 있다'
       source_url: https://www.sec.gov/Archives/edgar/data/1174610/000117461026001048/f46095d1.htm
@@ -866,7 +875,7 @@ products:
       verdict: OK
     sector_theme: 미국 대형주 중 고베타 100종 (S&P 500 High Beta)
     construction:
-      weighting: '[부재] 497K 가중방식 미명시'
+      weighting: 베타 비례 가중 (종목 i 의 비중 = Beta_i ÷ 구성종목 Beta 합; 시가총액 가중 아님)
       rebalance: '"reviewed and rebalanced quarterly"'
       n_constituents: 100 (497K 서술)
       description: The Index is provided by S&P Dow Jones Indices (the “Index Provider”). High Beta securities are defined by the Index Provider
@@ -881,8 +890,16 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078493/d99472d497k.htm
         form: 497K Principal Investment Strategy
         doc_date: '2026-02-27'
-      weighting_note: 'NOT STATED in the 497K (selection: the 100 S&P 500 securities with highest 12-month beta; weighting scheme not given).
-        unverified.'
+      weighting_note: Direxion 497K 는 가중방식을 적지 않음(선정 규칙만 서술). 베타 비례 가중이 맞음을 방법론·SPHB 투자설명서 두 문서로 확인
+      weighting_source:
+        url: https://web.archive.org/web/20230701160959/https://spglobal.com/spdji/en/documents/methodologies/methodology-sp-high-beta-indices.pdf
+        form: 'S&P Dow Jones Indices, S&P High Beta Indices Methodology (January 2023판) "Constituent Weightings": "the weight, w_i, for each index
+          constituent i is set proportional to its beta" — S&P 500 High Beta Index N = 100 (p.6)'
+        doc_date: 2023-01
+        note: 출처 — S&P DJI 방법론 원문의 Wayback 보존본(제공사 라이브 URL https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-high-beta-indices.pdf
+          는 403 으로 대체). 보존본은 2023-01판이라 현행 일치 여부를 현행 문서로 교차확인 — Invesco S&P 500 High Beta ETF(SPHB, Invesco Exchange-Traded Fund Trust II) 485BPOS
+          2025-12-18 "The Underlying Index weights each constituent security in proportion to its beta, with the highest beta securities receiving
+          the greatest weights" (https://www.sec.gov/Archives/edgar/data/1378872/000110465925122454/tm2532525d1_485bpos.htm)
     top_constituents:
       basis: 1x ETF SPHB 상위 보유 (지수 구성과 동일 가정)
       as_of: '2026-10-09'
@@ -913,7 +930,8 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078493/d99472d497k.htm
         form: 497K (Summary Prospectus)
         doc_date: '2026-02-27'
-      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용'
+      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용 / 재시도 2026-10-09: https://www.direxion.com/uploads/HIBL-Fact-Sheet.pdf
+        → HTTP 301, Location http://minio:9000/uploads/HIBL-Fact-Sheet.pdf (내부 호스트·외부 접근 불가), 브라우저형 User-Agent·리다이렉트 추적에도 PDF 미수신 — 497K 값 유지'
     inception:
       date: '2019-11-07'
       kind: N-CSR(2025-01-03 제출, FY2024-10-31) 연차보고서 Since Inception 일자
@@ -921,10 +939,10 @@ products:
       first_trade_yahoo: '2019-11-07'
       note: null
     split_history:
-      text: 2020-04-23 역분할 1:10; 2021-03-02 정분할 7:1
+      text: 2020-04-23 역분할 1:10; 2021-03-02 정분할 7:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 0건; 나머지 2건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라
         지수의 300%와 크게 다를 수 있다'
@@ -938,9 +956,9 @@ products:
     - https://www.sec.gov/Archives/edgar/data/1424958/000113322825000113/dset-efp11635_ncsr.htm
     checked: '2026-10-09'
     feature_text: |-
-      HIBL은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, S&P Dow Jones Indices가 제공하는 S&P 500® High Beta Index의 일간 수익률 3배(일간 리셋)를 추종하며 미국 대형주 중 고베타 100종을 대상으로 한다.
-      지수는 분기별로 검토·리밸런스되고 종목 수는 100개로 서술돼 있으며 가중방식은 497K에 명시돼 있지 않고, 1x ETF SPHB의 상위 보유(지수 구성과 동일 가정) 기준으로 SNDK 2.88%, MRNA 2.69%, AMD 2.06%, MU 2.05%, SMCI 2.0% 순이다.
-      총보수는 1.01%이고 면제·상한 적용 후 0.98%(운용보수 0.75%)이며, 면제·비용상한 계약 기한은 2027년 9월 1일로 이사회 동의로 종료·변경될 수 있다고 497K(2026-02-27)에 명시돼 있다.
+      HIBL은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, S&P Dow Jones Indices가 제공하는 S&P 500® High Beta Index의 일간 수익률을 3배(일간 리셋)로 추종하며 미국 대형주 중 고베타 100종을 대상으로 한다.
+      지수는 베타 비례 가중 방식으로 종목 i의 비중을 Beta_i ÷ 구성종목 Beta 합으로 정하며 시가총액 가중이 아니고, "reviewed and rebalanced quarterly"로 명시돼 있다. 1x ETF SPHB의 상위 보유(지수 구성과 동일 가정) 기준 상위 구성은 SNDK 2.88%, MRNA 2.69%, AMD 2.06%, MU 2.05%, SMCI 2.0%이다.
+      497K(2026-02-27)에는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며, 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있다.
   SOXL:
     ticker: SOXL
     issuer: 'Direxion (운용: Rafferty Asset Management, LLC; 497K 명시)'
@@ -1011,7 +1029,8 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078540/d50601d497k.htm
         form: 497K (Summary Prospectus)
         doc_date: '2026-02-27'
-      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용'
+      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용 / 재시도 2026-10-09: https://www.direxion.com/uploads/SOXL-Fact-Sheet.pdf
+        → HTTP 301, Location http://minio:9000/uploads/SOXL-Fact-Sheet.pdf (내부 호스트·외부 접근 불가), 브라우저형 User-Agent·리다이렉트 추적에도 PDF 미수신 — 497K 값 유지'
     inception:
       date: '2010-03-11'
       kind: 497K(2017-02-28) 성과표 Since Inception 일자(당시 설정 10년 미만)
@@ -1019,10 +1038,10 @@ products:
       first_trade_yahoo: '2010-03-11'
       note: null
     split_history:
-      text: 2015-05-20 정분할 4:1; 2021-03-02 정분할 15:1
+      text: 2015-05-20 정분할 4:1; 2021-03-02 정분할 15:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 0건; 나머지 2건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라
         지수의 300%와 크게 다를 수 있다'
@@ -1115,7 +1134,8 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078577/d91203d497k.htm
         form: 497K (Summary Prospectus)
         doc_date: '2026-02-27'
-      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용'
+      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용 / 재시도 2026-10-09: https://www.direxion.com/uploads/TECL-Fact-Sheet.pdf
+        → HTTP 301, Location http://minio:9000/uploads/TECL-Fact-Sheet.pdf (내부 호스트·외부 접근 불가), 브라우저형 User-Agent·리다이렉트 추적에도 PDF 미수신 — 497K 값 유지'
     inception:
       date: '2008-12-17'
       kind: 497K(2017-02-28) 성과표 Since Inception 일자(당시 설정 10년 미만)
@@ -1123,10 +1143,10 @@ products:
       first_trade_yahoo: '2008-12-30'
       note: 발행사 설정일과 Yahoo 첫 봉(2008-12-30)의 차이는 설정일↔거래 개시일 차이 가능
     split_history:
-      text: 2010-05-05 정분할 4:1; 2015-05-20 정분할 4:1; 2021-03-02 정분할 10:1
+      text: 2010-05-05 정분할 4:1; 2015-05-20 정분할 4:1; 2021-03-02 정분할 10:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 3건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 3건 중 발행사 공시로 대조된 것 0건; 나머지 3건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라
         지수의 300%와 크게 다를 수 있다'
@@ -1169,7 +1189,7 @@ products:
       verdict: OK
     sector_theme: 인터넷 (Dow Jones Internet Composite)
     construction:
-      weighting: '[부재] 497K 가중방식 미명시'
+      weighting: 유동주식 조정 시가총액 가중 (float-adjusted market-cap weighted) · 단일 종목 상한 10% · 비중 4.5% 초과 종목들의 누적 비중 상한 45%
       rebalance: '"The Index is rebalanced quarterly"'
       n_constituents: 40 (497K 서술)
       description: The Index is provided by S&P Dow Jones Indices (the “Index Provider”) and includes companies (which are defined as internet
@@ -1185,7 +1205,15 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078575/d89000d497k.htm
         form: 497K Principal Investment Strategy
         doc_date: '2026-02-27'
-      weighting_note: NOT STATED in the 497K (40 stocks ranked by float-adjusted market cap; weighting scheme not given). unverified.
+      weighting_note: Direxion 497K 는 가중방식을 적지 않음(40종목 float-adjusted 시총 순위 선정까지만 서술). 가중 규칙은 FDN 497K 서술로 확인했고 제공사 방법론 원문으로는 확인하지 못함
+      weighting_source:
+        url: https://www.sec.gov/Archives/edgar/data/1329377/000144554626003279/etf1_fdn497k.htm
+        form: 'First Trust Dow Jones Internet Index Fund(FDN, First Trust Exchange-Traded Fund) 497K 2026-05-01 Principal Investment Strategies:
+          "Securities selected for inclusion in the Index are then weighted by float-adjusted market capitalization, subject to a single security
+          weight cap of 10%. The cumulative weight of all companies within the Index with a weight greater than 4.5% cannot exceed 45% of the
+          Index."'
+        doc_date: '2026-05-01'
+        note: 출처 — EDGAR 497K (제공사 방법론 403 으로 대체). FDN 은 Dow Jones Internet Composite Index 를 1x 로 추종하는 펀드이며 지수 구성 서술은 해당 문서의 것이다
     top_constituents:
       basis: 1x ETF FDN 상위 보유 (지수 구성과 동일 가정)
       as_of: '2026-10-09'
@@ -1215,7 +1243,9 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078575/d89000d497k.htm
         form: 497K (Summary Prospectus)
         doc_date: '2026-02-27'
-      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용 / 면제/상한 행 없음(총=순)'
+      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용 / 재시도 2026-10-09: https://www.direxion.com/uploads/WEBL-Fact-Sheet.pdf
+        → HTTP 301, Location http://minio:9000/uploads/WEBL-Fact-Sheet.pdf (내부 호스트·외부 접근 불가), 브라우저형 User-Agent·리다이렉트 추적에도 PDF 미수신 — 497K 값 유지
+        / 면제/상한 행 없음(총=순)'
     inception:
       date: '2019-11-07'
       kind: N-CSR(2025-01-03 제출, FY2024-10-31) 연차보고서 Since Inception 일자
@@ -1238,9 +1268,9 @@ products:
     - https://www.sec.gov/Archives/edgar/data/1424958/000113322825000113/dset-efp11635_ncsr.htm
     checked: '2026-10-09'
     feature_text: |-
-      WEBL은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, S&P Dow Jones Indices가 제공하는 Dow Jones Internet Composite Index의 일간 성과를 3배(일간 리셋)로 추종하는 인터넷 섹터 상품이다.
-      지수는 40개 종목으로 구성되고 분기마다 리밸런스되며, 가중방식은 497K에 명시돼 있지 않다. 1x ETF FDN의 상위 보유 기준(지수 구성과 동일 가정)으로 META 11.08%, AMZN 9.86%, CSCO 8.55%, GOOGL 5.76%, NFLX 5.75% 순이다.
-      497K에는 1일보다 길거나 짧게 보유한 경우의 수익률을 지수 성과의 300%로 간주해서는 안 되며, 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있다.
+      WEBL은 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, S&P Dow Jones Indices가 제공하는 Dow Jones Internet Composite Index의 일간 수익률을 3배(일간 리셋)로 추종하는 인터넷 섹터 상품이다.
+      지수는 유동주식 조정 시가총액 가중 방식으로 40개 종목을 담으며, 단일 종목 상한은 10%, 비중 4.5% 초과 종목들의 누적 비중 상한은 45%이고 분기별로 리밸런스한다. 상위 구성은 1x ETF FDN 상위 보유 기준(지수 구성과 동일 가정)으로 META 11.08%, AMZN 9.86%, CSCO 8.55%, GOOGL 5.76%, NFLX 5.75%이다.
+      497K(2026-02-27)에는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며, 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있다.
   CURE:
     ticker: CURE
     issuer: 'Direxion (운용: Rafferty Asset Management, LLC; 497K 명시)'
@@ -1325,10 +1355,10 @@ products:
       first_trade_yahoo: '2011-06-15'
       note: null
     split_history:
-      text: 2013-08-20 정분할 2:1; 2015-05-20 정분할 4:1
+      text: 2013-08-20 정분할 2:1; 2015-05-20 정분할 4:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 0건; 나머지 2건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라
         지수의 300%와 크게 다를 수 있다'
@@ -1521,7 +1551,9 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078516/d30496d497k.htm
         form: 497K (Summary Prospectus)
         doc_date: '2026-02-27'
-      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용 / 면제/상한 행 없음(총=순)'
+      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용 / 재시도 2026-10-09: https://www.direxion.com/uploads/LABU-Fact-Sheet.pdf
+        → HTTP 301, Location http://minio:9000/uploads/LABU-Fact-Sheet.pdf (내부 호스트·외부 접근 불가), 브라우저형 User-Agent·리다이렉트 추적에도 PDF 미수신 — 497K 값 유지
+        / 면제/상한 행 없음(총=순)'
     inception:
       date: '2015-05-28'
       kind: N-CSR(2025-01-03 제출, FY2024-10-31) 연차보고서 Since Inception 일자
@@ -1529,13 +1561,13 @@ products:
       first_trade_yahoo: '2015-05-28'
       note: null
     split_history:
-      text: 2016-03-24 역분할 1:4; 2023-12-04 역분할 1:20
+      text: 2016-03-24 역분할 1:4 (yfinance 분할 데이터 기준); 2023-12-04 역분할 1:20
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration:
       - date: '2023-12-04'
         event: '역분할 공시 대조: 497 2023-11-03 제출'
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312523270419/d528188d497.htm
-      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 1건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 1건; 나머지 1건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라
         지수의 300%와 크게 다를 수 있다'
@@ -1622,7 +1654,8 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078524/d36113d497k.htm
         form: 497K (Summary Prospectus)
         doc_date: '2026-02-27'
-      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용'
+      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용 / 재시도 2026-10-09: https://www.direxion.com/uploads/FAS-Fact-Sheet.pdf
+        → HTTP 301, Location http://minio:9000/uploads/FAS-Fact-Sheet.pdf (내부 호스트·외부 접근 불가), 브라우저형 User-Agent·리다이렉트 추적에도 PDF 미수신 — 497K 값 유지'
     inception:
       date: '2008-11-06'
       kind: 497K(2017-02-28) 성과표 Since Inception 일자(당시 설정 10년 미만)
@@ -1630,10 +1663,10 @@ products:
       first_trade_yahoo: '2008-11-19'
       note: 발행사 설정일과 Yahoo 첫 봉(2008-11-19)의 차이는 설정일↔거래 개시일 차이 가능
     split_history:
-      text: 2009-07-09 역분할 1:5; 2010-05-05 정분할 3:1; 2011-11-10 역분할 1:5; 2013-04-02 정분할 3:1; 2015-05-20 정분할 4:1
+      text: 2009-07-09 역분할 1:5; 2010-05-05 정분할 3:1; 2011-11-10 역분할 1:5; 2013-04-02 정분할 3:1; 2015-05-20 정분할 4:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 5건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 5건 중 발행사 공시로 대조된 것 0건; 나머지 5건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라
         지수의 300%와 크게 다를 수 있다'
@@ -1739,13 +1772,13 @@ products:
       first_trade_yahoo: '2015-08-20'
       note: 발행사 설정일과 Yahoo 첫 봉(2015-08-20)의 차이는 설정일↔거래 개시일 차이 가능
     split_history:
-      text: 2020-04-23 역분할 1:10; 2021-10-25 정분할 5:1; 2023-06-05 역분할 1:10
+      text: 2020-04-23 역분할 1:10 (yfinance 분할 데이터 기준); 2021-10-25 정분할 5:1 (yfinance 분할 데이터 기준); 2023-06-05 역분할 1:10
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration:
       - date: '2023-06-05'
         event: '역분할 공시 대조: 497 2023-05-12 제출'
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312523143511/d497298d497.htm
-      note: Yahoo 분할 3건 중 발행사 공시로 대조된 것 1건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 3건 중 발행사 공시로 대조된 것 1건; 나머지 2건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라
         지수의 300%와 크게 다를 수 있다'
@@ -2166,13 +2199,14 @@ products:
       first_trade_yahoo: '2010-07-14'
       note: null
     split_history:
-      text: 2013-04-02 정분할 3:1; 2015-05-20 정분할 4:1; 2020-04-23 역분할 1:10; 2021-01-11 정분할 5:1; 2021-10-25 정분할 5:1
+      text: 2013-04-02 정분할 3:1 (yfinance 분할 데이터 기준); 2015-05-20 정분할 4:1 (yfinance 분할 데이터 기준); 2020-04-23 역분할 1:10; 2021-01-11 정분할 5:1 (yfinance
+        분할 데이터 기준); 2021-10-25 정분할 5:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration:
       - date: '2020-04-23'
         event: '역분할 공시 대조: 497 2020-04-08 제출'
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312520101426/d856187d497.htm
-      note: Yahoo 분할 5건 중 발행사 공시로 대조된 것 1건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 5건 중 발행사 공시로 대조된 것 1건; 나머지 4건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라
         지수의 300%와 크게 다를 수 있다'
@@ -2475,7 +2509,9 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078562/d77019d497k.htm
         form: 497K (Summary Prospectus)
         doc_date: '2026-02-27'
-      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용 / 면제/상한 행 없음(총=순)'
+      note: '[부재] 발행사 팩트시트 미개통(direxion.com 301→내부주소)으로 현재 보수 교차확인 불가; 497K 값만 사용 / 재시도 2026-10-09: https://www.direxion.com/uploads/DRN-Fact-Sheet.pdf
+        → HTTP 301, Location http://minio:9000/uploads/DRN-Fact-Sheet.pdf (내부 호스트·외부 접근 불가), 브라우저형 User-Agent·리다이렉트 추적에도 PDF 미수신 — 497K 값 유지 /
+        면제/상한 행 없음(총=순)'
     inception:
       date: '2009-07-16'
       kind: 497K(2017-02-28) 성과표 Since Inception 일자(당시 설정 10년 미만)
@@ -2483,10 +2519,10 @@ products:
       first_trade_yahoo: '2009-07-16'
       note: null
     split_history:
-      text: 2010-05-05 정분할 4:1; 2013-04-02 정분할 2:1; 2016-08-25 정분할 4:1
+      text: 2010-05-05 정분할 4:1; 2013-04-02 정분할 2:1; 2016-08-25 정분할 4:1 (yfinance 분할 데이터 기준)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
       corroboration: []
-      note: Yahoo 분할 3건 중 발행사 공시로 대조된 것 0건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 3건 중 발행사 공시로 대조된 것 0건; 나머지 3건은 공시 미대조 — yfinance 분할 데이터 기준 값 그대로
     structural_risk:
     - fact: '497K 명시: 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며(should not be expected to be 300%), 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라
         지수의 300%와 크게 다를 수 있다'
@@ -2691,8 +2727,8 @@ products:
       first_trade_yahoo: '2025-02-20'
       maturity: '2045-02-17'
       note: null
-      relisting: 현행 FNGU 는 2025-02-19 신규 발행(구 티커 FNGB, 만기 2045-02-17)이며 2025-06-24 부로 FNGU 티커 사용. 구 FNGU(만기 2038-01-08, 2018-01 출시)는 BMO 가 2025-05
-        콜(상환) — 아래 structural_risk 참조
+      relisting: 현행 시리즈 2025-02 발행, 구 시리즈 상환 이력(2025-05)은 동일 티커·동일 지수의 선행 상품 — 현행 FNGU 는 2025-02-19 신규 발행(구 티커 FNGB, 만기 2045-02-17)이며 2025-06-24
+        부로 FNGU 티커 사용. 구 FNGU(만기 2038-01-08, 2018-01 출시)는 BMO 가 2025-05 콜(상환) — 아래 structural_risk 참조
     split_history:
       text: 없음 (Yahoo splits)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
@@ -2705,6 +2741,8 @@ products:
       source_url: https://microsectors.com/wp-content/uploads/FNGB-ETNs-PS-Amendment-11-with-Addendum.pdf
     - fact: BMO 는 상장 유지 의무가 없으며 사유 불문 상장 폐지를 결정할 수 있음(PS)
       source_url: https://microsectors.com/wp-content/uploads/FNGB-ETNs-PS-Amendment-11-with-Addendum.pdf
+    - fact: 현행 시리즈 2025-02 발행, 구 시리즈 상환 이력(2025-05)은 동일 티커·동일 지수의 선행 상품 (아래 공시 이벤트 참조)
+      source_url: https://www.sec.gov/Archives/edgar/data/927971/000121465925003129/z218250fwp.htm
     - fact: '2025-02-19 — BMO, 구 FNGU(FANG+ Index 3x, 만기 2038-01-08, 2018-01 출시) 전량 상환(콜) 발표·티커를 FNGA 로 변경 예고(2025-03-03 예정)·콜결제일 2025-05-15 예정;
         신규 ETN FNGB 론칭(만기 2045) — 사유: "레버리지 지원 비용 증가로 기존 수수료가 시장 환경을 반영하지 못함"'
       source_url: https://www.sec.gov/Archives/edgar/data/927971/000121465925003129/z218250fwp.htm
@@ -2722,9 +2760,9 @@ products:
     - https://microsectors.com/fang/
     checked: '2026-10-09'
     feature_text: |-
-      FNGU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 판매되는 ETN으로, ICE Data Indices가 산출하는 NYSE FANG+ Index(총수익 버전)의 일간 수익률을 3배로 추종하는 상품이다.
-      지수는 대형 성장·기술주 10종목을 분기 재구성 시점에 각 10%로 동일가중하며, 지수 구성종목 기준 상위 구성은 Micron Technology 11.01%, Palantir Technologies 10.44%, NVIDIA 10.41%, Broadcom 10.4%, Microsoft 10.13% 순이다.
-      BMO의 선순위 무담보 채무라 발행사 신용위험에 노출되며, 만기는 2045-02-17이고 발행사 콜권이 있으며, 2025-02-19에 발표된 구 FNGU 전량 상환(콜) 이후 현행 ETN(구 FNGB)이 2025-06-24 개장 시점부터 FNGU 티커를 사용한다.
+      FNGU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 판매되는 ETN으로, ICE Data Indices가 산출하는 NYSE FANG+ Index(총수익 버전)의 일간 수익률을 3배로 추종하는 대형 성장·기술주 10종 대상 상품이다.
+      지수는 10종목을 분기 재구성 시점에 각 10%로 동일가중하며, 지수 구성종목 기준 상위 구성은 MICRON TECHNOLOGY 11.01%, PALANTIR TECHNOLOGIES 10.44%, NVIDIA 10.41%, BROADCOM 10.4%, MICROSOFT 10.13% 순이다.
+      BMO가 발행한 선순위 무담보 채무라 발행사 신용위험에 노출되며, 만기는 2045-02-17이고 발행사 콜권이 있으며, 2025-02에 발행된 현행 시리즈는 2025-06-24 개장 시점부로 구 FNGB에서 FNGU로 티커가 변경된 것이다.
   BULZ:
     ticker: BULZ
     issuer: Bank of Montreal(BMO) 발행 · MicroSectors 브랜드 (구조화·마케팅 REX Shares, LLC; 계산대리인 BMO Capital Markets Corp.)
@@ -2811,7 +2849,7 @@ products:
       - date: '2026-02-24'
         event: BMO, 10-for-1 분할(split) 시행 예정 공지(2026-02-12)
         url: https://www.sec.gov/Archives/edgar/data/927971/000121465926001604/i211263fwp.htm
-      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 2건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 2건 중 발행사 공시로 대조된 것 2건 (전건 대조)
     structural_risk:
     - fact: 'BMO 발행 선순위 무담보 채무 — 발행사 신용위험에 노출(PS: senior unsecured debt obligations of Bank of Montreal; 예금자보호·FDIC 대상 아님)'
       source_url: https://microsectors.com/wp-content/uploads/BULZ-ETNs-PS-Amendment-28-Settling-2.24.26.pdf
@@ -2908,7 +2946,8 @@ products:
       first_trade_yahoo: '2025-02-20'
       maturity: '2045-02-17'
       note: null
-      relisting: 현행 시리즈는 2025-02-19 신규 발행(만기 2045-02-17). 구 시리즈는 BMO 가 2024-07-25 콜결제 예정으로 전량 상환 공지(2024-07-08)
+      relisting: 현행 시리즈 2025-02 발행, 구 시리즈 상환 이력(2024-07)은 동일 티커·동일 지수의 선행 상품 — 현행 시리즈는 2025-02-19 신규 발행(만기 2045-02-17). 구 시리즈는 BMO 가 2024-07-25
+        콜결제 예정으로 전량 상환 공지(2024-07-08)
     split_history:
       text: 없음 (Yahoo splits)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
@@ -2921,6 +2960,8 @@ products:
       source_url: https://microsectors.com/wp-content/uploads/BNKU-ETNs-PS-Amendment-2-Settling-10.14.pdf
     - fact: BMO 는 상장 유지 의무가 없으며 사유 불문 상장 폐지를 결정할 수 있음(PS)
       source_url: https://microsectors.com/wp-content/uploads/BNKU-ETNs-PS-Amendment-2-Settling-10.14.pdf
+    - fact: 현행 시리즈 2025-02 발행, 구 시리즈 상환 이력(2024-07)은 동일 티커·동일 지수의 선행 상품 (아래 공시 이벤트 참조)
+      source_url: https://www.sec.gov/Archives/edgar/data/927971/000121465924012103/x78240fwp.htm
     - fact: 2024-07-08 — BMO, 구 BNKU(Big Banks 3X, 만기 2039-03-25) 등 4개 ETN 전량 상환(콜) 발표 — 콜결제일 2024-07-25 예정
       source_url: https://www.sec.gov/Archives/edgar/data/927971/000121465924012103/x78240fwp.htm
     sources:
@@ -2930,9 +2971,9 @@ products:
     - https://microsectors.com/big-banks/
     checked: '2026-10-09'
     feature_text: |-
-      BNKU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 REX Shares가 구조화·마케팅하는 ETN으로, Solactive MicroSectors U.S. Big Banks Index(gross total return version)의 일간 수익률을 3배(일간 리셋)로 추종하는 미국 대형 은행·투자서비스 섹터 상품이다.
-      지수는 Solactive AG가 산출·발표하는 10종목 동일가중 방식이며 매월 셋째 금요일(Adjustment Day)에 비중을 재설정하고, 매년 3월에 전체 종목을 재선정하고 그 외 달에는 상위 13위 규칙의 버퍼 심사를 적용한다. 지수 구성종목 기준 상위 구성은 CITIGROUP INC 10.32%, JPMORGAN CHASE & CO 10.12%, US BANCORP 10.08%, GOLDMAN SACHS GROUP INC 10.06%, MORGAN STANLEY 10.0%이다.
-      BMO 발행 선순위 무담보 채무로 발행사 신용위험에 노출되며, 2024-07-08 BMO가 만기 2039-03-25인 구 BNKU를 포함한 4개 ETN의 전량 상환(콜)을 발표했고 현 ETN의 만기는 2045-02-17이며 발행사 콜권이 있다.
+      BNKU는 Bank of Montreal(BMO)이 발행하고 MicroSectors 브랜드로 판매되는 ETN으로, Solactive MicroSectors U.S. Big Banks Index(gross total return version)의 일간 수익률을 3배(일간 리셋)로 추종하는 미국 대형 은행·투자서비스 섹터 상품이다.
+      지수는 Solactive AG가 산출·발표하는 10종목 동일가중 방식이며 매월 세 번째 금요일(Adjustment Day)에 가중치를 재설정하고, 매년 3월에는 전체 종목을 재선정하고 그 외 달에는 상위 13위 규칙의 버퍼 검토를 한다. 상위 구성은 지수 구성종목 기준(microsectors.com)으로 CITIGROUP INC 10.32%, JPMORGAN CHASE & CO 10.12%, US BANCORP 10.08%, GOLDMAN SACHS GROUP INC 10.06%, MORGAN STANLEY 10.0%이다.
+      BMO 발행 선순위 무담보 채무로 발행사 신용위험에 노출되며, 발행사 콜권이 있고 2024-07-08에 동일 티커의 구 시리즈(만기 2039-03-25)가 전량 상환(콜) 발표된 이력이 있다.
   NRGU:
     ticker: NRGU
     issuer: Bank of Montreal(BMO) 발행 · MicroSectors 브랜드 (구조화·마케팅 REX Shares, LLC; 계산대리인 BMO Capital Markets Corp.)
@@ -3012,7 +3053,8 @@ products:
       first_trade_yahoo: '2025-02-20'
       maturity: '2045-02-17'
       note: null
-      relisting: 현행 시리즈는 2025-02-19 신규 발행(만기 2045-02-17). 구 시리즈는 BMO 가 2024-07-25 콜결제 예정으로 전량 상환 공지(2024-07-08)
+      relisting: 현행 시리즈 2025-02 발행, 구 시리즈 상환 이력(2024-07)은 동일 티커·동일 지수의 선행 상품 — 현행 시리즈는 2025-02-19 신규 발행(만기 2045-02-17). 구 시리즈는 BMO 가 2024-07-25
+        콜결제 예정으로 전량 상환 공지(2024-07-08)
     split_history:
       text: 없음 (Yahoo splits)
       basis: Yahoo Finance splits (product_info.csv splits_yf; 제3자 시세 데이터)
@@ -3025,6 +3067,8 @@ products:
       source_url: https://microsectors.com/wp-content/uploads/NRGU-ETNs-PS-Amendment-2-Settling-6.18.pdf
     - fact: BMO 는 상장 유지 의무가 없으며 사유 불문 상장 폐지를 결정할 수 있음(PS)
       source_url: https://microsectors.com/wp-content/uploads/NRGU-ETNs-PS-Amendment-2-Settling-6.18.pdf
+    - fact: 현행 시리즈 2025-02 발행, 구 시리즈 상환 이력(2024-07)은 동일 티커·동일 지수의 선행 상품 (아래 공시 이벤트 참조)
+      source_url: https://www.sec.gov/Archives/edgar/data/927971/000121465924012103/x78240fwp.htm
     - fact: 2024-07-08 — BMO, 구 NRGU(Big Oil 3X) 등 4개 ETN 전량 상환(콜) 발표 — 콜결제일 2024-07-25 예정
       source_url: https://www.sec.gov/Archives/edgar/data/927971/000121465924012103/x78240fwp.htm
     sources:
@@ -3034,9 +3078,9 @@ products:
     - https://microsectors.com/big-oil/
     checked: '2026-10-09'
     feature_text: |-
-      NRGU는 Bank of Montreal(BMO)이 발행하고 REX Shares가 구조화·마케팅하는 MicroSectors 브랜드의 ETN으로, Solactive MicroSectors U.S. Big Oil Index의 gross total return 버전 일간 수익률을 3배(일간 리셋)로 추종하는 미국 대형 석유 섹터 상품이다.
-      지수는 10개 종목을 동일가중으로 구성하며 매월 세 번째 금요일(Adjustment Day)에 비중을 재설정하고, 지수 구성종목 기준 상위 구성은 Marathon Petroleum 10.45%, Valero Energy 10.3%, ExxonMobil Holdings 10.07%, EOG Resources 10.04%, Phillips 66 9.98%이다.
-      BMO의 선순위 무담보 채무로 발행사 신용위험에 노출되며, 발행사 콜권이 있고 2024-07-08에 BMO가 구 NRGU(Big Oil 3X) 등 4개 ETN의 전량 상환(콜)을 발표해 콜결제일을 2024-07-25로 예정한 이력이 있다.
+      NRGU는 Bank of Montreal(BMO)이 발행하고 REX Shares가 구조화·마케팅하는 MicroSectors 브랜드의 3배 일간 리셋 ETN으로, Solactive MicroSectors U.S. Big Oil Index의 gross total return 버전을 추종하는 미국 대형 석유 섹터 상품이다.
+      지수는 10개 종목을 동일가중으로 구성하며 매월 3번째 금요일(Adjustment Day)에 가중치를 재설정하고, 지수 구성종목 기준 상위 구성은 Marathon Petroleum 10.45%, Valero Energy 10.3%, ExxonMobil Holdings 10.07%, EOG Resources 10.04%, Phillips 66 9.98%이다.
+      BMO의 선순위 무담보 채무로 발행사 신용위험에 노출되며, 발행사 콜권이 있고 동일 티커의 구 시리즈는 2024-07-08 전량 상환(콜) 발표 이력이 있다.
   OILU:
     ticker: OILU
     issuer: Bank of Montreal(BMO) 발행 · MicroSectors 브랜드 (구조화·마케팅 REX Shares, LLC; 계산대리인 BMO Capital Markets Corp.)
@@ -3242,7 +3286,7 @@ products:
       - date: '2022-10-31'
         event: BMO, 1-for-10 역분할 시행(공지 2022-10-21)
         url: https://www.sec.gov/Archives/edgar/data/927971/000121465922012563/r1019220fwp.htm
-      note: Yahoo 분할 1건 중 발행사 공시로 대조된 것 1건; 나머지는 공시 미대조(Yahoo 값 그대로)
+      note: Yahoo 분할 1건 중 발행사 공시로 대조된 것 1건 (전건 대조)
     structural_risk:
     - fact: 'BMO 발행 선순위 무담보 채무 — 발행사 신용위험에 노출(PS: senior unsecured debt obligations of Bank of Montreal; 예금자보호·FDIC 대상 아님)'
       source_url: https://microsectors.com/wp-content/uploads/GDXU-prospectus.pdf

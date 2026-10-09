@@ -18,7 +18,7 @@ check("표본부족 n<60 (MNGU 류)",B(nb=28,beta=3.07,r2=0.993)==["표본부족
 check("근사: β 밖",B(beta=3.5)==["근사"] and B(beta=2.5)==["근사"])
 check("근사: R²<0.85",B(r2=0.80)==["근사"])
 check("신규 listed<252",B(ld=251)==["신규"] and B(ld=252)==[])
-check("저유동 <$1M",B(adtv=0.9)==["저유동"] and B(adtv=1.0)==[])
+check("저유동 <$0.3M (V2.3-FOLLOWUP §1)",B(adtv=0.29)==["저유동"] and B(adtv=0.3)==[] and B(adtv=0.9)==[])
 check("무거래N (V=0 2봉)",B(zero=2)==["무거래2"] and B(zero=1)==["무거래1"] and B(zero=0)==[])
 check("복합 배지 순서",B(nb=18,ld=18,adtv=0.2,zero=3)==["표본부족","신규","저유동","무거래3"])
 # ---- 2. compute 합성 시나리오 ----
