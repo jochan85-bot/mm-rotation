@@ -186,6 +186,17 @@
     });
     return h;
   }
+
+  /* 모든 행 높이를 가장 높은 행(사유가 3줄인 행 등)에 맞춘다 — 측정 후 --rh 로 지정, 너비가 바뀌면 다시 측정 */
+  function fitRows(tbl) {
+    if (!tbl) return;
+    tbl.style.removeProperty('--rh');
+    var rows = tbl.querySelectorAll('tbody > tr:not(.dt)'), hid = [], max = 0, i;
+    for (i = 0; i < rows.length; i++) if (rows[i].hidden) { rows[i].hidden = false; hid.push(rows[i]); }
+    for (i = 0; i < rows.length; i++) max = Math.max(max, rows[i].getBoundingClientRect().height);
+    for (i = 0; i < hid.length; i++) hid[i].hidden = true;
+    if (max > 0) tbl.style.setProperty('--rh', Math.ceil(max) + 'px');
+  }
   function renderTable() {
     var rows = st.rows, t = $('rk');
     $('ttl').innerHTML = '<b>' + st.date + ' 기준</b> <span>· ' + rows.length + '종' + (st.date === D.asof ? ' · 최신' : '') + '</span>';
@@ -194,6 +205,7 @@
     $('modebtn').classList.toggle('on', st.mode === 'det');
     t.className = 'rk ' + (st.mode === 'sum' ? 'sum' : 'det');
     t.innerHTML = colgroup() + '<thead>' + head() + '</thead><tbody>' + body(rows) + '</tbody>';
+    fitRows(t);
   }
 
   /* ---- 날짜 로드 ---- */
@@ -273,6 +285,8 @@
     }
   });
   window.addEventListener('scroll', function () { pop.hidden = true; }, true);
+  var rzT; window.addEventListener('resize', function () { clearTimeout(rzT); rzT = setTimeout(function () { fitRows($('rk')); }, 120); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fitRows($('rk')); });
 
   $('modebtn').addEventListener('click', function () { st.mode = st.mode === 'sum' ? 'det' : 'sum'; renderTable(); });
   $('todaybtn').addEventListener('click', function () { select(D.asof); });

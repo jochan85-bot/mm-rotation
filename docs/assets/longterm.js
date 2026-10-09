@@ -37,6 +37,17 @@
     }).join('');
   }
   function lines(w) { return esc(w).split(' · ').join('<br>'); }
+
+  /* 모든 행 높이를 가장 높은 행(사유가 3줄인 행 등)에 맞춘다 — 측정 후 --rh 로 지정, 너비가 바뀌면 다시 측정 */
+  function fitRows(tbl) {
+    if (!tbl) return;
+    tbl.style.removeProperty('--rh');
+    var rows = tbl.querySelectorAll('tbody > tr:not(.dt)'), hid = [], max = 0, i;
+    for (i = 0; i < rows.length; i++) if (rows[i].hidden) { rows[i].hidden = false; hid.push(rows[i]); }
+    for (i = 0; i < rows.length; i++) max = Math.max(max, rows[i].getBoundingClientRect().height);
+    for (i = 0; i < hid.length; i++) hid[i].hidden = true;
+    if (max > 0) tbl.style.setProperty('--rh', Math.ceil(max) + 'px');
+  }
   function render() {
     var t = D.tabs[cur];
     var h = '<colgroup>' + COLS.map(function (c) { return '<col style="width:' + c.w + '%">'; }).join('') + '</colgroup><thead><tr>' +
@@ -51,6 +62,7 @@
         (r.w ? '<span class="wr" data-w="' + esc(r.w) + '">' + lines(r.w) + '</span>' : '') + '</td></tr>';
     });
     var el = $('lt'); el.className = 'rk sum'; el.innerHTML = h + '</tbody>';
+    fitRows(el);
     var miss = t.rows.filter(function (r) { return r.m === null; }).length;
     $('ltl').innerHTML = '<b>' + esc(D.asof) + ' 기준 · ' + t.label + ' 평균</b> <span>· 최근 ' + t.k + '거래일' + (miss ? ' · 표본 부족 ' + miss + '종 "—"' : '') + '</span>';
     tabs();
@@ -73,6 +85,8 @@
     pop.hidden = true;
   });
   window.addEventListener('scroll', function () { pop.hidden = true; }, true);
+  var rzT; window.addEventListener('resize', function () { clearTimeout(rzT); rzT = setTimeout(function () { fitRows($('lt')); }, 120); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fitRows($('lt')); });
   var h0 = parseInt((location.hash || '').slice(1), 10);
   D.tabs.forEach(function (t, i) { if (t.k === h0) cur = i; });
   render();

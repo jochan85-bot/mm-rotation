@@ -169,3 +169,7 @@ table.rk tr.mr td.rk1{box-shadow:inset 2px 0 0 var(--accent)}
 table.rk td.tk{white-space:nowrap}
 table.rk.sum th.c{padding-left:1px;padding-right:1px}
 table.rk th.c .ar{position:static;display:inline-block;margin:0 0 0 1px}
+/* ---- V3.3: 전 행 높이 통일(가장 높은 행 기준, --rh 는 JS 가 측정) · 사유 열 안 가운데 정렬 ---- */
+table.rk tbody tr:not(.dt){height:var(--rh,auto)}
+table.rk td.wc{text-align:center}
+.wr{text-align:center}
