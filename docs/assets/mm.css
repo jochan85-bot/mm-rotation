@@ -1,0 +1,117 @@
+/* mm-rotation 공용 스타일 — 국장/미장 리포트(mactrader-reports)의 색·타이포·카드·표 서식 + 크립토/골드 시그널 리포트 차트 색을 따른다.
+   외부 폰트·라이브러리 0. 모바일 우선(기준 375px, 가로 스크롤 없음), 데스크톱은 최대 960px 중앙 정렬. 생성: scripts/mm_site.py */
+:root{--bg:#0d1117;--bg2:#0b0f17;--panel:#161b22;--panel2:#1c2330;--border:#30363d;--grid:#1f2a3a;--text:#e6edf3;--muted:#8b949e;
+ --accent:#58a6ff;--up:#22c55e;--dn:#ef4444;--amber:#f59e0b;--blue:#3b82f6;--warn-bg:rgba(245,158,11,.12);--warn-bd:rgba(245,158,11,.45)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);
+ font-size:14px;line-height:1.5;padding:12px 10px 40px;max-width:960px;margin:0 auto}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+nav.top{display:flex;gap:6px;margin:2px 0 12px}
+nav.top a{flex:1 1 0;text-align:center;font-size:12px;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:6px 2px;white-space:nowrap}
+nav.top a.cur{color:var(--text);border-color:var(--accent);font-weight:600}
+nav.top a:hover{text-decoration:none;border-color:var(--accent)}
+h1{color:var(--accent);font-size:20px;line-height:1.25;margin:2px 0 4px}
+h1 small{display:block;color:var(--muted);font-size:12px;font-weight:400;margin-top:2px}
+h2{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin:22px 0 8px;padding-bottom:6px;border-bottom:1px solid #21262d;font-weight:600}
+h3{font-size:14px;margin:14px 0 4px}
+p{margin:6px 0}
+.meta{color:var(--muted);font-size:12.5px;line-height:1.6;margin:2px 0 8px}
+.meta b{color:var(--text)}
+.pill{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;border:1px solid var(--border);background:var(--panel);color:var(--muted);margin-left:4px;vertical-align:1px}
+.pill.prov{color:#fca5a5;border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.14)}
+.pill.ok{color:#4ade80;border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.12)}
+.banner{background:var(--warn-bg);border:1px solid var(--warn-bd);color:#fbbf24;border-radius:6px;padding:6px 10px;margin:6px 0;font-size:12.5px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:8px 0}
+.btn{font:inherit;font-size:12px;color:var(--text);background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--accent)} .btn.on{background:#1e3a8a;border-color:#1e3a8a;color:#fff}
+.btn[hidden]{display:none}
+/* ---- 순위표 ---- */
+.tbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0 6px;flex-wrap:wrap}
+.tbar .ttl{font-size:14px;font-weight:600}.tbar .ttl span{color:var(--muted);font-weight:400;font-size:12.5px}
+.tbar .acts{display:flex;gap:6px}
+.wrap{border:1px solid var(--border);border-radius:8px;overflow-x:auto;background:var(--panel)}
+table.rk{width:100%;border-collapse:collapse;font-size:12.5px}
+table.rk th,table.rk td{padding:7px 4px;border-bottom:1px solid #21262d;text-align:right;white-space:nowrap}
+table.rk th{background:#1b222c;color:var(--muted);font-weight:600;font-size:11px;position:sticky;top:0}
+table.rk th.tip{cursor:help;text-decoration:underline dotted #3d4651;text-underline-offset:3px}
+table.rk td.rk1{text-align:center;color:var(--muted);width:30px} table.rk th.c{text-align:center}
+table.rk td.l,table.rk th.l{text-align:left}
+table.rk td.tk{text-align:left;font-weight:600}
+table.rk td.tk .car{color:var(--accent);margin-right:3px;display:inline-block;width:10px}
+table.rk td.tk .more{color:var(--muted);font-weight:400;font-size:11px;margin-left:3px}
+table.rk td.m{font-weight:700;color:#fff}
+table.rk td.sc{color:var(--text)}
+table.rk tr.r{cursor:pointer} table.rk tr.r:hover td{background:#1a212b} table.rk tr.r.open td{background:#1a212b}
+table.rk tr.dt td{background:#12171f;padding:0;text-align:left;white-space:normal}
+table.rk tr.dt[hidden]{display:none}
+.panel{padding:8px 12px 10px}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:3px 14px;font-size:12px}
+.kv div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed #232b36;padding:2px 0}
+.kv .k{color:var(--muted)} .kv .v{text-align:right}
+.mem{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.mem th{color:var(--muted);font-weight:600;font-size:11px;text-align:right;padding:3px 4px;border-bottom:1px solid #232b36}
+.mem td{padding:4px 4px;text-align:right;border-bottom:1px solid #1b222c}
+.mem th.l,.mem td.l{text-align:left}
+.wh{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--amber);color:#111;font-size:11px;font-weight:800;line-height:1;cursor:pointer;vertical-align:middle}
+.wt{display:none;color:#fbbf24;font-size:11.5px;margin-left:5px;white-space:normal}
+.up{color:var(--up)} .dn{color:var(--dn)} .mu{color:var(--muted)}
+td.wc{text-align:left;width:28px}
+#pop{position:fixed;z-index:50;max-width:min(300px,86vw);background:#1b222c;border:1px solid var(--accent);color:var(--text);font-size:12px;padding:6px 9px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+#pop[hidden]{display:none}
+/* ---- 달력 ---- */
+.calbar{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:8px 0 4px}
+.calbar .btn{padding:3px 9px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;max-width:340px;font-size:12px}
+.cal .wd{text-align:center;color:var(--muted);font-size:10.5px;padding:1px 0}
+.cal .d{height:26px;display:flex;align-items:center;justify-content:center;border-radius:5px;color:#4a5361}
+.cal button.d{font:inherit;font-size:12px;color:var(--text);background:#1b222c;border:1px solid #232b36;cursor:pointer;padding:0}
+.cal button.d:hover{border-color:var(--accent)} .cal button.d.sel{background:#1e3a8a;border-color:var(--accent);color:#fff;font-weight:700}
+.cal button.d.last{border-color:var(--amber)}
+.calnote{font-size:11px;color:var(--muted);margin-top:4px}
+/* ---- 제외/표 ---- */
+table.pl{width:100%;border-collapse:collapse;font-size:12.5px}
+table.pl th,table.pl td{padding:7px 8px;border-bottom:1px solid #21262d;text-align:left;vertical-align:top}
+table.pl th{background:#1b222c;color:var(--muted);font-size:11px;font-weight:600}
+.notice{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:6px;padding:10px 12px;font-size:12.5px;line-height:1.7;color:#c9d1d9}
+.empty{color:var(--muted);font-size:12.5px;padding:8px 2px}
+/* ---- 가이드 ---- */
+.guide h2{margin-top:26px}
+.guide ul{margin:4px 0 6px 18px} .guide li{margin:3px 0}
+.guide{overflow-wrap:anywhere}
+.guide code{word-break:break-all;background:#1b222c;border:1px solid #232b36;border-radius:4px;padding:0 4px;font-size:12px}
+.guide table{width:100%;border-collapse:collapse;font-size:12.5px;margin:6px 0}
+.guide th,.guide td{padding:6px 8px;border-bottom:1px solid #21262d;text-align:left;vertical-align:top}
+.guide th{background:#1b222c;color:var(--muted);font-size:11px}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
+.toc a{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:2px 10px;color:var(--muted)}
+/* ---- 종목 페이지 ---- */
+.sub{color:var(--muted);font-size:12.5px;margin:0 0 8px}
+.rangebar{display:flex;gap:6px;margin:6px 0}
+.chartbox{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px 4px 2px}
+.chartbox svg{display:block;width:100%;height:auto}
+.chartnote{font-size:11px;color:var(--muted);padding:4px 6px}
+.legend{display:flex;gap:14px;font-size:11.5px;color:var(--muted);padding:2px 8px 4px}
+.legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:5px;border-radius:2px}
+table.info{width:100%;border-collapse:collapse;font-size:13px}
+table.info th{width:90px;text-align:left;color:var(--muted);font-weight:600;font-size:12px;padding:6px 8px;border-bottom:1px solid #21262d;vertical-align:top}
+table.info td{padding:6px 8px;border-bottom:1px solid #21262d}
+table.t5{width:100%;border-collapse:collapse;font-size:13px}
+table.t5 th{color:var(--muted);font-size:11px;text-align:left;padding:4px 8px;border-bottom:1px solid #21262d}
+table.t5 td{padding:5px 8px;border-bottom:1px solid #1b222c}
+table.t5 td.n,table.t5 th.n{text-align:right}
+.feat{list-style:none;margin:2px 0}
+.feat li{padding:6px 10px;margin:4px 0;background:var(--panel);border:1px solid var(--border);border-radius:6px;font-size:13px;line-height:1.6}
+.feat li b{color:var(--accent);font-weight:600;margin-right:6px;font-size:11.5px}
+.risk li{list-style:none;padding:6px 10px;margin:4px 0;background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:6px;font-size:13px;line-height:1.6}
+.stamp{color:var(--muted);font-size:11.5px;margin-top:14px}
+table.dir{width:100%;border-collapse:collapse;font-size:12.5px}
+table.dir th{background:#1b222c;color:var(--muted);font-size:11px;padding:6px 6px;text-align:left}
+table.dir td{padding:7px 6px;border-bottom:1px solid #21262d}
+table.dir td.n{text-align:right} table.dir th.n{text-align:right}
+@media (min-width:700px){
+ body{font-size:14.5px;padding:16px 16px 50px}
+ table.rk{font-size:13.5px} table.rk th,table.rk td{padding:8px 8px}
+ .wt{display:inline} td.wc{width:auto;white-space:normal}
+ .kv{grid-template-columns:repeat(3,1fr)}
+}

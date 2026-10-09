@@ -125,8 +125,18 @@ pinfo=pd.DataFrame([dict(ticker=t,index_name=f"Idx {t}",onex_path="공식 지수
 orig=ms.pd.read_csv; ms.pd.read_csv=lambda p,*a,**k: pinfo if str(p).endswith("product_info.csv") else orig(p,*a,**k)
 h=ms.build_index(df,dict(asof="2026-10-08",generated="t",provisional=dict(raw_last="2026-10-09",reason="Close NaN"),manual=True,new_products=[],pipeline=[]))
 ms.pd.read_csv=orig
-check("페이지: 잠정 배너",'잠정</span> 기준일 2026-10-08' in h)
-check("페이지: 수동 산출 배너",'수동 산출</span>' in h)
-check("페이지: 19열 헤더·모바일 sticky 3열 CSS",h.count("onclick=\"sortT('t1',")==19 and "@media (max-width:600px)" in h and "left:137px" in h)
-check("페이지: 티커 → products.html#앵커 링크",'href="products.html#AAA"' in h)
+check("페이지: 잠정 배지",'class="pill prov"' in h and ">잠정<" in h)
+check("페이지: 수동 산출 배너",'<b>수동 산출</b>' in h)
+import re as _re, json as _json
+_d=_json.loads(_re.search(r'<script id="mmdata" type="application/json">(.*?)</script>',h,_re.S).group(1))
+check("페이지: 내장 데이터(기준일·순위 행·티커 메타)",_d["asof"]=="2026-10-08" and len(_d["latest"])==int((df.table=="순위").sum()) and set(_d["tk"])>=set(df.ticker) and "p_sig" in _d["latest"][0])
+_js=open(ms.DOCS/"assets"/"index.js",encoding="utf-8").read()
+check("페이지: 요약 7열(순위·티커·M-score·변동성·상대강도·추세·!) + 종목 페이지 링크(JS)",all(x in _js for x in ("변동성","상대강도","추세","M-score",">!<","products/")))
+check("페이지: 안내 문안 그대로 + 가이드 링크, 코드 표기(E5) 미노출",ms.NOTICE in h.replace("&#x27;","'") or ms.E(ms.NOTICE) in h and 'href="guide.html"' in h and "E5" not in h)
+check("페이지: 제외 없으면 '현재 없음'",("현재 없음" in h) or ("일시 제외" in h))
+_ex=ms.exclusion_rows(pd.DataFrame([dict(ticker="ZZZ",table="제외",reason="E5",M=None),dict(ticker="YYY",table="⚠",reason="최신 확정 봉이 기준일(2026-10-08)과 다름: x",M=None)]),{"excluded":{"ZZZ":{"type":"조기상환·가속상환","date":"2026-10-01","url":"https://example.invalid/n"}}})
+check("제외 문장 매핑(코드 대신 사람 문장, 링크 보존)",_ex[0]==("ZZZ","발행사 조기상환 공지, 2026-10-01","https://example.invalid/n") and "일시 제외" in _ex[1][1] and "E5" not in _ex[1][1],str(_ex))
+import mm_guide as mg
+_g=mg.guide_body(df,dict(generated="t",anomalies=None,pipeline=[],new_products=[]),uni,{"check_incomplete":{}})
+check("가이드: 산식·주의 아이콘·제외 규칙·백테스트 절 포함, 운영값($0.3M) 반영",all(f'id="{k}"' in _g for k in ("mscore","universe","onex","icons","excl","data","cal","bt","limits","pipe")) and "$0.3M" in _g)
 print(f"\n{ok} PASS / {len(bad)} FAIL"); sys.exit(1 if bad else 0)

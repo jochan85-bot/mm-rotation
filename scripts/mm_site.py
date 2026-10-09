@@ -1,291 +1,271 @@
-"""정적 페이지 생성 — docs/index.html · products.html · history.html. 외부 라이브러리·외부 스크립트 0, 개인 정보 0."""
+"""정적 페이지 생성 — docs/index.html · guide.html · products.html · products/<티커>.html · data/series/<티커>.json.
+MM-PAGE-V3-DESIGN-20261010: 표시층 전면 재구성(렌더러만 교체 — compute·판정 규칙·CSV 형식 무변경).
+스타일 = docs/assets/mm.css, 동작 = docs/assets/index.js · chart.js (정적 파일). 외부 라이브러리·외부 스크립트 0, 개인 정보 0."""
 import json, html, re
 from pathlib import Path
 import numpy as np, pandas as pd
-try: from mm_lib import DATA, DOCS, ROOT, now_kst, MSCORE_SHA, load_status
-except ImportError: from scripts.mm_lib import DATA, DOCS, ROOT, now_kst, MSCORE_SHA, load_status
-E=html.escape
-CSS="""
-body{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;margin:0;padding:12px 14px;color:#1b1f23;background:#fff;font-size:14px}
-h1{font-size:18px;margin:4px 0 8px} h2{font-size:15px;margin:22px 0 6px} .meta{color:#444;line-height:1.55;margin-bottom:8px}
-.warn{background:#fff4e5;border:1px solid #f0b34f;padding:6px 9px;border-radius:5px;margin:6px 0}
-.wrap{overflow-x:auto;border:1px solid #d0d7de;border-radius:6px} table{border-collapse:separate;border-spacing:0;font-size:12.5px;min-width:1500px}
-th,td{padding:5px 7px;border-bottom:1px solid #eaeef2;white-space:nowrap;text-align:right;background:#fff} th{background:#f6f8fa;cursor:pointer;position:sticky;top:0;z-index:2}
-td:nth-child(1),th:nth-child(1){position:sticky;left:0;width:44px;min-width:44px;text-align:center;z-index:3;background:#f6f8fa}
-td:nth-child(2),th:nth-child(2){position:sticky;left:45px;min-width:92px;text-align:left;z-index:3;font-weight:600;background:#fff}
-th:nth-child(2){background:#f6f8fa} td.l,th.l{text-align:left}
-tr.g td{background:#eef0f3;color:#5a6270} tr.g td:nth-child(2){background:#eef0f3} tr.c td{background:#fafbfc;color:#444} tr.c td:nth-child(2){background:#fafbfc}
-tr.g.c td,tr.g.c td:nth-child(2){background:#e8eaee}
-.badge{display:inline-block;font-size:11px;padding:0 5px;border-radius:8px;background:#eee;color:#555;margin-left:3px} .b-approx{background:#ffe9c7;color:#8a5a00}
-.b-prov{background:#ffd9d9;color:#8b1a1a} .up{color:#0a7a2f} .dn{color:#b3261e} .tog{cursor:pointer;color:#0366d6;margin-right:4px;user-select:none}
-.foot{margin-top:26px;color:#444;border-top:1px solid #d0d7de;padding-top:8px;line-height:1.6} a{color:#0366d6} nav a{margin-right:12px}
-td.sc{font-size:12px} td.sc .p{color:#777}
-@media (max-width:600px){
- td:nth-child(3),th:nth-child(3){position:sticky;left:137px;min-width:56px;z-index:3;background:#fff}
- th:nth-child(3){background:#f6f8fa} tr.g td:nth-child(3){background:#eef0f3} tr.c td:nth-child(3){background:#fafbfc} tr.g.c td:nth-child(3){background:#e8eaee}
- td:nth-child(2),th:nth-child(2){min-width:92px;max-width:92px;overflow:hidden;text-overflow:ellipsis}
-}
-details.card{border:1px solid #d0d7de;border-radius:6px;margin:8px 0;padding:0 10px} details.card[open]{background:#fcfdfe} details.card:target{border-color:#0366d6;box-shadow:0 0 0 2px #cfe3ff}
-details.card>summary{cursor:pointer;padding:8px 0;font-weight:600;list-style:none} details.card>summary::-webkit-details-marker{display:none}
-details.card>summary::before{content:'▸ ';color:#0366d6} details.card[open]>summary::before{content:'▾ '}
-.kv{display:grid;grid-template-columns:130px 1fr;gap:3px 12px;margin:4px 0 10px;font-size:13px} .kv div.k{color:#555} .feat{margin:2px 0 8px;line-height:1.55}
-.sm{color:#666;font-size:12px}
-"""
-JS="""
-function cv(td){var v=td.getAttribute('data-v'); if(v===null) v=td.textContent; var n=parseFloat(String(v).replace(/[,%+○×]/g,'').replace('−','-')); return isNaN(n)?null:n;}
-function sortT(id,col){var t=document.getElementById(id),tb=t.tBodies[0],rows=Array.prototype.slice.call(tb.rows),par=rows.filter(function(r){return !r.getAttribute('data-parent')}),
- ch={};rows.forEach(function(r){var p=r.getAttribute('data-parent');if(p){(ch[p]=ch[p]||[]).push(r)}});
- var dir=(t.getAttribute('data-sc')==col&&t.getAttribute('data-sd')=='1')?-1:1;t.setAttribute('data-sc',col);t.setAttribute('data-sd',dir==1?'1':'-1');
- par.sort(function(a,b){var x=cv(a.cells[col]),y=cv(b.cells[col]);if(x===null&&y===null)return dir*String(a.cells[col].textContent).localeCompare(String(b.cells[col].textContent));if(x===null)return 1;if(y===null)return -1;return dir*(x-y);});
- par.forEach(function(r){tb.appendChild(r);var g=r.getAttribute('data-g');if(g&&ch[g])ch[g].forEach(function(c){tb.appendChild(c)})});}
-function tog(g){var rs=document.querySelectorAll('tr[data-parent="'+g+'"]'),open=rs.length&&rs[0].style.display=='none';rs.forEach(function(r){r.style.display=open?'table-row':'none'});}
-function openHash(){var h=location.hash.slice(1);if(!h)return;var d=document.getElementById(h);if(d&&d.tagName=='DETAILS'){d.open=true;d.scrollIntoView();}}
-window.addEventListener('hashchange',openHash);window.addEventListener('load',openHash);
-"""
-def pg(title, body, nav_cur, manual=False):
-    nav=" ".join(f'<a href="{h}"{" style=font-weight:700" if h==nav_cur else ""}>{n}</a>' for h,n in (("index.html","순위표"),("products.html","상품"),("history.html","이력")))
-    return f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{E(title)}</title><style>{CSS}</style></head><body><nav>{nav}</nav>{body}<script>{JS}</script></body></html>'
-def f1(x,n=1,sign=False):
-    if x is None or (isinstance(x,float) and np.isnan(x)): return "—"
+try:
+    from mm_lib import DATA, DOCS, ROOT, now_kst, MSCORE_SHA, load_status
+    import mm_guide
+except ImportError:
+    from scripts.mm_lib import DATA, DOCS, ROOT, now_kst, MSCORE_SHA, load_status
+    from scripts import mm_guide
+E = html.escape
+NAV = (("index.html", "순위표"), ("products.html", "상품"), ("guide.html", "가이드"))
+NOTICE = ("이 표는 3배 레버리지 상품을 무한매수 방식으로 운용할 때 참고하도록 만든 순위입니다. 점수는 각 상품이 따르는 지수의 최근 흐름(변동성·1년 수익률·추세)을 상대적으로 비교한 것이며, "
+          "어떤 상품도 오를 것이라고 예측하지 않습니다. 과거 검증에서 이 순위는 지수가 1년 가까이 계속 하락하는 구간에서 손실이 회복되지 못하는 경우를 걸러내지 못했습니다. "
+          "3배 레버리지는 지수가 횡보만 해도 가격이 깎이고, 큰 하락 뒤에는 원래 가격으로 돌아오지 못할 수 있습니다. 어떤 상품을, 얼마를, 언제 사고팔지는 전적으로 투자자 본인이 판단하고 책임지는 일입니다. "
+          "이 페이지는 매수·매도를 권하지 않습니다.")
+
+
+def pg(title, body, cur, root="", scripts="", pop=False):
+    nav = "".join(f'<a href="{root}{h}"{" class=cur" if h == cur else ""}>{n}</a>' for h, n in NAV)
+    return (f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+            f'<title>{E(title)}</title><link rel="stylesheet" href="{root}assets/mm.css"></head><body><nav class="top">{nav}</nav>{body}'
+            f'{"<div id=pop hidden></div>" if pop else ""}{scripts}</body></html>')
+
+
+def nz(x): return x is not None and not (isinstance(x, float) and np.isnan(x))
+def f1(x, n=1, sign=False):
+    if not nz(x): return "—"
     return f"{x:+,.{n}f}" if sign else f"{x:,.{n}f}"
-def nz(x): return x is not None and not (isinstance(x,float) and np.isnan(x))
+
+
 def short_index(name):
     """공식 지수명 짧게: 상표 표기·'Index'·제공사 접두 일부 제거"""
-    n=str(name or "")
-    n=re.sub(r"\((R|TM|SM)\)|[®™]|\bSM\b","",n)
-    n=re.sub(r"\s*-\s*gross total return version"," GTR",n); n=re.sub(r"\s*-\s*net total return version"," NTR",n)
-    n=re.sub(r"\bMicroSectors\b\s*","",n); n=re.sub(r"\s+Index\b","",n); n=re.sub(r"\s{2,}"," ",n).strip()
-    return n if len(n)<=30 else n[:29]+"…"
-def path_short(p):
-    p=str(p or "")
-    return "복합" if "+" in p else ("exact" if "exact" in p else ("레벨" if "지수 레벨" in p else "—"))
-def _lowliq():
-    try:
-        from mm_lib import load_yaml_simple
-        return float(load_yaml_simple(DATA/"eligibility.yaml")["E2"]["threshold"])
-    except Exception: return 0.3
-LOWLIQ=_lowliq()
-def badge_tip(r):
-    tips=[]
-    for b in str(r.badges).split(" · "):
-        if b=="근사": tips.append(f"근사: 3배÷1x 회귀 β {r.beta:.2f}·R² {r.r2:.2f}(n={int(r.n_beta)}) — β 2.7~3.3 밖 또는 R²<0.85" if nz(r.beta) else "근사")
-        elif b=="표본부족": tips.append(f"표본부족: 회귀 표본 n={int(r.n_beta)}<60 (경로는 공식 지수, 검증 미완)")
-        elif b=="신규": tips.append(f"신규: 3배 상장 {int(r.listed_days)}거래일 <252")
-        elif b=="저유동": tips.append(f"저유동: 20일 평균 거래대금 ${r.adtv:.2f}M <${LOWLIQ:g}M")
-        elif b.startswith("무거래"): tips.append(f"{b}: 최근 20봉 중 거래량 0 인 봉 {b[3:]}개")
-    return " / ".join(tips)
-def rk(v): return f'<td data-v="{v:.0f}">{v:.0f}</td>' if nz(v) else '<td data-v="">—</td>'
-def cells(r, pinfo):
-    ptip=r.proxy_tip if isinstance(r.proxy_tip,str) else ""
-    pi=pinfo.get(r.ticker,{})
-    iname=pi.get("index_name",""); ishort=short_index(iname) or (r.proxy_disp if isinstance(r.proxy_disp,str) and r.proxy_disp else r.proxy)
-    tip=f"{iname} | 경로: {pi.get('onex_path','')} | 1x 계열 {r.proxy}"+(f" | {ptip}" if ptip else "")+(f" | {r.proxy_tail}" if isinstance(r.proxy_tail,str) and r.proxy_tail else "")
-    bd=str(r.badges) if isinstance(r.badges,str) and r.badges else ""
-    bq=f"β {r.beta:.2f} · R² {r.r2:.2f} (n={int(r.n_beta)})" if nz(r.beta) else "—"
-    ab="○" if (getattr(r,"above200",0)==1) else "×"
-    def sc(v,p,d,sign):
-        return f'<td class="sc" data-v="{v*100:.3f}">{f1(v*100,d,sign)} <span class="p">· {p:.3f}</span></td>'
-    return (f'<td data-v="{r.rank_n}">{E(str(r.rank_txt))}</td><td class="l" title="{E(str(r.issuer))} · {E(str(r.type))}">{r.ticker_html}</td>'
-            f'<td data-v="{r.M:.4f}"><b>{r.M:.1f}</b></td>{rk(r.r5)}{rk(r.r20)}{rk(r.r60)}<td class="l" data-v="{r.d_rank_n}">{r.d_rank_html}</td>'
-            f'<td class="l" title="{E(badge_tip(r))}">{E(bd) if bd else "—"}</td><td class="l" title="{E(tip)}">{E(ishort)}</td>'
-            f'{sc(r.sig,r.p_sig,1,False)}{sc(r.rsA,r.p_rsA,1,True)}{sc(r.f1b,r.p_f1b,2,True)}'
-            f'<td data-v="{r.c1_ma200*100:.3f}">{f1(r.c1_ma200*100,1,True)}</td><td data-v="{ 1 if ab=="○" else 0}">{ab}</td>'
-            f'<td data-v="{r.close3:.4f}">{f1(r.close3,2)}</td><td data-v="{r.adtv:.4f}">{f1(r.adtv,1)}</td><td>{int(r.listed_days)}</td><td class="l">{E(bq)}</td><td class="l">{E(r.dgrp)}</td>')
-HEAD=["순위","티커","M-score","5일 순위","20일 순위","60일 순위","Δ순위(5일)","거래 가능성","1x (공식 지수)","σ60(%)·pct","RS_A(%)·pct","MA항(%)·pct","1x종가/MA200−1(%)","1x 200일선 상회","3배 종가","20일 평균 거래대금($M)","listed_days","대리 품질","동일 1x 그룹"]
-LEFT=(1,6,7,8,17,18)
-def thead(tid): return "<thead><tr>"+"".join(f'<th{" class=l" if i in LEFT else ""} onclick="sortT(\'{tid}\',{i})">{E(h)}</th>' for i,h in enumerate(HEAD))+"</tr></thead>"
-def drank(v):
-    if v is None or (isinstance(v,float) and np.isnan(v)) or v=="": return "",""
-    if v=="신규": return "신규",""
-    try: x=int(v)
-    except: return E(str(v)),""
-    return (f'<span class="up">▲{x}</span>' if x>0 else (f'<span class="dn">▼{-x}</span>' if x<0 else "0")),x
-def tlink(t): return f'<a href="products.html#{E(t)}">{E(t)}</a>'
-def build_index(df, meta):
-    st=load_status()
-    pinfo={r["ticker"]:r for r in pd.read_csv(DATA/"product_info.csv").to_dict("records")}
-    el=df[df.table=="순위"].copy().sort_values(["rank","M"],ascending=[True,False])
-    N=len(df); n=len(el); up=int(el.above200.sum()) if n else 0
-    gcnt=el.groupby("proxy").ticker.count(); rowsHTML=[]; done=set()
-    def prep(m,g):
-        m=m.copy(); m["dgrp"]=g; m["rank_txt"]=str(int(m["rank"])); m["rank_n"]=int(m["rank"])
-        m["d_rank_html"],x=drank(m.get("d_rank")); m["d_rank_n"]=x
-        return m
-    for _,r in el.iterrows():
-        g=r.proxy if gcnt[r.proxy]>=2 else ""
-        if g and g in done: continue
-        if g:
-            done.add(g); members=el[el.proxy==g].sort_values("adtv",ascending=False)
-            rep=prep(members.iloc[0],g)
-            rep["ticker_html"]=f'<span class="tog" onclick="tog(\'{E(g)}\')">▸</span>'+" · ".join(tlink(t) for t in members.ticker)
-            cls="g" if str(rep.badges) not in ("","nan") and isinstance(rep.badges,str) and rep.badges else ""
-            rowsHTML.append(f'<tr class="{cls}" data-g="{E(g)}">'+cells(rep,pinfo)+"</tr>")
-            for _,m in members.iterrows():
-                m=prep(m,g); m["ticker_html"]=tlink(m.ticker)
-                cls="c g" if isinstance(m.badges,str) and m.badges else "c"
-                rowsHTML.append(f'<tr class="{cls}" data-parent="{E(g)}" style="display:none">'+cells(m,pinfo)+"</tr>")
-        else:
-            r=prep(r,g); r["ticker_html"]=tlink(r.ticker)
-            cls="g" if isinstance(r.badges,str) and r.badges else ""
-            rowsHTML.append(f'<tr class="{cls}">'+cells(r,pinfo)+"</tr>")
-    prov=meta.get("provisional")
-    banner=(f'<div class="warn"><span class="badge b-prov">잠정</span> 기준일 {E(meta["asof"])} · 사유: SPY 일봉 최신 행({E(prov["raw_last"])})이 {E(prov["reason"])} → 직전 확정일로 산출</div>' if prov else "")
-    if meta.get("manual"): banner+='<div class="warn"><span class="badge b-prov">수동 산출</span> 이 페이지는 수동 실행으로 산출됐습니다. 예약(launchd) 첫 자동 실행이 확인되면 이 표기가 사라집니다.</div>'
-    stale=df[df.table=="⚠"]
-    stale_html=(f'<div class="warn">⚠ 순위 제외 {len(stale)}종: '+", ".join(f"{E(r.ticker)}({E(r.reason)})" for r in stale.itertuples())+"</div>") if len(stale) else ""
-    chk=st.get("check_incomplete",{}); chk_html=(f'<div class="warn">점검 미완: '+", ".join(f"{E(k)}({E(v)})" for k,v in chk.items())+"</div>") if chk else ""
-    nbad=int((el.badges.fillna("")!="").sum())
-    body=f"""<h1>무매 M-score 공용 페이지</h1>
-<div class="meta">기준일 <b>{E(meta['asof'])}</b> (US 종가) · 산출 {E(meta['generated'])} KST · 순위 모집단 <b>{n}/{N}</b> · 1x 200일선 상회 <b>{up}/{n}</b> · 거래 가능성 배지 {nbad}종 (회색 행)<br>
-M-score = [pct(σ60) + pct(RS_A: 12-1개월 수익률) + pct(MA50/MA200−1)] / 3 × 100 — 1x = 발행사 공시 공식 지수(지수 레벨 또는 동일 지수 1x ETF — 툴팁·상품 페이지 참조). pct 모집단 = 유니버스 중 E5(문제 공지) 미해당·⚠ 없는 종목 전체이며 배지는 점수·순위를 바꾸지 않습니다 (정의 sha256 {E(MSCORE_SHA[:8])}…). 5·20·60일 순위 = 일별 M-score(그날 모집단 안 백분위 점수)의 N거래일 단순평균을 오늘 모집단 안에서 순위 매긴 값(창의 80% 미만이면 —). 참고용 표시이며 개인 정보는 사용하지 않습니다.</div>
-{banner}{stale_html}{chk_html}
-<h2>순위표</h2><div class="wrap"><table id="t1">{thead('t1')}<tbody>{''.join(rowsHTML)}</tbody></table></div>
-<div class="meta" style="margin-top:6px">회색 행 = 거래 가능성 열에 배지가 있는 종목(근사 · 표본부족 · 신규 · 저유동 · 무거래N). 접힌 행(동일 1x 그룹)의 3배 열은 거래대금 최대 티커 값이며 ▸ 로 개별 티커를 펼칩니다. 티커를 누르면 상품 카드로 이동합니다. 동점은 같은 순위 번호입니다.</div>"""
-    ex=df[df.table=="제외"]
-    xrows=[]
-    for r in ex.itertuples():
-        e=st["excluded"].get(r.ticker,{})
-        xrows.append(f'<tr><td class="l">{E(r.ticker)}</td><td>{E(r.type)}</td><td>{"—" if pd.isna(r.M) else f"{r.M:.1f}"}</td><td class="l" style="white-space:normal;min-width:260px">{E(e.get("title",""))}</td><td>{E(e.get("date",""))}</td><td class="l">{"<a href=%s>링크</a>"%html.escape(e.get("url",""),quote=True) if e.get("url") else "—"}</td><td class="l" style="white-space:normal">{E(e.get("action",""))}</td></tr>')
-    body+=f"""<h2>제외 (E5 문제 공지 — 조기상환·가속상환·상장폐지·청산·배수 변경·지수 변경(재검증 전))</h2><div class="wrap"><table style="min-width:800px"><thead><tr><th class="l">티커</th><th>구분</th><th>M-score</th><th class="l">공지 제목</th><th>날짜</th><th class="l">링크</th><th class="l">조치</th></tr></thead><tbody>{''.join(xrows) or '<tr><td colspan=7>없음</td></tr>'}</tbody></table></div>"""
-    # 신규 상장(지수 확정 대기) / 발행 예정
-    newp=meta.get("new_products",[])
-    if newp:
-        rows="".join(f'<tr><td class="l">{E(c.get("ticker") or c.get("name",""))}</td><td class="l">{E(c.get("issuer",""))}</td><td>{E(c.get("leverage",""))}</td><td class="l">{E(c.get("index",""))}</td><td>{E(c.get("found",""))}</td><td class="l">{E(c.get("status",""))}</td></tr>' for c in newp)
-        body+=f'<h2>신규 상장 — 공식 지수 확정 대기 (점수 미산출)</h2><div class="wrap"><table style="min-width:700px"><thead><tr><th class="l">티커</th><th class="l">발행사</th><th>배수</th><th class="l">지수</th><th>확인일</th><th class="l">상태</th></tr></thead><tbody>{rows}</tbody></table></div>'
-    pipe=meta.get("pipeline",[])
-    prow="".join(f'<tr><td class="l">{E(p.get("issuer",""))}</td><td class="l">{E(p.get("name",""))}</td><td>{E(p.get("filed",""))}</td><td class="l"><a href="{html.escape(p.get("url",""),quote=True)}">공시</a></td><td class="l" style="white-space:normal;min-width:260px">{E(p.get("note",""))}</td></tr>' for p in pipe)
-    body+=f'<h2>발행 예정 (공시 단계 — 티커 없음)</h2><div class="wrap"><table style="min-width:600px"><thead><tr><th class="l">발행사</th><th class="l">상품명</th><th>공시일</th><th class="l">링크</th><th class="l">비고</th></tr></thead><tbody>{prow or "<tr><td colspan=5>없음</td></tr>"}</tbody></table></div>'
-    body+="""<div class="foot"><b>한계 고지</b><br>① 주식 지수·섹터 안에서 진입 시점 지표로 회복 불능을 예측하지 못함(MM-P2)<br>② 2013~2020 바구니 재생에서 고정 6종 대비 열세, 2021 이후 우세(MM-P5)<br>③ 상위권이 특정 ETN(에너지·FANG+)에 몰리는 경향(MM-P4~P6). 백테스트 재확인(MM-PROXY-FIX-20261014): 후A(허용집합 동결)에서는 판정 ①(a) 불성립 — 2022 깊이 우위는 에너지·FANG ETN 합성 이력에 의존</div>"""
-    return pg("무매 M-score",body,"index.html")
-# ---------- 상품 ----------
-def load_products():
-    p=DATA/"products.yaml"
-    if not p.exists(): return None
+    n = str(name or "")
+    n = re.sub(r"\((R|TM|SM)\)|[®™]|\bSM\b", "", n)
+    n = re.sub(r"\s*-\s*gross total return version", " GTR", n); n = re.sub(r"\s*-\s*net total return version", " NTR", n)
+    n = re.sub(r"\bMicroSectors\b\s*", "", n); n = re.sub(r"\s+Index\b", "", n); n = re.sub(r"\s{2,}", " ", n).strip()
+    return n if len(n) <= 30 else n[:29] + "…"
+
+
+def jscript(obj):
+    return json.dumps(obj, ensure_ascii=False, separators=(",", ":"), default=str).replace("</", "<\\/")
+
+
+# ---------- 제외 목록 문구 (data/exclusion_text.yaml) ----------
+_DEF_TXT = {"excluded": {"조기상환·가속상환": "발행사 조기상환 공지, {date}", "상장폐지·청산": "상장폐지·청산 공지, {date}",
+                         "배수 변경": "배수 변경 공지, {date} — 3배 상품인지 재확인할 때까지 제외", "지수 변경": "추종 지수 변경 공지, {date} — 지수 재확인할 때까지 제외"},
+            "default_excluded": "발행사 공지로 제외, {date}", "held": [], "default_held": "데이터 확인 중이라 순위에서 일시 제외"}
+
+
+def load_exclusion_text():
+    p = DATA / "exclusion_text.yaml"
     try:
         import yaml
-        return yaml.safe_load(open(p,encoding="utf-8"))
-    except Exception: return None
-def fmt(v):
-    if v is None or (isinstance(v,float) and np.isnan(v)): return "—"
-    if isinstance(v,dict): return "<br>".join(f"<span class='sm'>{E(str(k))}</span> {fmt(x)}" for k,x in v.items())
-    if isinstance(v,(list,tuple)):
-        if v and all(isinstance(x,dict) for x in v): return "<br>".join(fmt(x) for x in v)
-        return "<br>".join(fmt(x) for x in v)
-    s=str(v)
-    if re.fullmatch(r"https?://\S+",s): return f'<a href="{html.escape(s,quote=True)}">{E(s[:70])}{"…" if len(s)>70 else ""}</a>'
-    return E(s)
-FIELDS=[("official_index","공식 지수명"),("onex","1x (경로·β·R²·n)"),("sector_theme","섹터/테마"),("construction","구성 방식·종목 수"),("top_constituents","상위 구성"),("fee","보수 (ETN은 금융비용 포함)"),("inception","상장일"),("split_history","분할·역분할 이력"),("structural_risk","구조 리스크"),("sources","출처"),("checked","확인일")]
-def build_products(uni, df, meta, p0):
-    st=load_status(); prod=load_products(); prods=(prod or {}).get("products",prod or {}) if isinstance(prod,dict) else {}
-    if isinstance(prods,list): prods={x.get("ticker"):x for x in prods}
-    pmeta=(prod or {}).get("meta",{}) if isinstance(prod,dict) else {}
-    foot=pmeta.get("footnotes",[]) if isinstance(pmeta.get("footnotes",[]),list) else [pmeta.get("footnotes")]
-    cards=[]; byiss={}
-    for r in uni.itertuples():
-        d=df[df.ticker==r.ticker]; d=d.iloc[0] if len(d) else None
-        pr=p0[p0.ticker==r.ticker]; pr=pr.iloc[0] if len(pr) else None
-        px=prods.get(r.ticker,{}) or {}
-        byiss.setdefault(r.issuer,[]).append(r.ticker)
-        mtxt=("" if d is None or not nz(d.M) else f"M {d.M:.1f}"+(f" · {int(d['rank'])}위" if nz(d["rank"]) else " · 순위 제외")); 
-        tab=(d.table if d is not None else "—")
-        bd=(str(d.badges) if d is not None and isinstance(d.badges,str) and d.badges else "—")
-        head=f'{E(r.ticker)} <span class="sm">{E(r.issuer)} · {E(r.type)} · {E(r.leverage)}</span> <span class="sm">{E(mtxt)}{" · ⚠ "+E(str(d.reason)) if tab=="⚠" else ""}</span>'
-        note=[]
-        if r.ticker in st["notes"]: note+=[str(x) for x in st["notes"][r.ticker]]
-        if r.ticker in st.get("check_incomplete",{}): note.append("점검 미완: "+st["check_incomplete"][r.ticker])
-        kv=[("당일 M-score·순위",E(mtxt) or "—"),("거래 가능성",E(bd))]
-        if px:
-            if px.get("feature_text"): kv.insert(0,("특징",f'<div class="feat">{E(str(px["feature_text"]))}</div><span class="sm">발행사 자료 기반 자동 생성</span>'))
-            for key,label in FIELDS:
-                if key in px: kv.append((label,fmt(px[key])))
-        elif pr is not None:   # products.yaml 미적재 시 수집된 기본 정보
-            kv+= [("공식 지수명",E(str(pr.index_name))),("제공사·구성·리밸런스",E(f"{pr.index_provider} · {pr.index_weighting} · {pr.index_rebalance}")),("1x 경로",E(f"{pr.onex_path} · {pr.onex_index_doc}")),("첫 일봉",E(str(pr.first_bar))),("분할 이력",E(str(pr.splits_yf)))]
-        if d is not None and nz(d.beta): kv.append(("대리 품질(3배 on 1x)",E(f"β {d.beta:.2f} · R² {d.r2:.2f} (n={int(d.n_beta)}, 측정 {d.proxy_measured})")))
-        if note: kv.append(("비고",E(" / ".join(note))))
-        body="".join(f'<div class="k">{E(k)}</div><div>{v}</div>' for k,v in kv)
-        cards.append(f'<details class="card" id="{E(r.ticker)}"><summary>{head}</summary><div class="kv">{body}</div></details>')
-    srows="".join(f'<tr><td class="l">{E(i)}</td><td>{len(t)}</td><td class="l" style="white-space:normal">{" ".join(tlink(x) for x in t)}</td></tr>' for i,t in sorted(byiss.items()))
-    ftxt="".join(f"<li>{E(str(x))}</li>" for x in foot if x)
-    body=f"""<h1>상품 정보</h1><div class="meta">유니버스 {len(uni)}종. 1x = 발행사가 공시한 공식 지수 하나(MM-PROXY-FIX-20261014). 카드의 지수명은 발행사 문서 원문(index_specs), 특징 문장은 사실 필드만으로 자동 생성한 요약입니다(전망·평가 없음). 티커를 누르면 해당 카드가 열립니다.</div>
-<h2>발행사별 요약</h2><div class="wrap"><table style="min-width:420px"><thead><tr><th class="l">발행사</th><th>종목 수</th><th class="l">티커</th></tr></thead><tbody>{srows}</tbody></table></div>
-<ul class="meta">{ftxt}</ul>
-<h2>티커별 카드</h2>{''.join(cards)}"""
-    return pg("무매 상품",body,"products.html")
-CAL_JS=r"""
-(function(){
-var IDX=null,TK={},cur=null,cache={};
-function $(i){return document.getElementById(i)}
-function pad(n){return (n<10?'0':'')+n}
-function f1(x,n,sg){if(x===null||isNaN(x))return '—';var s=Math.abs(x).toLocaleString('en-US',{minimumFractionDigits:n,maximumFractionDigits:n});return (x<0?'−':(sg?'+':''))+s}
-function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function num(v){return (v===''||v===undefined)?null:parseFloat(v)}
-function parse(txt){var L=txt.split('\n'),h=L[0].match(/N=(\d+)/),cols=L[1].split(','),rows=[];
- for(var i=2;i<L.length;i++){if(!L[i])continue;var c=L[i].split(','),o={};cols.forEach(function(k,j){o[k]=c[j]});rows.push(o)}
- return {n:h?parseInt(h[1]):rows.length,rows:rows}}
-function tip(r){var o=[],b=r.badges?r.badges.split(' · '):[];
- b.forEach(function(x){if(x=='근사')o.push('근사: 3배÷1x 회귀 β '+f1(num(r.beta),2)+'·R² '+f1(num(r.r2),2)+'(n='+r.n_beta+') — β 2.7~3.3 밖 또는 R²<0.85');
- else if(x=='표본부족')o.push('표본부족: 회귀 표본 n='+r.n_beta+'<60 (경로는 공식 지수, 검증 미완)');
- else if(x=='신규')o.push('신규: 3배 상장 '+r.listed_days+'거래일 <252');
- else if(x=='저유동')o.push('저유동: 20일 평균 거래대금 $'+f1(num(r.adtv),2)+'M <$'+LOW+'M');
- else if(x.indexOf('무거래')==0)o.push(x+': 최근 20봉 중 거래량 0 인 봉 '+x.slice(3)+'개')});return o.join(' / ')}
-function rk(v){return v===''?'<td data-v="">—</td>':'<td data-v="'+v+'">'+v+'</td>'}
-function sc(v,p,d,sg){var x=num(v)*100;return '<td class="sc" data-v="'+x.toFixed(3)+'">'+f1(x,d,sg)+' <span class="p">· '+f1(num(p),3,false)+'</span></td>'}
-function row(r){var m=TK[r.ticker]||{},b=r.badges||'',dr=r.d_rank,dh='',dn='';
- if(dr==='신규')dh='신규';else if(dr!==''){var x=parseInt(dr);dn=x;dh=x>0?'<span class="up">▲'+x+'</span>':(x<0?'<span class="dn">▼'+(-x)+'</span>':'0')}
- var bq=r.beta!==''?'β '+f1(num(r.beta),2)+' · R² '+f1(num(r.r2),2)+' (n='+r.n_beta+')':'—';
- var ab=r.above200==='1'?'○':'×',c1=num(r.c1_ma200)*100;
- return '<tr'+(b?' class="g"':'')+'><td data-v="'+r.rank+'">'+r.rank+'</td><td class="l" title="'+esc((m.iss||'')+' · '+(m.typ||''))+'"><a href="products.html#'+esc(r.ticker)+'">'+esc(r.ticker)+'</a></td>'
- +'<td data-v="'+num(r.M).toFixed(4)+'"><b>'+f1(num(r.M),1)+'</b></td>'+rk(r.r5)+rk(r.r20)+rk(r.r60)+'<td class="l" data-v="'+dn+'">'+dh+'</td>'
- +'<td class="l" title="'+esc(tip(r))+'">'+(b?esc(b):'—')+'</td><td class="l" title="'+esc(m.tip||'')+'">'+esc(m.ix||r.proxy)+'</td>'
- +sc(r.sig,r.p_sig,1,false)+sc(r.rsA,r.p_rsA,1,true)+sc(r.f1b,r.p_f1b,2,true)
- +'<td data-v="'+c1.toFixed(3)+'">'+f1(c1,1,true)+'</td><td data-v="'+(ab=='○'?1:0)+'">'+ab+'</td><td data-v="'+num(r.close3)+'">'+f1(num(r.close3),2)+'</td><td data-v="'+num(r.adtv)+'">'+f1(num(r.adtv),1)+'</td><td>'+r.listed_days+'</td><td class="l">'+esc(bq)+'</td><td class="l">'+esc(r.proxy)+'</td></tr>'}
-function show(d){cur=d;draw();var o=$('dayout');o.innerHTML='불러오는 중…';
- var go=function(x){var nb=x.rows.filter(function(r){return r.badges}).length;
-  o.innerHTML='<div class="meta"><b>'+d+'</b> 기준 · <b>'+x.n+'종</b> · 거래 가능성 배지 '+nb+'종(회색 행)</div><div class="wrap"><table id="tcal"><thead>'+HEAD+'</thead><tbody>'+x.rows.map(row).join('')+'</tbody></table></div>'};
- if(cache[d])return go(cache[d]);
- fetch('data/scores/'+d+'.csv').then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){cache[d]=parse(t);go(cache[d])}).catch(function(){o.innerHTML='이 날짜 파일을 읽지 못했습니다.'})}
-function draw(){var y=cur_y,m=cur_m,first=new Date(y,m-1,1).getDay(),last=new Date(y,m,0).getDate(),dates=window.__dm,h='<div class="calh"><button id="cprev">‹</button> <b>'+y+'년 '+m+'월</b> <button id="cnext">›</button></div><table class="cal"><tr>'+['일','월','화','수','목','금','토'].map(function(x){return '<th>'+x+'</th>'}).join('')+'</tr><tr>';
- for(var i=0;i<first;i++)h+='<td></td>';
- for(var d=1;d<=last;d++){var k=y+'-'+pad(m)+'-'+pad(d),n=dates[k];
-  h+=(n!==undefined?'<td class="on'+(k==cur?' sel':'')+'" data-d="'+k+'"><b>'+d+'</b><span>'+n+'</span></td>':'<td class="off">'+d+'</td>');
-  if((first+d)%7==0&&d<last)h+='</tr><tr>'}
- $('calbox').innerHTML=h+'</tr></table>';
- $('cprev').onclick=function(){mv(-1)};$('cnext').onclick=function(){mv(1)};
- Array.prototype.forEach.call(document.querySelectorAll('td.on'),function(td){td.onclick=function(){show(td.getAttribute('data-d'))}})}
-var cur_y,cur_m;
-function mv(dm){var y=cur_y,m=cur_m+dm;if(m<1){m=12;y--}if(m>12){m=1;y++}
- var f=IDX.first.split('-'),l=IDX.last.split('-');if(y*12+m<(+f[0])*12+(+f[1])||y*12+m>(+l[0])*12+(+l[1]))return;cur_y=y;cur_m=m;draw()}
-Promise.all([fetch('data/index.json').then(function(r){return r.json()}),fetch('data/tickers.json').then(function(r){return r.json()})]).then(function(a){
- IDX=a[0];TK=a[1];var dm={};IDX.dates.forEach(function(x){dm[x.d]=x.n});window.__dm=dm;
- var l=IDX.last.split('-');cur_y=+l[0];cur_m=+l[1];$('calinfo').innerHTML='소급 범위 '+IDX.first+' ~ '+IDX.last+' · '+IDX.count+'거래일 (날짜 칸 아래 숫자 = 그날 모집단 N종). 회색(비활성) 날짜는 데이터 없음(휴장·결측).';
- show(IDX.last)}).catch(function(){$('calinfo').innerHTML='index.json 을 읽지 못했습니다(파일을 직접 열면 브라우저가 막습니다 — 웹 주소로 여십시오).'});
-})();
-"""
-CAL_CSS=""".calh{margin:6px 0}.calh button{font-size:16px;padding:0 10px;cursor:pointer}table.cal{border-collapse:collapse;min-width:0!important;width:100%;max-width:520px;font-size:13px}
-table.cal th{position:static!important;text-align:center;cursor:default;background:#f6f8fa} table.cal td{position:static!important;text-align:center;border:1px solid #eaeef2;height:42px;padding:2px;vertical-align:top;background:#fff;min-width:0;width:14%}
-table.cal td.on{cursor:pointer;background:#f4f9ff} table.cal td.on span{display:block;font-size:10px;color:#777} table.cal td.off{color:#bbb;background:#fafafa} table.cal td.sel{background:#cfe3ff}"""
-def build_history(files, latest_df, anom):
-    ar="".join(f'<tr><td>{E(r.date)}</td><td>{E(r.series)}</td><td class="l">{E(str(r.ticker))}</td><td class="l">{E(str(r.used_by))}</td><td>{r.ret*100:+.1f}%</td><td>{r.prev_close:,.4g}→{r.close:,.4g}</td></tr>' for r in anom.itertuples()) if anom is not None and len(anom) else ""
-    head=thead("tcal").replace('<thead><tr>','').replace('</tr></thead>','')
-    js=CAL_JS.replace("HEAD",json.dumps(head,ensure_ascii=False)).replace("LOW",json.dumps(LOWLIQ))
-    body=f"""<h1>달력 — 날짜별 순위 (소급)</h1><div class="meta" id="calinfo">불러오는 중…</div>
-<div class="meta">날짜를 누르면 그 기준일의 순위표가 아래에 표시됩니다. 소급은 매일 산출과 같은 코드·M-score v1.1 산식·매핑으로 만들었고, 그 날짜에 3배 일봉이 존재 ∧ 1x 피처 산출 가능(252봉) ∧ 이상 봉 ⚠ 아님인 종목만 모집단입니다. <b>E5(공지 제외)는 소급 적용하지 않습니다</b>(과거 공지 데이터 없음). 저유동·무거래 배지는 그 날짜 직전 20봉으로, 근사·표본부족 배지는 현재 측정값(β·R²)으로 표시합니다.</div>
-<div id="calbox"></div><div id="dayout"></div>
-<h2>이상 봉 목록 (전 구간, 이 봉이 속한 60일 창은 점수 집계에서 제외)</h2><div class="meta">분할·역분할 조정 후에도 1x 일간수익률 |r|&gt;25% 또는 3배 |r|&gt;75% 인 봉. 데이터 오류 의심 목록이며 실제 급변일도 포함될 수 있습니다(기준값은 data/eligibility.yaml 운영값). 파일: data/anomalies.csv</div>
-<div class="wrap"><table style="min-width:620px"><thead><tr><th>날짜</th><th>계열</th><th class="l">키</th><th class="l">사용 종목</th><th>일간수익률</th><th>종가</th></tr></thead><tbody>{ar or '<tr><td colspan=6>없음</td></tr>'}</tbody></table></div>
-<script>{js}</script>"""
-    return pg("무매 달력",body,"history.html").replace("</style>",CAL_CSS+"</style>",1)
+        d = yaml.safe_load(open(p, encoding="utf-8")) or {}
+    except Exception:
+        d = {}
+    out = {k: (dict(v) if isinstance(v, dict) else (list(v) if isinstance(v, list) else v)) for k, v in _DEF_TXT.items()}
+    for k, v in d.items():
+        if k == "excluded" and isinstance(v, dict): out["excluded"].update(v)
+        elif v: out[k] = v
+    return out
+
+
+def exclusion_rows(df, st):
+    """[(티커, 사유 문장, 링크 URL 또는 '')] — E5 제외(공지 문장) 먼저, 그다음 순위 계산에서 일시 제외된 종목(⚠)"""
+    tx = load_exclusion_text(); rows = []
+    for r in df[df.table == "제외"].itertuples():
+        e = st.get("excluded", {}).get(r.ticker, {})
+        fmt = tx["excluded"].get(e.get("type", ""), tx["default_excluded"])
+        rows.append((r.ticker, fmt.format(date=e.get("date", "날짜 미상")), e.get("url", "")))
+    for r in df[df.table == "⚠"].itertuples():
+        reason = str(r.reason or "")
+        txt = next((h["text"] for h in tx["held"] if reason.startswith(h["match"])), tx["default_held"])
+        rows.append((r.ticker, txt, ""))
+    return rows
+
+
+# ---------- 메인 ----------
+ROW_COLS = ["ticker", "rank", "M", "sig", "p_sig", "rsA", "p_rsA", "f1b", "p_f1b", "c1_ma200", "above200", "close3", "adtv", "listed_days", "badges", "d_rank", "proxy", "beta", "r2", "n_beta"]
+
+
+def _cell(v):
+    if v is None: return None
+    if isinstance(v, (float, np.floating)):
+        if np.isnan(v): return None
+        return round(float(v), 6)
+    if isinstance(v, (np.integer,)): return int(v)
+    return v
+
+
+def latest_rows(df):
+    el = df[df.table == "순위"].copy().sort_values(["rank", "M"], ascending=[True, False])
+    out = []
+    for r in el.to_dict("records"):
+        o = {k: _cell(r.get(k)) for k in ROW_COLS}
+        o["rank"] = int(o["rank"]); o["above200"] = int(o["above200"] or 0)
+        d = r.get("d_rank")
+        o["d_rank"] = "" if (d is None or (isinstance(d, float) and np.isnan(d)) or d == "") else (str(int(d)) if isinstance(d, (int, float, np.integer, np.floating)) else str(d))
+        o["badges"] = o["badges"] or ""
+        out.append(o)
+    return out
+
+
+def date_list():
+    try:
+        idx = json.load(open(DOCS / "data" / "index.json", encoding="utf-8"))
+        return idx["first"], idx["last"], [x["d"] for x in idx["dates"]]
+    except Exception:
+        return "", "", []
+
+
+def build_index(df, meta):
+    st = load_status()
+    try:
+        pinfo = {r["ticker"]: r for r in pd.read_csv(DATA / "product_info.csv").to_dict("records")}
+    except Exception:
+        pinfo = {}
+    tk = {}
+    for r in df.itertuples():
+        tk[r.ticker] = {"iss": str(r.issuer), "typ": str(r.type), "ix": short_index(pinfo.get(r.ticker, {}).get("index_name", "")) or str(getattr(r, "proxy", ""))}
+    rows = latest_rows(df)
+    first, last, dates = date_list()
+    if not dates: first = last = meta["asof"]; dates = [meta["asof"]]
+    data = {"asof": meta["asof"], "first": first, "last": last, "dates": dates, "latest": rows, "tk": tk}
+    prov = meta.get("provisional")
+    pill = (f'<span class="pill prov" title="{E("SPY 일봉 최신 행(" + prov["raw_last"] + ")이 " + prov["reason"] + " → 직전 확정일로 산출")}">잠정</span>' if prov
+            else '<span class="pill ok">확정</span>')
+    banner = '<div class="banner"><b>수동 산출</b> — 예약 실행 첫 확인 전까지 표시됩니다.</div>' if meta.get("manual") else ""
+    xr = exclusion_rows(df, st)
+    if xr:
+        trs = "".join(f'<tr><td><b>{E(t)}</b></td><td>{E(s)}</td><td>{("<a href=" + chr(34) + E(u, quote=True) + chr(34) + " rel=noopener>공지</a>") if u else "—"}</td></tr>' for t, s, u in xr)
+        xhtml = f'<div class="wrap"><table class="pl"><thead><tr><th>티커</th><th>사유</th><th>공지</th></tr></thead><tbody>{trs}</tbody></table></div>'
+    else:
+        xhtml = '<div class="empty">현재 없음</div>'
+    body = f"""<h1>무매 M-score<small>3배 레버리지 ETF·ETN 상대 순위 · 참고용</small></h1>
+<div class="meta" id="top1">기준일 <b>{E(meta['asof'])}</b> · 종목 수 <b>{len(rows)}</b> {pill}</div>
+{banner}
+<div id="calbox"></div>
+<div class="tbar"><div class="ttl" id="ttl"></div><div class="acts"><button class="btn" id="todaybtn" hidden>오늘로</button><button class="btn" id="modebtn">상세보기</button></div></div>
+<div class="wrap"><table class="rk" id="rk"></table></div>
+<h2>제외 목록</h2>{xhtml}
+<h2>안내</h2><div class="notice">{E(NOTICE)}</div>
+<p class="meta" style="margin-top:8px"><a href="guide.html">산출 방식·데이터 출처는 가이드 페이지</a></p>
+<script id="mmdata" type="application/json">{jscript(data)}</script>"""
+    return pg("무매 M-score", body, "index.html", scripts='<script src="assets/index.js"></script>', pop=True)
+
+
+# ---------- 가이드 ----------
+def build_guide(df, meta, uni):
+    return pg("무매 M-score 가이드", mm_guide.guide_body(df, meta, uni, load_status()), "guide.html")
+
+
+# ---------- 종목 페이지 ----------
+def load_page_items():
+    p = DATA / "products_page.json"
+    try:
+        return json.load(open(p, encoding="utf-8")).get("items", {})
+    except Exception:
+        return {}
+
+
+def build_product(t, u, it):
+    """종목 페이지 1개. u = universe 행(Series/namedtuple), it = products_page.json 항목(없으면 {})."""
+    tx = it.get("text", {}); b = it.get("basic", {})
+    sub = f'{E(b.get("issuer", u.issuer))} · {E(b.get("type", u.type))} · {E(b.get("leverage", ""))}'
+    t5 = it.get("top5", {}); items = t5.get("items", [])
+    t5rows = "".join(f'<tr><td>{E(i["name"])}</td><td class="n">{f1(i["w"], 2)}</td></tr>' for i in items)
+    t5html = (f'<table class="t5"><thead><tr><th>상위 구성 5종</th><th class="n">비중(%)</th></tr></thead><tbody>{t5rows}</tbody></table>'
+              f'<div class="chartnote">{E(t5.get("basis", ""))}{(" · " + E(t5["as_of"])) if t5.get("as_of") else ""}</div>') if items else ""
+    comp = (f'<table class="info"><tr><th>섹터·테마</th><td>{E(it.get("sector", ""))}</td></tr>'
+            f'<tr><th>구성 방식</th><td>{E(tx.get("construction", "—"))}</td></tr></table>{t5html}')
+    labels = ("추종", "움직임", "주의")
+    feats = "".join(f'<li><b>{labels[i]}</b>{E(x)}</li>' for i, x in enumerate(tx.get("features", []))) or '<li>—</li>'
+    fee = b.get("fee") or tx.get("fee") or "—"
+    basic = (f'<table class="info" style="table-layout:auto"><tr><th style="width:auto">발행사</th><th style="width:auto">구분</th><th style="width:auto">배수</th><th style="width:auto">보수</th><th style="width:auto">상장일</th></tr>'
+             f'<tr><td>{E(b.get("issuer", ""))}</td><td>{E(b.get("type", ""))}</td><td>{E(b.get("leverage", ""))}</td><td>{E(fee)}</td><td>{E(str(b.get("inception") or "—"))}</td></tr></table>')
+    risks = "".join(f'<li>{E(x)}</li>' for x in tx.get("risk", [])) or '<li>—</li>'
+    body = f"""<h1>{E(t)}<small>{sub}</small></h1>
+<div class="rangebar"><button class="btn" data-range="m3">3개월</button><button class="btn" data-range="m6">6개월</button><button class="btn on" data-range="y1">1년</button><button class="btn" data-range="all">전체</button></div>
+<div class="chartbox"><div id="chart" data-t="{E(t)}"></div>
+<div class="legend"><span><i style="background:#f59e0b"></i>M-score (좌축)</span><span><i style="background:#3b82f6"></i>순위 (우축·1위가 위)</span></div>
+<div class="chartnote" id="creadout">불러오는 중…</div></div>
+<h2>구성</h2>{comp}
+<h2>특징</h2><ul class="feat">{feats}</ul>
+<h2>기본 정보</h2>{basic}
+<h2>구조 리스크</h2><ul class="risk">{risks}</ul>
+<div class="stamp">마지막 수정일 {E(str(it.get("modified", "—")))} · <a href="../products.html">상품 목록</a> · <a href="../index.html">순위표</a></div>"""
+    return pg(f"{t} — 무매 M-score", body, "products.html", root="../", scripts='<script src="../assets/chart.js"></script>')
+
+
+def build_products_dir(df, uni, items):
+    cur = {r.ticker: r for r in df.itertuples()}
+    rows = []
+    for u in uni.itertuples():
+        d = cur.get(u.ticker); it = items.get(u.ticker, {})
+        rk = int(d.rank) if d is not None and nz(d.rank) else None
+        rows.append((rk if rk is not None else 10 ** 6, u.ticker, it.get("sector", ""), u.type, u.issuer, d.M if d is not None and nz(d.M) else None, rk))
+    rows.sort(key=lambda x: (x[0], x[1]))
+    trs = "".join(f'<tr><td><a href="products/{E(t)}.html"><b>{E(t)}</b></a></td><td>{E(sec)}</td><td>{E(ty)}</td><td class="n">{f1(m, 1)}</td><td class="n">{rk if rk is not None else "—"}</td></tr>'
+                  for _, t, sec, ty, iss, m, rk in rows)
+    body = f"""<h1>상품<small>유니버스 {len(uni)}종 · 티커를 누르면 종목 페이지로 이동</small></h1>
+<div class="wrap" style="margin-top:8px"><table class="dir"><thead><tr><th>티커</th><th>섹터·테마</th><th>구분</th><th class="n">M-score</th><th class="n">순위</th></tr></thead><tbody>{trs}</tbody></table></div>"""
+    return pg("무매 상품", body, "products.html")
+
+
+# ---------- 차트 데이터 ----------
+def write_series(uni):
+    """docs/data/series/<티커>.json — scores CSV 전 구간에서 티커별 (날짜, M-score, 순위, 그날 모집단 수) 생성"""
+    sd = DOCS / "data" / "scores"
+    acc = {}
+    for f in sorted(sd.glob("*.csv")):
+        try:
+            head = open(f, encoding="utf-8").readline()
+            m = re.search(r"N=(\d+)", head); n = int(m.group(1)) if m else 0
+            x = pd.read_csv(f, skiprows=1, usecols=["ticker", "rank", "M"])
+        except Exception:
+            continue
+        for t, rk, mm in zip(x.ticker, x["rank"], x.M):
+            if pd.isna(mm) or pd.isna(rk): continue
+            a = acc.setdefault(t, {"d": [], "m": [], "r": [], "n": []})
+            a["d"].append(f.stem); a["m"].append(round(float(mm), 1)); a["r"].append(int(rk)); a["n"].append(n)
+    out = DOCS / "data" / "series"; out.mkdir(parents=True, exist_ok=True)
+    want = set(uni.ticker)
+    for t, a in acc.items():
+        if t in want:
+            json.dump(dict(t=t, **a), open(out / f"{t}.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    for f in out.glob("*.json"):                                    # 유니버스에서 빠진 종목의 묵은 파일 정리
+        if f.stem not in want: f.unlink()
+    return len(acc)
+
+
 def write_tickers_json(uni, p0):
-    pinfo={r["ticker"]:r for r in p0.to_dict("records")}; out={}
+    pinfo = {r["ticker"]: r for r in p0.to_dict("records")}; out = {}
     for r in uni.itertuples():
-        pi=pinfo.get(r.ticker,{}); ptip=r.proxy_tip if isinstance(r.proxy_tip,str) else ""
-        out[r.ticker]=dict(ix=short_index(pi.get("index_name","")),tip=f"{pi.get('index_name','')} | 경로: {pi.get('onex_path','')} | 1x 계열 {r.proxy}"+(f" | {ptip}" if ptip else ""),iss=r.issuer,typ=r.type,proxy=r.proxy)
-    (DOCS/"data").mkdir(parents=True,exist_ok=True)
-    json.dump(out,open(DOCS/"data"/"tickers.json","w",encoding="utf-8"),ensure_ascii=False,separators=(",",":"))
+        pi = pinfo.get(r.ticker, {}); ptip = r.proxy_tip if isinstance(r.proxy_tip, str) else ""
+        out[r.ticker] = dict(ix=short_index(pi.get("index_name", "")), tip=f"{pi.get('index_name', '')} | 경로: {pi.get('onex_path', '')} | 1x 계열 {r.proxy}" + (f" | {ptip}" if ptip else ""),
+                             iss=r.issuer, typ=r.type, proxy=r.proxy)
+    (DOCS / "data").mkdir(parents=True, exist_ok=True)
+    json.dump(out, open(DOCS / "data" / "tickers.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+
+
 def build_all(latest_df, uni, meta, p0, score_files):
     DOCS.mkdir(exist_ok=True)
-    (DOCS/"index.html").write_text(build_index(latest_df,meta),encoding="utf-8")
-    (DOCS/"products.html").write_text(build_products(uni,latest_df,meta,p0),encoding="utf-8")
-    write_tickers_json(uni,p0)
-    (DOCS/"history.html").write_text(build_history(score_files,latest_df,meta.get("anomalies")),encoding="utf-8")
-    (DOCS/".nojekyll").write_text("")
+    try:
+        import mm_page_text
+        s = mm_page_text.ensure(use_llm=True)                     # products.yaml 이 바뀐 종목만 재생성(바뀐 게 없으면 호출 0)
+        if s["failed"]:
+            try:
+                from mm_lib import log
+                log(f"[page_text] 재생성 실패(기존 문구 유지): {s['failed']}", "alerts")
+            except Exception: pass
+    except Exception as e:                                       # 문구 생성 실패가 순위 페이지 갱신을 막지 않는다
+        try:
+            from mm_lib import log
+            log(f"[page_text] 종목 문구 갱신 건너뜀: {type(e).__name__}: {str(e)[:150]}", "alerts")
+        except Exception: pass
+    items = load_page_items()
+    (DOCS / "index.html").write_text(build_index(latest_df, meta), encoding="utf-8")
+    (DOCS / "guide.html").write_text(build_guide(latest_df, meta, uni), encoding="utf-8")
+    (DOCS / "products.html").write_text(build_products_dir(latest_df, uni, items), encoding="utf-8")
+    pd_ = DOCS / "products"; pd_.mkdir(exist_ok=True)
+    for u in uni.itertuples():
+        (pd_ / f"{u.ticker}.html").write_text(build_product(u.ticker, u, items.get(u.ticker, {})), encoding="utf-8")
+    write_series(uni)
+    write_tickers_json(uni, p0)
+    h = DOCS / "history.html"
+    if h.exists(): h.unlink()                                    # 달력은 메인에 통합 — 구 이력 페이지 삭제
+    (DOCS / ".nojekyll").write_text("")
