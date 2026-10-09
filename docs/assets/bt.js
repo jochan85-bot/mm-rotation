@@ -62,7 +62,7 @@
     o.series.forEach(function (s) {
       var d = '', prev = null, k;
       for (i = 0; i < n; i++) {
-        var y = s.v[i]; if (y === null || y === undefined) { prev = null; continue; }
+        var y = s.v[i]; if (y === null || y === undefined || y !== y) { prev = null; continue; }
         var px = X(xs[i]).toFixed(1), py = Y(y).toFixed(1);
         if (o.step && prev !== null) d += 'L' + px + ' ' + prev; d += (prev === null ? 'M' : 'L') + px + ' ' + py; prev = py;
       }
@@ -113,9 +113,13 @@
     if (cache[name]) return Promise.resolve(cache[name]);
     return fetch('data/bt/' + name + '.json').then(function (r) { if (!r.ok) throw new Error(name); return r.json(); }).then(function (j) { cache[name] = j; return j; });
   }
+  var curKey = function () { return st.period + '_' + st.v; };
   function load() {
+    var key = curKey();
     return Promise.all([getJ('meta'), getJ('dates'), getJ('monthly'), getJ('yearly'), getJ('variants'), getJ('hist'), getJ('path_' + st.period + '_' + st.v)]).then(function (a) {
-      META = a[0]; DATES = a[1]; D.mon = a[2]; D.yr = a[3]; D.cmp = a[4]; D.hist = a[5]; D.path = a[6];
+      if (key !== curKey()) return false;       /* 그 사이 버튼이 바뀌었으면 늦게 도착한 응답은 버린다(경로와 날짜 길이 불일치 방지) */
+      META = a[0]; DATES = a[1]; D.mon = a[2]; D.yr = a[3]; D.cmp = a[4]; D.hist = a[5]; D.path = a[6]; D.key = key;
+      return true;
     });
   }
   function sel() { return Array.prototype.map.call(document.querySelectorAll('[data-period],[data-var]'), function (b) { b.classList.toggle('on', b.getAttribute('data-period') === st.period || b.getAttribute('data-var') === st.v); }); }
@@ -244,6 +248,7 @@
     $('s7').textContent = '기간 중 최대 동시 STUCK 슬롯: ' + keys.map(function (k) { return k + ' ' + Math.max.apply(null, p.stk[k]); }).join(' · ');
   }
   function renderAll() {
+    if (D.key !== curKey()) return;
     sel();
     ['l1', 'l2', 'l3', 'l4'].forEach(function (id) { legend($(id), POL.concat(['R2-5'])); });
     legend($('l7'), ['B3-3', 'B3-5', 'B3-7']);
@@ -251,7 +256,8 @@
     c1(); c2(); c3(); c4(); c5(); c6(); c7();
   }
   function go() {
-    load().then(renderAll).catch(function () { var m = '<div class="chartnote">백테스트 데이터를 읽지 못했습니다(웹 주소로 여십시오).</div>'; ['c1', 'c2a', 'c3', 'c4', 'c5a', 'c7'].forEach(function (id) { if ($(id)) $(id).innerHTML = m; }); });
+    sel();
+    load().then(function (okk) { if (okk) renderAll(); }).catch(function () { var m = '<div class="chartnote">백테스트 데이터를 읽지 못했습니다(웹 주소로 여십시오).</div>'; ['c1', 'c2a', 'c3', 'c4', 'c5a', 'c7'].forEach(function (id) { if ($(id)) $(id).innerHTML = m; }); });
   }
   Array.prototype.forEach.call(document.querySelectorAll('[data-period]'), function (b) { b.addEventListener('click', function () { st.period = b.getAttribute('data-period'); go(); }); });
   Array.prototype.forEach.call(document.querySelectorAll('[data-var]'), function (b) { b.addEventListener('click', function () { st.v = b.getAttribute('data-var'); go(); }); });
