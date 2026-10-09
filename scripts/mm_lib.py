@@ -8,7 +8,7 @@ DATA=ROOT/"data"; LOCAL=ROOT/".local"; RAW=LOCAL/"p0view"; FETCHED=LOCAL/"fetche
 SCORES=DOCS/"data"/"scores"; INDEX_JSON=DOCS/"data"/"index.json"   # GitHub Pages 는 /docs 만 서빙 — 달력 뷰(JS)가 읽으려면 docs 아래에 둔다
 STUDY=Path.home()/"studies"/"mm_rotation_20261007"
 MSCORE_DOC=STUDY/"MSCORE_V1_1.md"
-MSCORE_SHA="69de08d1f26936f347f16d4e91832fb7e304de38ef8908deb76f4eb9d82bdaa2"   # v1.1(+V2.3 후속 기록): 산식 불변; 직전 sha 2c2b8f73…c590, v1 sha (v1 sha 41e4f209f338ba7ebb09bc7905be081f99e6b5abfef3170b84494bb223a9c83a 는 MSCORE_V1.md 에 보존)
+MSCORE_SHA="b4ce99a877b7a4e053de14458c61fbfb7a592e5b4375a7d6ddacb9374fecd8f8"   # v1.1(+V2.3 후속 기록): 산식 불변; 직전 sha 69de08d1…bdaa2(→2c2b8f73…c590), v1 sha (v1 sha 41e4f209f338ba7ebb09bc7905be081f99e6b5abfef3170b84494bb223a9c83a 는 MSCORE_V1.md 에 보존)
 KST=dt.timezone(dt.timedelta(hours=9))
 class FormulaMismatch(RuntimeError): pass
 def now_kst(): return dt.datetime.now(KST)
