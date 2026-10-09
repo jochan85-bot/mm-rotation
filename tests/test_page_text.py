@@ -50,6 +50,9 @@ r = V(ETF_OK.replace("총보수는 연 0.75%이다.", "총보수는 연 0.75%이
 check("보수 값 2회 출현 거절", r is not None and "출현 2회" in r, r)
 r = V(ETF_OK.replace("총보수는 연 0.75%이다.", "총보수는 연 0.75%라고 설명돼 있다."), ETF_FIN, False)
 check("인용 투 거절", r is not None and "인용 투" in r, r)
+dup = ETF_OK.replace("이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 리셋 구조이다.", "이 상품은 ETF이며 일간 수익률의 3배를 추종하는 일간 리셋 구조이다.")
+r = V(dup, ETF_FIN, False)
+check("문단3 '3배' 재서술 거절(MM-CLOSE-FINAL §1)", r is not None and "3배" in r, r)
 for w in ("명시돼 있다", "밝히고 있다", "알려져 있다"):
     r = V(ETF_OK.replace("노출된다.", f"노출된다고 {w}."), ETF_FIN, False)
     check(f"인용 투 거절: {w}", r is not None and "인용 투" in r, r)

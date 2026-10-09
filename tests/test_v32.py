@@ -11,6 +11,10 @@ def check(name, cond, detail=""):
 
 # 링크
 check("네이버 코드 있으면 해외종목 페이지", S.naver_url({"t": "AMD", "nv": "AMD.O"}) == "https://m.stock.naver.com/worldstock/stock/AMD.O")
+check("lk=o 이면 기업개요 탭", S.naver_url({"t": "AMD", "nv": "AMD.O", "lk": "o"}) == "https://m.stock.naver.com/worldstock/stock/AMD.O/overview")
+check("lk=t(종합 대체)는 종합 페이지", S.naver_url({"t": "GDX", "nv": "GDX", "lk": "t", "lw": "etf"}) == "https://m.stock.naver.com/worldstock/stock/GDX")
+check("점 티커 코드 BRKb 유지", S.naver_url({"t": "BRK.B", "nv": "BRKb", "lk": "o"}).endswith("/BRKb/overview"))
+check("link_rules.yaml 이 읽힘(실측 경로)", S.link_rules()["overview_path"] == "/worldstock/stock/{code}/overview")
 check("코드 없으면 검색 대체(티커+주가)", S.naver_url({"t": "BRK.B"}) == "https://m.search.naver.com/search.naver?query=BRK.B+%EC%A3%BC%EA%B0%80")
 check("티커 없으면 회사명 검색", "query=Foo+Corp+" in S.naver_url({"t": None, "n": "Foo Corp"}))
 # 셀: 티커 우선, 회사명 작은 글씨, 새 탭

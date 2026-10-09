@@ -298,6 +298,7 @@ def validate_intro(intro, fin, is_etn, inception=None, issuer_ok=()):
     if typ not in intro: return f"{typ} 구분 단어 없음"
     if not is_etn and "ETN" in intro: return "ETF 소개에 ETN 단어 포함"
     if "일간" not in intro: return "일간 리셋 언급 없음"
+    if any("3배" in q for q in pars[1:]): return "문단1 밖에서 '3배' 재서술(같은 사실 반복 — 3배 추종은 문단1에서만)"
     if is_etn:
         if "발행사" not in intro or "신용" not in intro: return "ETN 발행사 신용 언급 없음"
         if "조기상환" not in intro: return "ETN 조기상환 언급 없음"

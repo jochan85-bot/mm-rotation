@@ -213,5 +213,9 @@ def guide_body(df, meta, uni, st):
 <div class="wrap"><table class="pl"><thead><tr><th>발행사</th><th>상품명</th><th>공시일</th><th>링크</th><th>비고</th></tr></thead><tbody>{prow or '<tr><td colspan="5">없음</td></tr>'}</tbody></table></div>
 <h3>신규 상장 — 공식 지수 확정 대기 (점수 미산출)</h3>
 <div class="wrap"><table class="pl"><thead><tr><th>티커</th><th>발행사</th><th>배수</th><th>지수</th><th>확인일</th><th>상태</th></tr></thead><tbody>{nrow or '<tr><td colspan="6">없음</td></tr>'}</tbody></table></div>
+<h3 id="appxD">D. 종목 페이지 구성 박스의 링크 규칙</h3>
+<ul>
+<li>구성 박스는 네이버 증권 해외종목 <b>기업개요 탭</b>(<code>/worldstock/stock/{{코드}}/overview</code>)으로 연결합니다. 네이버 코드 접미는 실측 규칙입니다 — 나스닥 <code>.O</code>, NYSE 는 종목마다 접미 없음 또는 <code>.K</code> 중 하나, AMEX·Arca ETF 는 접미 없음, 점 티커(BRK.B)는 <code>BRKb</code>. 코드가 없거나 실존·기업개요가 확인되지 않으면 종합 페이지 또는 네이버 검색으로 대체합니다(규칙·실측일 <code>data/link_rules.yaml</code>).</li>
+</ul>
 <p class="meta">산출 {E(meta.get('generated', ''))} KST · 규칙 V2.3 · 이 페이지는 참고용이며 개인 정보를 사용하지 않습니다.</p>
 </div>"""

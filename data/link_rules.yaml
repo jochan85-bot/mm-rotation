@@ -1,0 +1,20 @@
+# 구성 종목 링크 규칙 (MM-CLOSE-FINAL-20261010 §1) — 실측값. scripts/mm_site.py 가 읽어 링크를 만들고, scripts/mm_links.py 가 대상 선택에 쓴다.
+# 실측: 2026-10-09, headless Chrome 으로 종합 페이지(AAPL.O·NVDA.O·JPM·ORCL.K·GDX)를 열고 '기업개요' 탭을 눌러 주소 변화를 확인.
+#   - 탭은 <a> 링크가 아니라 <button> 이다(href 없음). 클릭하면 주소가 {종합 주소 끝의 /total}→/overview 로 바뀐다.
+#   - 종합 페이지 주소는 /worldstock/stock/{코드} 로 열어도 /worldstock/stock/{코드}/total 로 이동한다(없는 코드도 200 — SPA).
+#   - ETF(예: GDX)는 /worldstock/etf/{코드}/total 로 이동하고 '기업개요' 탭이 없다.
+measured: '2026-10-09'
+base: https://m.stock.naver.com
+overview_path: /worldstock/stock/{code}/overview      # 기업개요 탭 (기본 링크 대상)
+total_path: /worldstock/stock/{code}                  # 종합 페이지 — 기업개요 데이터가 없으면 여기로 대체
+search_url: https://m.search.naver.com/search.naver?query={query}+주가   # 네이버 코드가 없을 때
+# 실존·기업개요 확인(없는 코드도 페이지는 200 이라 API 로 본다)
+api_basic: https://api.stock.naver.com/stock/{code}/basic       # 200=존재, 409=없음. stockEndType: stock|etf
+api_overview: https://api.stock.naver.com/stock/{code}/overview # 200 이고 summary 비어 있지 않으면 기업개요 있음
+overview_requires: [api_basic.stockEndType == stock, api_overview.summary != '']
+fallback_reasons:
+  etf: 네이버가 ETF 로 분류(기업개요 탭 없음)
+  empty: 기업개요 응답이 비어 있음
+  err409: 기업개요 API 409
+# 네이버 코드 접미 실측 규칙: 나스닥 {T}.O · NYSE 는 종목마다 접미 없는 {T} 또는 {T}.K 중 하나만 유효 · AMEX/Arca ETF 는 {T}. 점 티커(BRK.B)는 BRKb 처럼 클래스 문자를 소문자로 붙인다.
+suffix_rule: 'NASDAQ=.O · NYSE=없음 또는 .K(종목별 하나) · AMEX/Arca ETF=없음 · 점 티커=클래스 소문자(BRK.B→BRKb)'

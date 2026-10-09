@@ -11,3 +11,4 @@
 
 - 1x 원칙·경로 집계·백테스트 한계·알려진 한계·달력 소급 규칙은 모두 `docs/guide.html` 에 있다. 지수 명세 `data/index_specs.yaml`, 합성 계열 `data/proxy_specs.json`+`data/ext/`, 생성기 `scripts/mm_proxy.py`, 매핑 교체 전 이력 `data/scores_old_mapping_20261009/`.
 - 달력 데이터: `docs/data/scores/YYYY-MM-DD.csv`(첫 줄 `# date= N= rule=`) + `docs/data/index.json`. 정합 검사 `python3 tests/test_calendar.py`. (`history.html` 은 삭제 — 달력은 메인에 통합.)
+- 구성 종목 링크(MM-CLOSE-FINAL-20261010): 종목 페이지 구성 박스 → 네이버 증권 해외종목 **기업개요 탭** `/worldstock/stock/{코드}/overview`(데이터가 없으면 종합 페이지, 코드가 없으면 네이버 검색). 코드 접미 실측 규칙은 나스닥 `.O` · NYSE 는 종목마다 접미 없음 또는 `.K` · AMEX/Arca ETF 는 접미 없음 · 점 티커는 `BRKb`. 규칙·실측일 `data/link_rules.yaml`, 선택 코드 `scripts/mm_links.py`(주간 `mm_holdings` 갱신이 호출), 구성 데이터 `data/holdings.json`·`scripts/mm_holdings.py`.

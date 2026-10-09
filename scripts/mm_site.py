@@ -239,16 +239,34 @@ def load_holdings():
         return {}
 
 
-NAVER_STOCK = "https://m.stock.naver.com/worldstock/stock/"
-NAVER_SEARCH = "https://m.search.naver.com/search.naver?query="
+_RULES_DEF = {"base": "https://m.stock.naver.com", "overview_path": "/worldstock/stock/{code}/overview", "total_path": "/worldstock/stock/{code}",
+              "search_url": "https://m.search.naver.com/search.naver?query={query}+주가"}
+_RULES = None
+
+
+def link_rules():
+    """data/link_rules.yaml (실측 규칙) — 없거나 깨지면 기본값. 프로세스당 1회 읽는다."""
+    global _RULES
+    if _RULES is None:
+        r = dict(_RULES_DEF)
+        try:
+            import yaml
+            r.update({k: v for k, v in (yaml.safe_load(open(DATA / "link_rules.yaml", encoding="utf-8")) or {}).items() if k in _RULES_DEF})
+        except Exception: pass
+        _RULES = r
+    return _RULES
+
+
 GRID_N = 10                                                     # 기본 격자 종 수(나머지는 '전체 보기')
 
 
 def naver_url(x):
-    """구성 종목 1개의 링크 — 네이버 증권 해외종목(nv 코드가 검증돼 있을 때), 아니면 네이버 검색 '{티커} 주가'(티커 없으면 회사명)."""
-    nv, t = x.get("nv"), x.get("t")
-    if nv: return NAVER_STOCK + urllib.parse.quote(str(nv), safe=".")
-    return NAVER_SEARCH + urllib.parse.quote_plus(f"{t or x.get('n', '')} 주가")
+    """구성 종목 1개의 링크 — 네이버 코드(nv)가 검증돼 있으면 해외종목 페이지: lk='o' 이면 기업개요 탭, 그 밖(종합 대체·미기록)은 종합 페이지. 코드가 없으면 네이버 검색 '{티커} 주가'(티커 없으면 회사명)."""
+    r = link_rules(); nv, t = x.get("nv"), x.get("t")
+    if nv:
+        path = r["overview_path"] if x.get("lk") == "o" else r["total_path"]
+        return r["base"] + path.format(code=urllib.parse.quote(str(nv), safe="."))
+    return urllib.parse.quote(r["search_url"].format(query=urllib.parse.quote_plus(str(t or x.get("n", "")))), safe=":/?=&+%.-_~")
 
 
 def _hold_item(x):
@@ -365,6 +383,18 @@ def rebuild_products_only():
     for u in uni.itertuples():
         (pd_ / f"{u.ticker}.html").write_text(build_product(u.ticker, u, items.get(u.ticker, {}), hold.get(u.ticker)), encoding="utf-8")
     return len(uni)
+
+
+def rebuild_guide_only():
+    """guide.html 만 현재 코드·데이터로 다시 그린다 — '산출 시각'은 기존 페이지 값을 그대로 쓴다(점수·docs/data 무접촉, 표시층 수정용)."""
+    import pandas as pd
+    df = pd.read_csv(DATA / "scores_latest.csv"); uni = pd.read_csv(DATA / "universe.csv")
+    cur = (DOCS / "guide.html").read_text(encoding="utf-8")
+    m = re.search(r"산출 (\d{4}-\d\d-\d\d \d\d:\d\d) KST", cur)
+    rd = lambda n, k: (json.load(open(DATA / n, encoding="utf-8")).get(k, []) if (DATA / n).exists() else [])
+    meta = dict(asof=str(df.date.iloc[0]), generated=m.group(1) if m else "", provisional=None, new_products=rd("new_products.json", "candidates"),
+                pipeline=rd("pipeline.json", "items"), dropped=[], manual=False, anomalies=pd.read_csv(DATA / "anomalies.csv"))
+    (DOCS / "guide.html").write_text(build_guide(df, meta, uni), encoding="utf-8")
 
 
 def build_all(latest_df, uni, meta, p0, score_files):

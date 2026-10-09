@@ -539,6 +539,12 @@ def build(prev=None, log=print, budget_s=900, fetcher=fetch_etf, do_enrich=True)
         if old:
             entries[t] = dict(old, stale=True)
         log(f"  {t}: 갱신 실패({why}) → {'직전 값 유지(stale)' if old else '직전 값 없음!'}")
+    if do_enrich:                                                                                   # 링크 대상(기업개요/종합) — MM-CLOSE-FINAL §1, 실패해도 구성 갱신은 계속
+        try:
+            import mm_links
+            stats = dict(stats, links=mm_links.apply_overview(entries, log=log))
+        except Exception as e:
+            log(f"  링크 대상 선택 실패(종합 링크로 둔다): {type(e).__name__}: {str(e)[:100]}")
     return {"generated": td, "items": {t: entries[t] for t in prods if t in entries}}, {"fails": fails, "stale": stale, "enrich": stats}
 
 
