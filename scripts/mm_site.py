@@ -6,10 +6,10 @@ from pathlib import Path
 import numpy as np, pandas as pd
 try:
     from mm_lib import DATA, DOCS, ROOT, now_kst, MSCORE_SHA, load_status
-    import mm_guide
+    import mm_guide, mm_idxhist
 except ImportError:
     from scripts.mm_lib import DATA, DOCS, ROOT, now_kst, MSCORE_SHA, load_status
-    from scripts import mm_guide
+    from scripts import mm_guide, mm_idxhist
 E = html.escape
 NAV = (("index.html", "순위"), ("longterm.html", "장기순위"), ("products.html", "종목"), ("guide.html", "Guide"))
 NOTICE = mm_guide.NOTICE_TEXT
@@ -122,7 +122,8 @@ def build_index(df, meta):
     rows = latest_rows(df)
     first, last, dates = date_list()
     if not dates: first = last = meta["asof"]; dates = [meta["asof"]]
-    data = {"asof": meta["asof"], "first": first, "last": last, "dates": dates, "latest": rows, "tk": tk}
+    hist = {t: it["official_first"] for t, it in mm_idxhist.load_history().items() if (it.get("ext") or {}).get("has")}   # 지수 이력 재구성 사유용(표시 전용)
+    data = {"asof": meta["asof"], "first": first, "last": last, "dates": dates, "latest": rows, "tk": tk, "hist": hist, "histWin": mm_idxhist.WINDOW}
     prov = meta.get("provisional")
     pill = (f'<span class="pill prov" title="{E("SPY 일봉 최신 행(" + prov["raw_last"] + ")이 " + prov["reason"] + " → 직전 확정일로 산출")}">잠정</span>' if prov else "")
     banner = ""                                                   # 예약 실행 확인(2026-10-09 17:18 launchd) 후 배너 제거
@@ -162,6 +163,12 @@ def _why_text(r):
     return " · ".join(o)
 
 
+def _why_full(r, HI, dates, asof):
+    """기존 사유 + 지수 이력 일부 재구성(N%) — 메인 표 JS 의 why() 와 같은 순서·같은 문구"""
+    a = _why_text(r); b = mm_idxhist.reason(HI.get(r["ticker"]), dates, asof)
+    return " · ".join(x for x in (a, b) if x)
+
+
 def compute_longterm(latest_df, asof):
     """기간 N거래일 M-score 단순평균(결측일 제외, 창의 80% 미만이면 결측)을 당일 모집단 안에서 순위. docs/data/scores 소급분에서 산출."""
     import math
@@ -185,12 +192,13 @@ def compute_longterm(latest_df, asof):
                 if t in x.index and pd.notna(x.at[t, "M"]):
                     acc[t].append((float(x.at[t, "M"]), float(x.at[t, "p_sig"]) * 100, float(x.at[t, "p_rsA"]) * 100, float(x.at[t, "p_f1b"]) * 100))
         need = math.ceil(0.8 * N); rows = []
+        HI = mm_idxhist.load_history()
         for r in pop.to_dict("records"):
             v = acc[r["ticker"]]
             if len(v) >= need:
-                a = np.mean(v, axis=0); rows.append(dict(t=r["ticker"], m=round(float(a[0]), 6), v=int(round(a[1])), rs=int(round(a[2])), tr=int(round(a[3])), n=len(v), w=_why_text(r)))
+                a = np.mean(v, axis=0); rows.append(dict(t=r["ticker"], m=round(float(a[0]), 6), v=int(round(a[1])), rs=int(round(a[2])), tr=int(round(a[3])), n=len(v), w=_why_full(r, HI, dates, asof)))
             else:
-                rows.append(dict(t=r["ticker"], m=None, v=None, rs=None, tr=None, n=len(v), w=_why_text(r)))
+                rows.append(dict(t=r["ticker"], m=None, v=None, rs=None, tr=None, n=len(v), w=_why_full(r, HI, dates, asof)))
         ok = sorted([x for x in rows if x["m"] is not None], key=lambda x: (-x["m"], x["t"]))
         rk = {}
         for i, x in enumerate(ok):
@@ -308,6 +316,12 @@ def intro_html(text):
     return "".join(f"<p>{E(x)}</p>" for x in ps)
 
 
+def hist_line(t):
+    """기본 정보 아래 한 줄 — '지수 공식 이력 시작 YYYY-MM-DD' (공식 지수 레벨 경로 18종만)"""
+    h = mm_idxhist.load_history().get(t)
+    return f'<div class="chartnote">지수 공식 이력 시작 {E(h["official_first"])}</div>' if h else ""
+
+
 def build_product(t, u, it, hold=None):
     """종목 페이지 1개. u = universe 행(Series/namedtuple), it = products_page.json 항목(없으면 {}), hold = holdings.json 항목."""
     tx = it.get("text", {}); b = it.get("basic", {})
@@ -325,7 +339,7 @@ def build_product(t, u, it, hold=None):
 <div class="legend"><span><i style="background:#f59e0b"></i>M-score (좌축)</span><span><i style="background:#3b82f6"></i>순위 (우축·1위가 위)</span></div>
 <div class="chartnote" id="creadout">불러오는 중…</div></div>
 <h2>구성</h2>{comp}
-<h2>기본 정보</h2>{basic}
+<h2>기본 정보</h2>{basic}{hist_line(t)}
 <h2>구조 리스크</h2><ul class="risk">{risks}</ul>
 <div class="stamp">마지막 수정일 {E(str(it.get("modified", "—")))} · <a href="../products.html">상품 목록</a> · <a href="../index.html">순위표</a></div>"""
     return pg(f"{t} — 무매 M-score", body, "products.html", root="../", scripts='<script src="../assets/chart.js"></script>')

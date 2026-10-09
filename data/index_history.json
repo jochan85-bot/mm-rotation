@@ -1,0 +1,312 @@
+{
+ "generated": "2026-10-09",
+ "window": 252,
+ "items": {
+  "AIQU": {
+   "key": "IDX_BAILSN",
+   "first_bar": "2026-06-02",
+   "listed": "2026-06-01",
+   "index_name": "BITA AI Leaders Select NTR US Index",
+   "level_kind": "official_level",
+   "official_first": "2026-05-15",
+   "ext": {
+    "has": true,
+    "method": "구성종목 복제",
+    "detail": "25종 복제",
+    "start": "2010-01-04",
+    "end": "2026-05-14"
+   },
+   "tail": {
+    "days": 1,
+    "src": "AIQU 구성종목 복제",
+    "official_last": "2026-10-07"
+   }
+  },
+  "BNKU": {
+   "key": "IDX_SOLUSBBT",
+   "first_bar": "2025-02-20",
+   "listed": "2025-02-19",
+   "index_name": "Solactive MicroSectors(TM) U.S. Big Banks Index - gross total return version",
+   "level_kind": "official_level",
+   "official_first": "2019-01-25",
+   "ext": {
+    "has": true,
+    "method": "SG 인증서",
+    "detail": "SG 인증서 DE000SLA7WC8",
+    "start": "2013-03-15",
+    "end": "2019-01-24"
+   },
+   "tail": {
+    "days": 1,
+    "src": "DE000SLA7WC8.SG",
+    "official_last": "2026-10-07"
+   }
+  },
+  "BULZ": {
+   "key": "IDX_SOLFANGT",
+   "first_bar": "2021-08-18",
+   "listed": "2021-08-17",
+   "index_name": "Solactive FANG Innovation Index",
+   "level_kind": "official_level",
+   "official_first": "2021-06-08",
+   "ext": {
+    "has": true,
+    "method": "SG 인증서",
+    "detail": "SG 인증서 DE000SL0DF12",
+    "start": "2014-12-19",
+    "end": "2021-06-07"
+   },
+   "tail": {
+    "days": 1,
+    "src": "DE000SL0DF12.SG",
+    "official_last": "2026-10-07"
+   }
+  },
+  "FLYU": {
+   "key": "IDX_MQUSTRAV",
+   "first_bar": "2022-06-22",
+   "listed": "2022-06-21",
+   "index_name": "MerQube MicroSectors(TM) U.S. Travel Index",
+   "level_kind": "official_level",
+   "official_first": "2021-11-01",
+   "ext": {
+    "has": true,
+    "method": "구성종목 복제",
+    "detail": "34종 복제",
+    "start": "2010-01-04",
+    "end": "2021-10-29"
+   },
+   "tail": {
+    "days": 1,
+    "src": "FLYU 구성종목 복제",
+    "official_last": "2026-10-07"
+   }
+  },
+  "FNGU": {
+   "key": "IDX_NYFANGT",
+   "first_bar": "2025-02-20",
+   "listed": "2025-02-19",
+   "index_name": "NYSE FANG+(R) Index - gross total return version",
+   "level_kind": "official_level",
+   "official_first": "2017-09-26",
+   "ext": {
+    "has": true,
+    "method": "관련 지수(가격수익)",
+    "detail": "^NYFANG(가격수익)",
+    "start": "2014-09-22",
+    "end": "2017-09-25"
+   },
+   "tail": {
+    "days": 1,
+    "src": "^NYFANG",
+    "official_last": "2026-10-07"
+   }
+  },
+  "GDXU": {
+   "key": "IDX_MINERS",
+   "first_bar": "2020-12-03",
+   "listed": "2020-12-02",
+   "index_name": "S-Network MicroSectors(TM) Gold Miners Index",
+   "level_kind": "official_level",
+   "official_first": "2020-08-20",
+   "ext": {
+    "has": true,
+    "method": "구성종목 복제",
+    "detail": "GDX/GDXJ 구성 복제(Adj Close)",
+    "start": "2010-01-04",
+    "end": "2020-08-19"
+   },
+   "tail": {
+    "days": 1,
+    "src": "GDXU 구성종목 복제",
+    "official_last": "2026-10-07"
+   }
+  },
+  "MIDU": {
+   "key": "IDX_MID",
+   "first_bar": "2009-01-08",
+   "listed": "2009-01-08",
+   "index_name": "S&P MidCap 400® Index",
+   "level_kind": "yahoo_index",
+   "official_first": "1981-01-02",
+   "ext": {
+    "has": false
+   }
+  },
+  "MNGU": {
+   "key": "IDX_MANGOSN",
+   "first_bar": "2026-08-27",
+   "listed": "2026-08-26",
+   "index_name": "NYSE(R) MaNGoS+ Index - net total return version",
+   "level_kind": "official_level",
+   "official_first": "2026-08-19",
+   "ext": {
+    "has": true,
+    "method": "구성종목 복제",
+    "detail": "10종 복제",
+    "start": "2010-01-04",
+    "end": "2026-08-18"
+   },
+   "tail": {
+    "days": 1,
+    "src": "MNGU 구성종목 복제",
+    "official_last": "2026-10-07"
+   }
+  },
+  "NRGU": {
+   "key": "IDX_SOLUSBOT",
+   "first_bar": "2025-02-20",
+   "listed": "2025-02-19",
+   "index_name": "Solactive MicroSectors(TM) U.S. Big Oil Index - gross total return version",
+   "level_kind": "official_level",
+   "official_first": "2019-03-12",
+   "ext": {
+    "has": true,
+    "method": "SG 인증서",
+    "detail": "SG 인증서 DE000SLA7WX4",
+    "start": "2013-03-15",
+    "end": "2019-03-11"
+   },
+   "tail": {
+    "days": 1,
+    "src": "DE000SLA7WX4.SG",
+    "official_last": "2026-10-07"
+   }
+  },
+  "OILU": {
+   "key": "IDX_SOLOILT",
+   "first_bar": "2021-11-09",
+   "listed": "2021-11-08",
+   "index_name": "Solactive MicroSectors(TM) Oil & Gas Exploration & Production Index",
+   "level_kind": "official_level",
+   "official_first": "2021-10-20",
+   "ext": {
+    "has": true,
+    "method": "SG 인증서",
+    "detail": "SG 인증서 DE000SL0EDX2",
+    "start": "2017-12-15",
+    "end": "2021-10-19"
+   },
+   "tail": {
+    "days": 1,
+    "src": "DE000SL0EDX2.SG",
+    "official_last": "2026-10-07"
+   }
+  },
+  "SMHU": {
+   "key": "IDX_SEMIS",
+   "first_bar": "2026-08-04",
+   "listed": "2026-08-03",
+   "index_name": "VettaFi Semiconductor Fund-Tracking Index",
+   "level_kind": "official_level",
+   "official_first": "2026-07-13",
+   "ext": {
+    "has": true,
+    "method": "관련 ETF 총수익",
+    "detail": "SMH 총수익(Adj Close; SEMIS 의 정의)",
+    "start": "2009-06-01",
+    "end": "2026-07-10"
+   },
+   "tail": {
+    "days": 1,
+    "src": "SMH",
+    "official_last": "2026-10-07"
+   }
+  },
+  "TNA": {
+   "key": "IDX_RUT",
+   "first_bar": "2008-11-19",
+   "listed": "2008-11-05",
+   "index_name": "Russell 2000® Index",
+   "level_kind": "yahoo_index",
+   "official_first": "1987-09-10",
+   "ext": {
+    "has": false
+   }
+  },
+  "TQQQ": {
+   "key": "IDX_NDX",
+   "first_bar": "2010-02-11",
+   "listed": "2010-02-09",
+   "index_name": "Nasdaq-100® Index",
+   "level_kind": "yahoo_index",
+   "official_first": "1985-10-01",
+   "ext": {
+    "has": false
+   }
+  },
+  "UDOW": {
+   "key": "IDX_DJI",
+   "first_bar": "2010-02-11",
+   "listed": "2010-02-09",
+   "index_name": "Dow Jones Industrial Average SM",
+   "level_kind": "yahoo_index",
+   "official_first": "1992-01-02",
+   "ext": {
+    "has": false
+   }
+  },
+  "UMDD": {
+   "key": "IDX_MID",
+   "first_bar": "2010-02-11",
+   "listed": "2010-02-09",
+   "index_name": "S&P MidCap 400® Index",
+   "level_kind": "yahoo_index",
+   "official_first": "1981-01-02",
+   "ext": {
+    "has": false
+   }
+  },
+  "URTY": {
+   "key": "IDX_RUT",
+   "first_bar": "2010-02-11",
+   "listed": "2010-02-09",
+   "index_name": "Russell 2000® Index",
+   "level_kind": "yahoo_index",
+   "official_first": "1987-09-10",
+   "ext": {
+    "has": false
+   }
+  },
+  "XLCU": {
+   "key": "IDX_VXLCF",
+   "first_bar": "2026-09-11",
+   "listed": "2026-09-09",
+   "index_name": "VettaFi US Communications Fund-Tracking Index",
+   "level_kind": "official_level",
+   "official_first": "2026-07-13",
+   "ext": {
+    "has": true,
+    "method": "관련 ETF 총수익",
+    "detail": "XLC 총수익(Adj Close; VXLCF 의 정의)",
+    "start": "2018-06-19",
+    "end": "2026-07-10"
+   },
+   "tail": {
+    "days": 1,
+    "src": "XLC",
+    "official_last": "2026-10-07"
+   }
+  },
+  "XLPU": {
+   "key": "IDX_VXLPF",
+   "first_bar": "2026-09-11",
+   "listed": "2026-09-09",
+   "index_name": "VettaFi US Consumer Staples Fund-Tracking Index",
+   "level_kind": "official_level",
+   "official_first": "2026-07-13",
+   "ext": {
+    "has": true,
+    "method": "관련 ETF 총수익",
+    "detail": "XLP 총수익(Adj Close; VXLPF 의 정의)",
+    "start": "1998-12-22",
+    "end": "2026-07-10"
+   },
+   "tail": {
+    "days": 1,
+    "src": "XLP",
+    "official_last": "2026-10-07"
+   }
+  }
+ }
+}

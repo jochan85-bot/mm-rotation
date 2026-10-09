@@ -41,6 +41,19 @@
   }
 
   /* ---- 주의 사유: 신규·저유동·무거래·표본부족 4종만(근사 배지는 아이콘 대상 아님) ---- */
+  /* 지수 이력 일부 재구성(N%): 선택한 날짜 포함 최근 252거래일 중 공식 지수 첫 날짜 이전(연장)에 속한 날의 비율 — 표시 전용(점수·순위 불변) */
+  var hcache = {};
+  function histPct(t, d) {
+    var of = D.hist && D.hist[t]; if (!of) return 0;
+    var k = t + '|' + d; if (k in hcache) return hcache[k];
+    var i = D.dates.indexOf(d), W = D.histWin || 252, p = 0;
+    if (i >= 0) {
+      var a = Math.max(0, i + 1 - W), n = 0;
+      for (var j = a; j <= i; j++) if (D.dates[j] < of) n++;
+      p = n ? Math.max(1, Math.round(100 * n / (i + 1 - a))) : 0;
+    }
+    return (hcache[k] = p);
+  }
   function why(r) {
     var o = [], b = r.badges ? r.badges.split(' · ') : [];
     b.forEach(function (x) {
@@ -49,6 +62,8 @@
       else if (x.indexOf('무거래') === 0) o.push('무거래 ' + x.slice(3) + '일');
       else if (x === '표본부족') o.push('표본 ' + r.n_beta + '개');
     });
+    var hp = histPct(r.ticker, st.date);
+    if (hp) o.push('지수 이력 일부 재구성(' + hp + '%)');
     return o;
   }
   function groups(rows) {

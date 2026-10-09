@@ -173,3 +173,5 @@ table.rk th.c .ar{position:static;display:inline-block;margin:0 0 0 1px}
 table.rk tbody tr:not(.dt){height:var(--rh,auto)}
 table.rk td.wc{text-align:center}
 .wr{text-align:center}
+/* ---- 사유 줄 수 제한 해제: 사유가 4줄 이상이면 그만큼 보여주고 전 행 높이는 가장 높은 행에 맞춘다(fitRows) ---- */
+.wr{display:block;-webkit-line-clamp:unset;overflow:visible}

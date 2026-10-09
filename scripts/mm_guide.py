@@ -6,6 +6,10 @@ try:
     from mm_lib import DATA, MSCORE_SHA
 except ImportError:
     from scripts.mm_lib import DATA, MSCORE_SHA
+try:
+    import mm_idxhist
+except ImportError:
+    from scripts import mm_idxhist
 E = html.escape
 NOTICE_TEXT = ("이 표는 3배 레버리지 상품을 무한매수 방식으로 운용할 때 참고하도록 만든 순위입니다. 점수는 각 상품이 따르는 지수의 최근 흐름(변동성·1년 수익률·추세)을 상대적으로 비교한 것이며, "
                "어떤 상품도 오를 것이라고 예측하지 않습니다. 과거 검증에서 이 순위는 지수가 1년 가까이 계속 하락하는 구간에서 손실이 회복되지 못하는 경우를 걸러내지 못했습니다. "
@@ -38,6 +42,25 @@ def _groups(uni):
         ts = list(uni[uni.group == g].ticker)
         out.append(f'<tr><td>{E(g)} · {names.get(g, "")}</td><td>{len(ts)}</td><td>{E(" ".join(ts))}</td></tr>')
     return "".join(out)
+
+
+def idxhist_html(asof):
+    """부록 A 표 — 공식 지수 레벨 경로 종목의 지수 이력·연장 구간(MM-NEWIDX-CHECK §1·§3). 점수 창 = 기준일 포함 최근 252거래일."""
+    rows = mm_idxhist.table_rows(asof)
+    if not rows: return ""
+    def ext(r):
+        if not r["has_ext"]: return "없음(야후 지수 수치)" if r["kind"] == "yahoo_index" else "없음"
+        return f'있음 — {E(r["ext_method"])} ({E(r["ext_detail"])})'
+    trs = "".join(
+        f'<tr><td><b>{E(r["ticker"])}</b></td><td>{E(r["official_first"])}</td><td>{ext(r)}</td><td>{(E(r["ext_start"]) + " ~ " + E(r["ext_end"])) if r["has_ext"] else "—"}</td>'
+        f'<td>{(str(r["window_pct"]) + "% (" + str(r["window_ext_days"]) + "/" + str(r["window_days"]) + "일)") if r["has_ext"] else "—"}</td><td>{(str(r["tail_days"]) + "일 · " + E(r["tail_src"])) if r["tail_days"] else "—"}</td><td>{E(r["listed"])}</td></tr>'
+        for r in sorted(rows, key=lambda x: (-x["window_pct"], x["ticker"])))
+    return (f'<h3>공식 지수 레벨 {len(rows)}종의 지수 이력 (기준일 {E(asof)})</h3>'
+            '<p class="meta">공식 첫 날짜 = 발행사가 공시한 지수 수치의 첫 날(야후 지수는 야후 이력의 첫 날). 그 이전은 관련 지수·SG 인증서·구성종목 복제·관련 ETF 총수익으로 이어 붙인 <b>연장</b>이며 정확도는 검증되지 않았습니다. '
+            '점수 창 = 기준일 포함 최근 252거래일 중 연장에 속한 날의 비율이고, 1일이라도 있으면 메인 표 ! 에 "지수 이력 일부 재구성(N%)"이 나옵니다(점수·순위는 그대로). '
+            '꼬리 보정 = 공식 수치가 최신 기준일보다 하루 늦게 올라올 때 마지막 날을 다른 소스의 수익률로 이은 것(연장 비중에는 세지 않음).</p>'
+            '<div class="wrap"><table class="pl"><thead><tr><th>종목</th><th>공식 레벨 첫 날짜</th><th>연장 구간(유무·방법)</th><th>연장 시작~끝</th><th>점수 창 중 연장 비중</th><th>꼬리 보정</th><th>상품 상장일</th></tr></thead>'
+            f'<tbody>{trs}</tbody></table></div>')
 
 
 def guide_body(df, meta, uni, st):
@@ -106,12 +129,13 @@ def guide_body(df, meta, uni, st):
 <p>회복 불능 비율은 과거 52,583번의 무한매수 사이클을 시뮬레이션해 군별로 센 값입니다<sup class="f"><a href="#fn2">2</a></sup>.</p>
 
 <h2 id="s5">5. 주의 아이콘(!)과 제외 목록</h2>
-<p>표 오른쪽의 <span class="wh">!</span> 는 아래 네 가지 중 하나라도 해당할 때 붙습니다. 누르면 사유(예: "신규 46일 · 거래대금 $0.26M")가 나옵니다. <b>아이콘이 있어도 점수와 순위는 그대로</b>입니다.</p>
+<p>표 오른쪽의 <span class="wh">!</span> 는 아래 다섯 가지 중 하나라도 해당할 때 붙습니다. 누르면 사유(예: "신규 46일 · 거래대금 $0.26M")가 나옵니다. <b>아이콘이 있어도 점수와 순위는 그대로</b>입니다.</p>
 <table><thead><tr><th>사유 표기</th><th>기준</th><th>뜻</th></tr></thead><tbody>
 <tr><td>신규 N일</td><td>상장 후 거래일 {E1}일(약 1년) 미만</td><td>한 번의 연간 사이클(변동성·낙폭·200일선)도 거치지 않은 상품</td></tr>
 <tr><td>거래대금 $x.xxM</td><td>최근 20일 평균 거래대금 ${E2}M 미만</td><td>거래가 얕아 원하는 가격에 사고팔기 어려울 수 있음</td></tr>
 <tr><td>무거래 N일</td><td>최근 20거래일 중 거래량 0 인 날 {E3}일 이상</td><td>체결이 전혀 없던 날이 있음</td></tr>
-<tr><td>표본 N개</td><td>3배↔1배 비교에 쓸 일봉 60개 미만</td><td>3배 상품이 지수의 3배로 움직이는지 확인이 덜 쌓임</td></tr></tbody></table>
+<tr><td>표본 N개</td><td>3배↔1배 비교에 쓸 일봉 60개 미만</td><td>3배 상품이 지수의 3배로 움직이는지 확인이 덜 쌓임</td></tr>
+<tr><td>지수 이력 일부 재구성(N%)</td><td>점수 창(최근 252거래일) 안에 지수 공식 이력 시작 전 구간이 1일 이상 포함 — N = 그 비율</td><td>공식 지수 수치가 아직 짧은 새 지수라, 점수의 일부가 관련 ETF·인증서·구성종목으로 이어 붙인 이력으로 계산됨(부록 A 표)</td></tr></tbody></table>
 <p><b>제외 목록</b>은 발행사 공지로 생깁니다. 매주 토요일 공시를 점검해 아래 네 종류가 나오면 그 상품은 순위에서 빠지고, 메인 화면 "제외 목록"에 사유와 공지 링크가 올라옵니다.</p>
 <ul>
 <li>조기상환·가속상환 공지 — 영구 제외</li>
@@ -184,6 +208,7 @@ def guide_body(df, meta, uni, st):
 <li>운영값(백테스트 근거 아님, 변경은 <code>data/eligibility.yaml</code> 한 곳): 신규 {E1}거래일 · 저유동 ${E2}M · 무거래 {E3}일 · 표본 60 · 이상 봉 1배 ±{a1:g}% / 3배 ±{a3:g}%.</li>
 <li>지수 명세·채택 경로 근거 <code>data/index_specs.yaml</code>, 매핑 교체 전 점수 이력 <code>data/scores_old_mapping_20261009/</code>.</li>
 </ul>
+{idxhist_html(meta.get("asof", ""))}
 <h3>이상 봉 목록 (전 구간, 해당 봉이 속한 60일 창은 점수 집계에서 제외)</h3>
 <div class="wrap"><table class="pl"><thead><tr><th>날짜</th><th>계열</th><th>키</th><th>사용 종목</th><th>일간수익률</th><th>종가</th></tr></thead><tbody>{ar or '<tr><td colspan="6">없음</td></tr>'}</tbody></table></div>
 
