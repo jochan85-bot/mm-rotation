@@ -36,7 +36,11 @@
       return '<button class="btn' + (i === cur ? ' on' : '') + '" data-i="' + i + '">' + t.label + '</button>';
     }).join('');
   }
-  function lines(w) { return esc(w).split(' · ').join('<br>'); }
+  /* 사유 단축(MM-BT-CHARTS-20261011): data/longterm.json 의 w 는 구 문구라 표시할 때 바꾼다(이미 짧은 문구에는 무변화) */
+  function shortW(w) {
+    return String(w).replace(/거래대금 \$/g, '$').replace(/(표본 \d+)개/g, '$1').replace(/지수 이력 일부 재구성\((\d+)%\)/g, '재구성 $1%');
+  }
+  function lines(w) { return esc(shortW(w)).split(' · ').join('<br>'); }
 
   /* 모든 행 높이를 가장 높은 행(사유가 3줄인 행 등)에 맞춘다 — 측정 후 --rh 로 지정, 너비가 바뀌면 다시 측정 */
   function fitRows(tbl) {
@@ -56,10 +60,10 @@
         return '<th class="' + c.c + ' s" data-s="' + c.k + '"' + (TIPS[c.k] ? ' title="' + esc(TIPS[c.k]) + '"' : '') + '>' + c.t + (on ? '<span class="ar">' + (sort.dir === -1 ? '▼' : '▲') + '</span>' : '') + '</th>';
       }).join('') + '</tr></thead><tbody>';
     sorted(t.rows).forEach(function (r) {
-      var ic = r.w ? '<span class="wh" data-w="' + esc(r.w) + '">!</span>' : '';
+      var ic = r.w ? '<span class="wh" data-w="' + esc(shortW(r.w)) + '">!</span>' : '';
       h += '<tr><td class="rk1">' + (r.r === null ? '—' : r.r) + '</td><td class="tk"><a href="products/' + esc(r.t) + '.html">' + esc(r.t) + '</a>' + ic + '</td><td class="m n">' + f1(r.m) +
         '</td><td class="sc n">' + iv(r.v) + '</td><td class="sc n">' + iv(r.rs) + '</td><td class="sc n">' + iv(r.tr) + '</td><td class="wc">' +
-        (r.w ? '<span class="wr" data-w="' + esc(r.w) + '">' + lines(r.w) + '</span>' : '') + '</td></tr>';
+        (r.w ? '<span class="wr" data-w="' + esc(shortW(r.w)) + '">' + lines(r.w) + '</span>' : '') + '</td></tr>';
     });
     var el = $('lt'); el.className = 'rk sum'; el.innerHTML = h + '</tbody>';
     fitRows(el);

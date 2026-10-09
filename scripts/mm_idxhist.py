@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"; DOCS = ROOT / "docs"; LOCAL = ROOT / ".local"
 WINDOW = 252
 HIST_FILE = DATA / "index_history.json"
-REASON_FMT = "지수 이력 일부 재구성({pct}%)"
+REASON_FMT = "재구성 {pct}%"
 # MM-RECON-RULE-20261011: 점수 창 안에 이 방법의 연장 구간이 1일이라도 있으면 M-score 미산출·순위 제외(구성종목 복제 = 현재 구성을 과거에 소급한 선택 편향).
 # 허용: 관련 ETF 총수익·관련 지수(가격수익)·SG 인증서(모두 실존 가격), 꼬리 보정 1일.
 BLOCK_METHODS = ("구성종목 복제",)

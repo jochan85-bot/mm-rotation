@@ -41,7 +41,7 @@
   }
 
   /* ---- 주의 사유: 신규·저유동·무거래·표본부족 4종만(근사 배지는 아이콘 대상 아님) ---- */
-  /* 지수 이력 일부 재구성(N%): 선택한 날짜 포함 최근 252거래일 중 공식 지수 첫 날짜 이전(연장)에 속한 날의 비율 — 표시 전용(점수·순위 불변) */
+  /* 재구성 N% (구 '지수 이력 일부 재구성(N%)'): 선택한 날짜 포함 최근 252거래일 중 공식 지수 첫 날짜 이전(연장)에 속한 날의 비율 — 표시 전용(점수·순위 불변) */
   var hcache = {};
   function histPct(t, d) {
     var of = D.hist && D.hist[t]; if (!of) return 0;
@@ -58,12 +58,12 @@
     var o = [], b = r.badges ? r.badges.split(' · ') : [];
     b.forEach(function (x) {
       if (x === '신규') o.push('신규 ' + r.listed_days + '일');
-      else if (x === '저유동') o.push('거래대금 $' + fx(r.adtv, 2) + 'M');
+      else if (x === '저유동') o.push('$' + fx(r.adtv, 2) + 'M');
       else if (x.indexOf('무거래') === 0) o.push('무거래 ' + x.slice(3) + '일');
-      else if (x === '표본부족') o.push('표본 ' + r.n_beta + '개');
+      else if (x === '표본부족') o.push('표본 ' + r.n_beta);
     });
     var hp = histPct(r.ticker, st.date);
-    if (hp) o.push('지수 이력 일부 재구성(' + hp + '%)');
+    if (hp) o.push('재구성 ' + hp + '%');
     return o;
   }
   function groups(rows) {
