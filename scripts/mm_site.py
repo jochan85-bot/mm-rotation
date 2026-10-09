@@ -1,7 +1,7 @@
 """정적 페이지 생성 — docs/index.html · longterm.html · guide.html · products.html · products/<티커>.html · data/series/<티커>.json.
 MM-PAGE-V3-DESIGN-20261010: 표시층 전면 재구성(렌더러만 교체 — compute·판정 규칙·CSV 형식 무변경).
 스타일 = docs/assets/mm.css, 동작 = docs/assets/index.js · chart.js (정적 파일). 외부 라이브러리·외부 스크립트 0, 개인 정보 0."""
-import json, html, re
+import json, html, re, urllib.parse
 from pathlib import Path
 import numpy as np, pandas as pd
 try:
@@ -239,18 +239,55 @@ def load_holdings():
         return {}
 
 
+NAVER_STOCK = "https://m.stock.naver.com/worldstock/stock/"
+NAVER_SEARCH = "https://m.search.naver.com/search.naver?query="
+GRID_N = 10                                                     # 기본 격자 종 수(나머지는 '전체 보기')
+
+
+def naver_url(x):
+    """구성 종목 1개의 링크 — 네이버 증권 해외종목(nv 코드가 검증돼 있을 때), 아니면 네이버 검색 '{티커} 주가'(티커 없으면 회사명)."""
+    nv, t = x.get("nv"), x.get("t")
+    if nv: return NAVER_STOCK + urllib.parse.quote(str(nv), safe=".")
+    return NAVER_SEARCH + urllib.parse.quote_plus(f"{t or x.get('n', '')} 주가")
+
+
+def _hold_item(x):
+    """holdings.json 항목을 (티커|None, 회사명, 비중) 로 정규화 — 구 형식(n=티커, t 없음)도 읽는다."""
+    t, n = x.get("t"), str(x.get("n", ""))
+    if "t" not in x and "nv" not in x: t, n = n, ""             # V3.1 이전 형식: n 이 티커
+    return t, n, float(x["w"])
+
+
+def holdings_cell(x):
+    t, n, w = _hold_item(x)
+    top = t or n
+    sub = f'<span class="nm">{E(n)}</span>' if (t and n and n != t) else ""
+    return (f'<a class="hc" href="{E(naver_url(x), quote=True)}" target="_blank" rel="noopener noreferrer">'
+            f'<span class="r1"><span class="s">{E(top)}</span><span class="w">{f1(w, 2)}%</span></span>{sub}</a>')
+
+
 def holdings_html(h):
-    """구성 표: 기본 상위 10종 격자(모바일 2열·데스크톱 3열) + 10종을 넘는 부분은 '전체 보기'로 펼침(MM-PAGE-V3.1 §7)"""
+    """구성 표: 기본 상위 10종 격자(모바일 2열·데스크톱 3열) + 나머지는 '전체 보기'로 펼침. 티커 우선·회사명 작은 글씨·박스 전체가 새 탭 링크(MM-PAGE-V3.2 §3·§4·§6)"""
     if not h or not h.get("items"): return '<div class="empty">구성 종목 데이터를 확인하지 못했습니다.</div>'
     items = sorted(h["items"], key=lambda x: -float(x["w"]))
-    cell = lambda x: f'<div class="hc"><span class="s">{E(str(x["n"]))}</span><span class="w">{f1(float(x["w"]), 2)}%</span></div>'
-    head, rest = items[:10], items[10:]
-    out = f'<div class="hgrid">{"".join(cell(x) for x in head)}</div>'
+    head, rest = items[:GRID_N], items[GRID_N:]
+    out = f'<div class="hgrid">{"".join(holdings_cell(x) for x in head)}</div>'
+    total = int(h.get("total") or len(items))
     if rest:
-        out += f'<details class="hmore"><summary>전체 보기 ({len(items)}종)</summary><div class="hgrid">{"".join(cell(x) for x in rest)}</div></details>'
+        out += f'<details class="hmore"><summary>전체 보기 ({len(items)}종' + (f' · 전체 {total}종 중 상위 {len(items)}' if total > len(items) else '') + f')</summary><div class="hgrid">{"".join(holdings_cell(x) for x in rest)}</div></details>'
     sc = h.get("scope", "")
-    out += f'<div class="chartnote">기준: {E(h.get("basis", ""))} · {E(str(h.get("as_of", "")))}' + (f' · {E(sc)}' if sc and sc != "전체" else (' · 전체' if sc == "전체" else "")) + '</div>'
-    return out
+    if not sc and total > len(items): sc = f"전체 {total}종 중 상위 {len(items)}"
+    note = f'기준: {E(h.get("basis", ""))} · {E(str(h.get("as_of", "")))}' + (f' · {E(sc)}' if sc else '')
+    if h.get("stale"): note += ' · 갱신 실패 — 직전 값 표시'
+    src = h.get("source") or {}
+    if src.get("name"): note += f' · 출처 {E(str(src["name"]))}'
+    return out + f'<div class="chartnote">{note}</div>'
+
+
+def intro_html(text):
+    """소개 문단 — '\n\n' 로 구분된 문단마다 <p>"""
+    ps = [x.strip() for x in str(text or "").split("\n\n") if x.strip()] or ["—"]
+    return "".join(f"<p>{E(x)}</p>" for x in ps)
 
 
 def build_product(t, u, it, hold=None):
@@ -264,7 +301,7 @@ def build_product(t, u, it, hold=None):
              f'<tr><td>{E(b.get("issuer", ""))}</td><td>{E(b.get("type", ""))}</td><td>{E(b.get("leverage", ""))}</td><td>{E(fee)}</td><td>{E(str(b.get("inception") or "—"))}</td></tr></table>')
     risks = "".join(f'<li>{E(x)}</li>' for x in tx.get("risk", [])) or '<li>—</li>'
     body = f"""<h1>{E(t)}<small>{sub}</small></h1>
-<h2>소개</h2><div class="intro">{E(tx.get("intro", "—"))}</div>
+<h2>소개</h2><div class="intro">{intro_html(tx.get("intro"))}</div>
 <div class="rangebar"><button class="btn" data-range="m3">3개월</button><button class="btn" data-range="m6">6개월</button><button class="btn on" data-range="y1">1년</button><button class="btn" data-range="all">전체</button></div>
 <div class="chartbox"><div id="chart" data-t="{E(t)}"></div>
 <div class="legend"><span><i style="background:#f59e0b"></i>M-score (좌축)</span><span><i style="background:#3b82f6"></i>순위 (우축·1위가 위)</span></div>
@@ -318,6 +355,16 @@ def write_tickers_json(uni, p0):
                              iss=r.issuer, typ=r.type, proxy=r.proxy)
     (DOCS / "data").mkdir(parents=True, exist_ok=True)
     json.dump(out, open(DOCS / "data" / "tickers.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+
+
+def rebuild_products_only():
+    """종목 페이지(products/*.html)만 현재 data/products_page.json·holdings.json 으로 다시 그린다 — 점수·docs/data 무접촉(표시층 수정용)."""
+    import pandas as pd
+    uni = pd.read_csv(DATA / "universe.csv"); items = load_page_items(); hold = load_holdings()
+    pd_ = DOCS / "products"; pd_.mkdir(exist_ok=True)
+    for u in uni.itertuples():
+        (pd_ / f"{u.ticker}.html").write_text(build_product(u.ticker, u, items.get(u.ticker, {}), hold.get(u.ticker)), encoding="utf-8")
+    return len(uni)
 
 
 def build_all(latest_df, uni, meta, p0, score_files):

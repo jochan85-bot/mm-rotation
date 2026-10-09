@@ -4,7 +4,7 @@
   'use strict';
   var D = JSON.parse(document.getElementById('ltdata').textContent);
   var $ = function (i) { return document.getElementById(i); };
-  var cur = 0, sort = { k: 'm', dir: -1 };
+  var cur = 0, sort = { k: 'r', dir: 1 };
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function f1(x) { return x === null ? '—' : x.toFixed(1); }
   function iv(x) { return x === null ? '—' : String(x); }
@@ -15,9 +15,9 @@
     tr: '그 기간 일별 추세 점수의 평균 (유니버스 내 상대 점수, 100=최상위)'
   };
   var COLS = [
-    { k: 'r', t: '순위', c: 'c', w: 8 }, { k: 't', t: '티커', c: 'l', w: 18 },
-    { k: 'm', t: '평균<br>M-score', c: 'n', w: 14 }, { k: 'v', t: '평균<br>변동성', c: 'n', w: 12 },
-    { k: 'rs', t: '평균<br>상대강도', c: 'n', w: 12 }, { k: 'tr', t: '평균<br>추세', c: 'n', w: 12 }, { k: 'w', t: '!', c: 'l', w: 22 }
+    { k: 'r', t: '순위', c: 'c', w: 8 }, { k: 't', t: '티커', c: 'l', w: 20 },
+    { k: 'm', t: '평균<br>M-score', c: 'n', w: 13 }, { k: 'v', t: '평균<br>변동성', c: 'n', w: 11 },
+    { k: 'rs', t: '평균<br>상대강도', c: 'n', w: 12 }, { k: 'tr', t: '평균<br>추세', c: 'n', w: 11 }, { k: 'w', t: '!', c: 'c', w: 25 }
   ];
   function val(r, k) { var x = r[k]; return (x === '' || x === undefined) ? null : x; }
   function sorted(rows) {

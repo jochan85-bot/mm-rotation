@@ -4,7 +4,7 @@
   'use strict';
   var D = JSON.parse(document.getElementById('mmdata').textContent);
   var $ = function (i) { return document.getElementById(i); };
-  var st = { date: D.asof, mode: 'sum', y: 0, m: 0, calOpen: true, cache: {}, rows: null, token: 0, sort: { k: 'M', dir: -1 } };
+  var st = { date: D.asof, mode: 'sum', y: 0, m: 0, calOpen: true, cache: {}, rows: null, token: 0, sort: { k: 'rank', dir: 1 } };
   var availYM = {};
   
   var avail = {};
@@ -102,17 +102,18 @@
 
   function kvPanel(g) {
     var h = '<div class="kv">';
-    EXTRA.forEach(function (e) { h += '<div><span class="k">' + e[0] + '</span><span class="v">' + e[1](g) + '</span></div>'; });
+    EXTRA.forEach(function (e) { if (g.grp && e[2]) return; h += '<div><span class="k">' + e[0] + '</span><span class="v">' + e[1](g) + '</span></div>'; });
     h += '</div>';
     return h;
   }
-  function memTable(g) {
-    var h = '<table class="mem"><thead><tr><th class="l">티커</th><th class="l">발행사</th><th>3배 종가</th><th>거래대금($M)</th><th>상장일수</th><th class="l">주의</th></tr></thead><tbody>';
+  /* 그룹 펼침: 멤버를 본 표와 같은 행(같은 열·글자·행 높이)으로 그린다. 멤버별 3배 종가·거래대금·상장일수·발행사는 패널의 작은 글씨 줄로 옮겼다. */
+  function memInfo(g) {
+    var h = '<div class="minfo">';
     g.mem.forEach(function (m) {
-      var meta = D.tk[m.ticker] || { iss: '', typ: '' }, w = why(m);
-      h += '<tr><td class="l">' + tkLink(m.ticker) + '</td><td class="l">' + esc(meta.iss + ' · ' + meta.typ) + '</td><td>' + fx(m.close3, 2) + '</td><td>' + fx(m.adtv, 1) + '</td><td>' + fx(m.listed_days, 0) + '</td><td class="l">' + (w.length ? '<span class="wh" data-w="' + esc(w.join(' · ')) + '">!</span> ' + esc(w.join(' · ')) : '—') + '</td></tr>';
+      var meta = D.tk[m.ticker] || { iss: '', typ: '' };
+      h += '<div><b>' + esc(m.ticker) + '</b> ' + esc(meta.iss + ' · ' + meta.typ) + ' · 3배 종가 ' + fx(m.close3, 2) + ' · 거래대금 $' + fx(m.adtv, 1) + 'M · 상장 ' + fx(m.listed_days, 0) + '일</div>';
     });
-    return h + '</tbody></table>';
+    return h + '</div>';
   }
 
   var TIPS = {
@@ -124,12 +125,12 @@
   /* 열 정의: k=정렬 키, f=정렬값(그룹은 대표 종목 값으로 참여), n=숫자 열(우측 정렬) */
   var BASE = [
     { k: 'rank', t: '순위', c: 'c', f: function (g) { return g.rep.rank; }, w: 8 },
-    { k: 'tk', t: '티커', c: 'l', f: function (g) { return g.rep.ticker; }, w: 18 },
-    { k: 'M', t: 'M-score', c: 'n', tip: TIPS.M, f: function (g) { return g.rep.M; }, w: 14 },
-    { k: 'V', t: '변동성', c: 'n', tip: TIPS.V, f: function (g) { return g.rep.p_sig; }, w: 12 },
+    { k: 'tk', t: '티커', c: 'l', f: function (g) { return g.rep.ticker; }, w: 20 },
+    { k: 'M', t: 'M-score', c: 'n', tip: TIPS.M, f: function (g) { return g.rep.M; }, w: 13 },
+    { k: 'V', t: '변동성', c: 'n', tip: TIPS.V, f: function (g) { return g.rep.p_sig; }, w: 11 },
     { k: 'R', t: '상대강도', c: 'n', tip: TIPS.R, f: function (g) { return g.rep.p_rsA; }, w: 12 },
-    { k: 'T', t: '추세', c: 'n', tip: TIPS.T, f: function (g) { return g.rep.p_f1b; }, w: 12 },
-    { k: 'W', t: '!', c: 'l', f: function (g) { return whyText(g) || null; }, w: 22 }
+    { k: 'T', t: '추세', c: 'n', tip: TIPS.T, f: function (g) { return g.rep.p_f1b; }, w: 11 },
+    { k: 'W', t: '!', c: 'c', f: function (g) { return whyText(g) || null; }, w: 25 }
   ];
   var XKEYS = [
     function (g) { return g.rep.sig; }, function (g) { return g.rep.rsA; }, function (g) { return g.rep.f1b; }, function (g) { return g.rep.c1_ma200; },
@@ -164,18 +165,23 @@
     if (st.mode === 'det') return '';
     return '<colgroup>' + BASE.map(function (c) { return '<col style="width:' + c.w + '%">'; }).join('') + '</colgroup>';
   }
+  /* 한 행: 그룹 대표 행(g.grp)·단일 행·멤버 행(mem=true)이 같은 열 규칙을 쓴다 */
+  function rowHtml(g, i, mem) {
+    var r = g.rep, wt = whyText(g), det = st.mode === 'det';
+    var ic = wt ? '<span class="wh" data-w="' + esc(wt) + '">!</span>' : '';
+    var tk = g.grp ? '<span class="nw"><span class="car">▸</span>' + esc(r.ticker) + '<span class="more">+' + (g.mem.length - 1) + '</span></span>' + ic : tkLink(r.ticker) + ic;
+    var h = '<tr class="' + (mem ? 'mr' : 'r') + '"' + (mem ? ' hidden' : ' data-i="' + i + '"') + '><td class="rk1">' + fx(r.rank, 0) + '</td><td class="tk">' + tk + '</td><td class="m n">' + fx(r.M, 1) +
+      '</td><td class="sc n">' + pct(r.p_sig) + '</td><td class="sc n">' + pct(r.p_rsA) + '</td><td class="sc n">' + pct(r.p_f1b) + '</td>' +
+      '<td class="wc">' + (wt ? '<span class="wr" data-w="' + esc(wt) + '">' + whyLines(g) + '</span>' : '') + '</td>';
+    if (det) EXTRA.forEach(function (e) { h += '<td class="n' + (g.grp && e[2] ? ' mu' : '') + '"' + (g.grp && e[2] ? ' title="대표(거래대금 최대) 종목 ' + esc(r.ticker) + ' 값 — 펼치면 개별 값"' : '') + '>' + e[1](g) + '</td>'; });
+    return h + '</tr>';
+  }
   function body(rows) {
     var gs = sorted(groups(rows)), h = '', ncol = 7 + (st.mode === 'det' ? EXTRA.length : 0);
     gs.forEach(function (g, i) {
-      var r = g.rep, wt = whyText(g);
-      var ic = wt ? '<span class="wh" data-w="' + esc(wt) + '">!</span>' : '';
-      var tk = g.grp ? '<span class="nw"><span class="car">▸</span>' + esc(r.ticker) + '<span class="more">+' + (g.mem.length - 1) + '</span></span>' + ic : tkLink(r.ticker) + ic;
-      h += '<tr class="r" data-i="' + i + '"><td class="rk1">' + fx(r.rank, 0) + '</td><td class="tk">' + tk + '</td><td class="m n">' + fx(r.M, 1) +
-        '</td><td class="sc n">' + pct(r.p_sig) + '</td><td class="sc n">' + pct(r.p_rsA) + '</td><td class="sc n">' + pct(r.p_f1b) + '</td>' +
-        '<td class="wc">' + (wt ? '<span class="wr" data-w="' + esc(wt) + '">' + whyLines(g) + '</span>' : '') + '</td>';
-      if (st.mode === 'det') EXTRA.forEach(function (e) { h += '<td class="n' + (g.grp && e[2] ? ' mu' : '') + '"' + (g.grp && e[2] ? ' title="대표(거래대금 최대) 종목 ' + esc(r.ticker) + ' 값 — 펼치면 개별 값"' : '') + '>' + e[1](g) + '</td>'; });
-      h += '</tr>';
-      var panel = (st.mode === 'sum' ? kvPanel(g) : '') + (g.grp ? memTable(g) : '');
+      h += rowHtml(g, i, false);
+      if (g.grp) g.mem.forEach(function (m) { h += rowHtml({ rep: m, mem: [m], grp: false }, i, true); });
+      var panel = (st.mode === 'sum' ? kvPanel(g) : '') + (g.grp ? memInfo(g) : '');
       if (panel) h += '<tr class="dt" hidden><td colspan="' + ncol + '"><div class="panel">' + panel + '</div></td></tr>';
     });
     return h;
@@ -258,10 +264,11 @@
     var b = e.target.closest ? e.target.closest('button,a') : null;
     var tr = e.target.closest ? e.target.closest('tr.r') : null;
     if (tr && !(b && b !== tr)) {
-      var nx = tr.nextElementSibling;
-      if (nx && nx.classList.contains('dt')) {
-        nx.hidden = !nx.hidden; tr.classList.toggle('open', !nx.hidden);
-        var c = tr.querySelector('.car'); if (c) c.textContent = nx.hidden ? '▸' : '▾';
+      var nx = tr.nextElementSibling, open = nx && nx.hidden, any = false;
+      while (nx && !nx.classList.contains('r')) { nx.hidden = !open; any = true; nx = nx.nextElementSibling; }
+      if (any) {
+        tr.classList.toggle('open', open);
+        var c = tr.querySelector('.car'); if (c) c.textContent = open ? '▾' : '▸';
       }
     }
   });

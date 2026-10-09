@@ -153,6 +153,12 @@ def main(push=True):
     L.save_json(L.DATA/"status.json",status)
     rep=dict(date=str(today),lookback_days=LOOKBACK,sources_ok=ok_src,sources_failed=fail_src,sources_substituted=subst_src,docs_scanned=docs,issues=issues,actions=actions,new_products=np_res)
     L.save_json(L.DATA/"issues"/f"{today}.json",rep)
+    # ---- 종목 페이지 구성 데이터 주간 갱신(MM-PAGE-V3.2 §6) — 실패해도 주간 점검은 계속, log 만 남긴다 ----
+    try:
+        import mm_holdings
+        hs=mm_holdings.refresh(log=lambda m:L.log(m,"weekly"),budget_s=300)
+        L.log("구성 종목 갱신: "+json.dumps(dict(n=hs["n"],stale=hs["stale"],fails=hs["fails"]),ensure_ascii=False),"weekly")
+    except Exception as e: L.log(f"구성 종목 갱신 실패(무시하고 계속): {type(e).__name__}: {str(e)[:200]}","weekly")
     # ---- 재산출(E5 반영) + push ----
     import mm_daily
     df=mm_daily.run(push=push,fetch=False,manual=None)
