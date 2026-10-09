@@ -21,7 +21,8 @@ check("비율 반올림·최소 1", H.window_pct(it, dates, asof) == round(100 *
 check("연장이 창에 없으면 0(사유 없음)", H.window_pct({"official_first": "2021-01-04", "ext": {"has": True}}, dates, asof) == 0 and H.reason({"official_first": "2021-01-04", "ext": {"has": True}}, dates, asof) == "")
 check("연장 없는 종목(야후 지수)은 0", H.window_pct({"official_first": "1985-10-01", "ext": {"has": False}}, dates, asof) == 0)
 check("1일만 걸치면 최소 1%", H.window_pct({"official_first": dates[-251], "ext": {"has": True}}, dates, asof) == 1)
-check("문구(MM-BT-CHARTS-20261011: '재구성 N%' 로 단축)", H.reason(it, dates, asof).startswith("재구성 ") and H.reason(it, dates, asof).endswith("%") and "(" not in H.reason(it, dates, asof))
+itb = {"official_first": "2026-07-13", "ext": {"has": True, "method": "구성종목 복제"}}
+check("문구('재구성 N%') — ◐ 대상(구성종목 복제) 종목에만", H.reason(itb, dates, asof).startswith("재구성 ") and H.reason(itb, dates, asof).endswith("%") and "(" not in H.reason(itb, dates, asof) and H.reason(it, dates, asof) == "")
 check("과거 날짜는 창이 달라 비율이 다름", H.window_pct(it, dates, "2026-07-31") != H.window_pct(it, dates, asof))
 # 실제 정적 파일
 items = H.load_history()

@@ -175,3 +175,9 @@ table.rk td.wc{text-align:center}
 .wr{text-align:center}
 /* ---- MM-BT-CHARTS-20261011: 사유는 짧은 문구 + 3줄 제한 복원(넘치면 말줄임, 탭하면 전체). 전 행 높이는 가장 높은 행(최대 3줄)에 맞춘다(fitRows) ---- */
 .wr{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis}
+/* ---- ◐ 되계산 경고(MM-RECON-RULE-REV-20261011) ---- */
+.rc{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-left:4px;font-size:14px;line-height:1;color:#58a6ff;cursor:pointer;vertical-align:middle;font-weight:700}
+.ics{white-space:nowrap}
+.capt.rcn{color:#9fb6d6;border-left:2px solid #58a6ff;padding-left:8px;margin:0 0 8px;line-height:1.55}
+.capt.rcn[hidden]{display:none}
+.rcl{color:#9fb6d6;line-height:1.6}.rcl b{color:#58a6ff}

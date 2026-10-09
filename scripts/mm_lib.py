@@ -189,12 +189,9 @@ def badges_for(listed_days, adtv, zero, beta, r2, nb, cfg):
 RULE_VER="V2.3"
 # ---------- 산출 ----------
 def compute(S,asof,T,cfg,status,uni,pq,remeasure=False):
-    """asof(Timestamp) 기준 전 종목 표 + M-score. table: 순위(모집단) / 제외(E5) / 이력부족(구성종목 복제 연장이 점수 창에 있음 — M-score 미산출) / ⚠(최신 봉 불일치·이상 봉·피처 불가).
+    """asof(Timestamp) 기준 전 종목 표 + M-score. table: 순위(모집단) / 제외(E5) / ⚠(최신 봉 불일치·이상 봉·피처 불가).
     모집단 = E5 미해당·⚠ 없는 전 종목(E1~E4 는 배지만, 점수 보정 없음). pq: DataFrame(ticker→측정값) — remeasure 시 갱신 반환"""
     asof=pd.Timestamp(asof); rows=[]; pq_upd={}; A=cfg["anomaly"]; W=int(A["window"])
-    try:
-        import mm_idxhist; IH=mm_idxhist.load_history()      # MM-RECON-RULE-20261011: 구성종목 복제 연장이 점수 창(252거래일)에 있으면 미산출
-    except Exception: IH={}
     for r in uni.itertuples():
         t=r.ticker; px=r.proxy; reasons=[]; tab="순위"
         rec=dict(date=str(asof.date()),ticker=t,group=r.group,type=r.type,issuer=r.issuer,proxy=px,rule_ver=RULE_VER)
@@ -250,8 +247,6 @@ def compute(S,asof,T,cfg,status,uni,pq,remeasure=False):
             tab="⚠"; reasons.append(f"3배 이상 봉 {an3[-1][0].date()} (일간 {an3[-1][1]*100:+.1f}%, 임계 ±{A['three_x']*100:.0f}%)")
         elif ex:
             tab="제외"; reasons.append(f"E5 {ex.get('type','')} {ex.get('date','')}")
-        elif IH.get(t) and len(h1a) and mm_idxhist.recon_blocked(IH[t], str((h1a.index[-252] if len(h1a)>=252 else h1a.index[0]).date())):
-            tab="이력부족"; reasons.append(mm_idxhist.recon_reason(IH[t]))
         elif not feats_ok:
             tab="⚠"; reasons.append("피처 산출 불가(1x 이력 부족)")
         rec.update(table=tab,reason="; ".join(reasons),has_feats=int(feats_ok)); rows.append(rec)

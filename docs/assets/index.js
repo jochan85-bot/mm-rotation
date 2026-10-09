@@ -41,18 +41,22 @@
   }
 
   /* ---- 주의 사유: 신규·저유동·무거래·표본부족 4종만(근사 배지는 아이콘 대상 아님) ---- */
-  /* 재구성 N% (구 '지수 이력 일부 재구성(N%)'): 선택한 날짜 포함 최근 252거래일 중 공식 지수 첫 날짜 이전(연장)에 속한 날의 비율 — 표시 전용(점수·순위 불변) */
+  /* ◐ 되계산 경고(MM-RECON-RULE-REV-20261011): 선택한 날짜 포함 최근 252거래일 중 공식 지수 첫 날짜 이전(구성종목 복제 연장)에 속한 날의 비율. 표시 전용 — 점수·순위 불변 */
   var hcache = {};
-  function histPct(t, d) {
-    var of = D.hist && D.hist[t]; if (!of) return 0;
+  function rcInfo(t, d) {
+    var c = D.rc && D.rc[t]; if (!c) return null;
     var k = t + '|' + d; if (k in hcache) return hcache[k];
     var i = D.dates.indexOf(d), W = D.histWin || 252, p = 0;
     if (i >= 0) {
       var a = Math.max(0, i + 1 - W), n = 0;
-      for (var j = a; j <= i; j++) if (D.dates[j] < of) n++;
+      for (var j = a; j <= i; j++) if (D.dates[j] < c.of) n++;
       p = n ? Math.max(1, Math.round(100 * n / (i + 1 - a))) : 0;
     }
-    return (hcache[k] = p);
+    return (hcache[k] = p ? { p: p, of: c.of, rel: c.rel } : null);
+  }
+  function rcIcon(t) {
+    var r = rcInfo(t, st.date); if (!r) return '';
+    return '<span class="rc" data-w="' + esc('되계산 비중 ' + r.p + '% · 공식 지수 ' + r.of + '부터 · 해제 예정 ' + r.rel) + '">◐</span>';
   }
   function why(r) {
     var o = [], b = r.badges ? r.badges.split(' · ') : [];
@@ -62,8 +66,8 @@
       else if (x.indexOf('무거래') === 0) o.push('무거래 ' + x.slice(3) + '일');
       else if (x === '표본부족') o.push('표본 ' + r.n_beta);
     });
-    var hp = histPct(r.ticker, st.date);
-    if (hp) o.push('재구성 ' + hp + '%');
+    var rc = rcInfo(r.ticker, st.date);
+    if (rc) o.push('재구성 ' + rc.p + '%');
     return o;
   }
   function groups(rows) {
@@ -140,12 +144,12 @@
   /* 열 정의: k=정렬 키, f=정렬값(그룹은 대표 종목 값으로 참여), n=숫자 열(우측 정렬) */
   var BASE = [
     { k: 'rank', t: '순위', c: 'c', f: function (g) { return g.rep.rank; }, w: 8 },
-    { k: 'tk', t: '티커', c: 'l', f: function (g) { return g.rep.ticker; }, w: 20 },
+    { k: 'tk', t: '티커', c: 'l', f: function (g) { return g.rep.ticker; }, w: 22 },
     { k: 'M', t: 'M-score', c: 'n', tip: TIPS.M, f: function (g) { return g.rep.M; }, w: 13 },
     { k: 'V', t: '변동성', c: 'n', tip: TIPS.V, f: function (g) { return g.rep.p_sig; }, w: 11 },
     { k: 'R', t: '상대강도', c: 'n', tip: TIPS.R, f: function (g) { return g.rep.p_rsA; }, w: 12 },
     { k: 'T', t: '추세', c: 'n', tip: TIPS.T, f: function (g) { return g.rep.p_f1b; }, w: 11 },
-    { k: 'W', t: '!', c: 'c', f: function (g) { return whyText(g) || null; }, w: 25 }
+    { k: 'W', t: '!', c: 'c', f: function (g) { return whyText(g) || null; }, w: 23 }
   ];
   var XKEYS = [
     function (g) { return g.rep.sig; }, function (g) { return g.rep.rsA; }, function (g) { return g.rep.f1b; }, function (g) { return g.rep.c1_ma200; },
@@ -184,7 +188,8 @@
   function rowHtml(g, i, mem) {
     var r = g.rep, wt = whyText(g), det = st.mode === 'det';
     var ic = wt ? '<span class="wh" data-w="' + esc(wt) + '">!</span>' : '';
-    var tk = g.grp ? '<span class="nw"><span class="car">▸</span>' + esc(r.ticker) + '<span class="more">+' + (g.mem.length - 1) + '</span></span>' + ic : tkLink(r.ticker) + ic;
+    var rci = rcIcon(r.ticker);
+    var tk = g.grp ? '<span class="nw"><span class="car">▸</span>' + esc(r.ticker) + '<span class="more">+' + (g.mem.length - 1) + '</span></span>' + rci + ic : tkLink(r.ticker) + '<span class="ics">' + rci + ic + '</span>';
     var h = '<tr class="' + (mem ? 'mr' : 'r') + '"' + (mem ? ' hidden' : ' data-i="' + i + '"') + '><td class="rk1">' + fx(r.rank, 0) + '</td><td class="tk">' + tk + '</td><td class="m n">' + fx(r.M, 1) +
       '</td><td class="sc n">' + pct(r.p_sig) + '</td><td class="sc n">' + pct(r.p_rsA) + '</td><td class="sc n">' + pct(r.p_f1b) + '</td>' +
       '<td class="wc">' + (wt ? '<span class="wr" data-w="' + esc(wt) + '">' + whyLines(g) + '</span>' : '') + '</td>';
@@ -220,6 +225,7 @@
     $('modebtn').classList.toggle('on', st.mode === 'det');
     t.className = 'rk ' + (st.mode === 'sum' ? 'sum' : 'det');
     t.innerHTML = colgroup() + '<thead>' + head() + '</thead><tbody>' + body(rows) + '</tbody>';
+    var nt = $('rcnote'); if (nt) { var any = rows.some(function (r) { return rcInfo(r.ticker, st.date); }); nt.hidden = !any; nt.textContent = any ? (D.rcNote || '') : ''; }
     fitRows(t);
   }
 

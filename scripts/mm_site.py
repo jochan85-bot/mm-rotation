@@ -110,17 +110,15 @@ def date_list():
         return "", "", []
 
 
-def recon_rows(df):
-    """[(티커, 사유 문장)] — table == '이력부족'(구성종목 복제 연장이 점수 창에 있어 M-score 미산출, MM-RECON-RULE-20261011)"""
-    return [(r.ticker, str(r.reason)) for r in df[df.table == "이력부족"].itertuples()]
+RC_NOTE = ("◐ 표시 종목은 상장 1년 미만이라 점수 계산 기간의 일부가 실제 지수 가격이 아니라 현재 구성종목으로 되계산한 값입니다. "
+           "되계산 구간은 실제보다 유리하게 나올 수 있어(실측 비교: 12개월 수익률이 실제 운용 지수보다 43~51%p 높음) 상대강도·추세 점수는 할인해서 보셔야 합니다.")
+RC_LINES = ("◐ 표시 종목은 상장 1년 미만이라 점수 계산 기간의 일부가 실제 지수 가격이 아니라 현재 구성종목으로 되계산한 값입니다.",
+            "되계산 구간은 실제보다 유리하게 나올 수 있어(실측 비교: 12개월 수익률이 실제 운용 지수보다 43~51%p 높음) 상대강도·추세 점수는 할인해서 보셔야 합니다.")
 
 
-def recon_map(df):
-    """{티커: 산출 가능 예정일} — 종목 페이지 상단 안내용"""
-    out = {}
-    for t, rs in recon_rows(df):
-        m = re.search(r"산출 가능 예정 (\d{4}-\d{2}-\d{2})", rs); out[t] = m.group(1) if m else ""
-    return out
+def rc_map():
+    """{티커: {of, rel}} — ◐ 대상 방법(구성종목 복제 연장이 있는) 종목. 날짜별 ◐ 여부는 JS 가 선택 날짜의 252거래일 창으로 판정한다."""
+    return {t: dict(of=it["official_first"], rel=mm_idxhist.eligible_date(it["official_first"])) for t, it in mm_idxhist.load_history().items() if mm_idxhist.is_blocked_method(it)}
 
 
 def build_index(df, meta):
@@ -135,15 +133,12 @@ def build_index(df, meta):
     rows = latest_rows(df)
     first, last, dates = date_list()
     if not dates: first = last = meta["asof"]; dates = [meta["asof"]]
-    hist = {t: it["official_first"] for t, it in mm_idxhist.load_history().items() if (it.get("ext") or {}).get("has") and not mm_idxhist.is_blocked_method(it)}   # 지수 이력 재구성 사유용(표시 전용) — 구성종목 복제 종목은 순위 제외라 사유 대상 아님
-    data = {"asof": meta["asof"], "first": first, "last": last, "dates": dates, "latest": rows, "tk": tk, "hist": hist, "histWin": mm_idxhist.WINDOW}
+    data = {"asof": meta["asof"], "first": first, "last": last, "dates": dates, "latest": rows, "tk": tk, "rc": rc_map(), "histWin": mm_idxhist.WINDOW, "rcNote": RC_NOTE}
     prov = meta.get("provisional")
     pill = (f'<span class="pill prov" title="{E("SPY 일봉 최신 행(" + prov["raw_last"] + ")이 " + prov["reason"] + " → 직전 확정일로 산출")}">잠정</span>' if prov else "")
     banner = ""                                                   # 예약 실행 확인(2026-10-09 17:18 launchd) 후 배너 제거
     xr, held = exclusion_rows(df, st)
     heldhtml = f'<p class="meta hold">데이터 확인 중: <b>{E(", ".join(held))}</b></p>' if held else ""
-    rr = recon_rows(df)
-    heldhtml += (f'<p class="meta hold">지수 이력 부족: ' + ", ".join(f'<b>{E(t)}</b>{E(rs.replace("지수 이력 부족", "", 1))}' for t, rs in rr) + '</p>') if rr else ""
     if xr:
         trs = "".join(f'<tr><td><b>{E(t)}</b></td><td>{E(s)}</td><td>{("<a href=" + chr(34) + E(u, quote=True) + chr(34) + " rel=noopener>공지</a>") if u else "—"}</td></tr>' for t, s, u in xr)
         xhtml = f'<div class="wrap"><table class="pl"><thead><tr><th>티커</th><th>사유</th><th>공지</th></tr></thead><tbody>{trs}</tbody></table></div>'
@@ -155,6 +150,7 @@ def build_index(df, meta):
 <div id="calbox"></div>
 <div class="tbar"><div class="ttl" id="ttl"></div><div class="acts"><button class="btn" id="todaybtn" hidden>오늘로</button><button class="btn" id="modebtn">상세보기</button></div></div>
 <div class="capt">변동성·상대강도·추세 = 유니버스 내 상대 점수, 100=최상위 · 열 머리를 누르면 정렬(다시 누르면 반대 방향)</div>
+<div class="capt rcn" id="rcnote" hidden></div>
 <div class="wrap"><table class="rk" id="rk"></table></div>
 {heldhtml}<h2>제외 목록</h2>{xhtml}
 <h2>안내</h2><div class="notice">{E(NOTICE)}</div>
@@ -221,7 +217,11 @@ def compute_longterm(latest_df, asof):
         for x in rows: x["r"] = rk.get(x["t"])
         rows.sort(key=lambda x: (x["r"] is None, x["r"] or 0, x["t"]))
         out.append(dict(k=N, label=label, days=min(N, len(dates)), rows=rows))
-    return dict(asof=asof, n_pop=len(pop), tabs=out)
+    rc = {}
+    for t, it in HI.items():
+        ic = mm_idxhist.recon_icon(it, dates, asof)
+        if ic and t in set(pop.ticker): rc[t] = dict(p=ic["pct"], of=ic["of"], rel=ic["rel"])
+    return dict(asof=asof, n_pop=len(pop), tabs=out, rc=rc, note=RC_NOTE)
 
 
 def build_longterm(lt, meta):
@@ -235,6 +235,7 @@ def build_longterm(lt, meta):
 <div class="rangebar" id="ltabs"></div>
 <div class="tbar"><div class="ttl" id="ltl"></div></div>
 <div class="capt">평균 변동성·상대강도·추세 = 유니버스 내 상대 점수의 기간 평균, 100=최상위 · 열 머리를 누르면 정렬(다시 누르면 반대 방향)</div>
+<div class="capt rcn" id="rcnote" hidden></div>
 <div class="wrap"><table class="rk" id="lt"></table></div>
 <p class="meta" style="margin-top:8px">기간 평균 M-score = 그 기간 거래일별 M-score(그날 모집단 안의 상대 점수)의 단순평균이며, 이 평균을 오늘 모집단 안에서 다시 순위 매깁니다. 기간 안에 점수가 있는 날이 창의 80% 미만이면 "—"입니다. 평균 변동성·상대강도·추세도 같은 기간의 일별 점수 평균입니다. 자세한 설명은 <a href="guide.html#longterm">Guide</a>.</p>
 <script id="ltdata" type="application/json">{jscript(lt)}</script>"""
@@ -334,10 +335,15 @@ def intro_html(text):
 def hist_line(t):
     """기본 정보 아래 한 줄 — '지수 공식 이력 시작 YYYY-MM-DD' (공식 지수 레벨 경로 18종만)"""
     h = mm_idxhist.load_history().get(t)
-    return f'<div class="chartnote">지수 공식 이력 시작 {E(h["official_first"])}</div>' if h else ""
+    if not h: return ""
+    out = f'<div class="chartnote">지수 공식 이력 시작 {E(h["official_first"])}</div>'
+    dates = mm_idxhist.trading_dates(); ic = mm_idxhist.recon_icon(h, dates, dates[-1]) if dates else None
+    if ic:
+        out += f'<div class="chartnote rcl"><b>{mm_idxhist.RC_GLYPH}</b> {E(RC_LINES[0][2:])}<br>{E(RC_LINES[1])}</div><div class="chartnote">{E(mm_idxhist.recon_tip(ic))}</div>'
+    return out
 
 
-def build_product(t, u, it, hold=None, notice=""):
+def build_product(t, u, it, hold=None):
     """종목 페이지 1개. u = universe 행(Series/namedtuple), it = products_page.json 항목(없으면 {}), hold = holdings.json 항목."""
     tx = it.get("text", {}); b = it.get("basic", {})
     sub = f'{E(b.get("issuer", u.issuer))} · {E(b.get("type", u.type))} · {E(b.get("leverage", ""))}'
@@ -346,21 +352,19 @@ def build_product(t, u, it, hold=None, notice=""):
     fee = b.get("fee") or tx.get("fee") or "—"
     basic = (f'<table class="info" style="table-layout:auto"><tr><th style="width:auto">발행사</th><th style="width:auto">구분</th><th style="width:auto">배수</th><th style="width:auto">보수</th><th style="width:auto">상장일</th></tr>'
              f'<tr><td>{E(b.get("issuer", ""))}</td><td>{E(b.get("type", ""))}</td><td>{E(b.get("leverage", ""))}</td><td>{E(fee)}</td><td>{E(str(b.get("inception") or "—"))}</td></tr></table>')
-    notice_html = f'<div class="banner">현재 순위 제외 — 지수 공식 이력 1년 미만(복귀 예정 {E(notice)})</div>' if notice else ""
-    chart_html = ('<div class="chartnote">순위 제외 기간에는 M-score·순위 차트를 표시하지 않습니다.</div>' if notice else
-        '<div class="rangebar"><button class="btn" data-range="m3">3개월</button><button class="btn" data-range="m6">6개월</button><button class="btn on" data-range="y1">1년</button><button class="btn" data-range="all">전체</button></div>'
+    chart_html = ('<div class="rangebar"><button class="btn" data-range="m3">3개월</button><button class="btn" data-range="m6">6개월</button><button class="btn on" data-range="y1">1년</button><button class="btn" data-range="all">전체</button></div>'
         f'<div class="chartbox"><div id="chart" data-t="{E(t)}"></div>'
         '<div class="legend"><span><i style="background:#f59e0b"></i>M-score (좌축)</span><span><i style="background:#3b82f6"></i>순위 (우축·1위가 위)</span></div>'
         '<div class="chartnote" id="creadout">불러오는 중…</div></div>')
     risks = "".join(f'<li>{E(x)}</li>' for x in tx.get("risk", [])) or '<li>—</li>'
     body = f"""<h1>{E(t)}<small>{sub}</small></h1>
-{notice_html}<h2>소개</h2><div class="intro">{intro_html(tx.get("intro"))}</div>
+<h2>소개</h2><div class="intro">{intro_html(tx.get("intro"))}</div>
 {chart_html}
 <h2>구성</h2>{comp}
 <h2>기본 정보</h2>{basic}{hist_line(t)}
 <h2>구조 리스크</h2><ul class="risk">{risks}</ul>
 <div class="stamp">마지막 수정일 {E(str(it.get("modified", "—")))} · <a href="../products.html">상품 목록</a> · <a href="../index.html">순위표</a></div>"""
-    return pg(f"{t} — 무매 M-score", body, "products.html", root="../", scripts=('' if notice else '<script src="../assets/chart.js"></script>'))
+    return pg(f"{t} — 무매 M-score", body, "products.html", root="../", scripts='<script src="../assets/chart.js"></script>')
 
 
 def build_products_dir(df, uni, items):
@@ -411,10 +415,9 @@ def rebuild_products_only():
     """종목 페이지(products/*.html)만 현재 data/products_page.json·holdings.json 으로 다시 그린다 — 점수·docs/data 무접촉(표시층 수정용)."""
     import pandas as pd
     uni = pd.read_csv(DATA / "universe.csv"); items = load_page_items(); hold = load_holdings()
-    rmap = recon_map(pd.read_csv(DATA / "scores_latest.csv"))
     pd_ = DOCS / "products"; pd_.mkdir(exist_ok=True)
     for u in uni.itertuples():
-        (pd_ / f"{u.ticker}.html").write_text(build_product(u.ticker, u, items.get(u.ticker, {}), hold.get(u.ticker), rmap.get(u.ticker, "")), encoding="utf-8")
+        (pd_ / f"{u.ticker}.html").write_text(build_product(u.ticker, u, items.get(u.ticker, {}), hold.get(u.ticker)), encoding="utf-8")
     return len(uni)
 
 
@@ -445,7 +448,7 @@ def build_all(latest_df, uni, meta, p0, score_files):
             from mm_lib import log
             log(f"[page_text] 종목 문구 갱신 건너뜀: {type(e).__name__}: {str(e)[:150]}", "alerts")
         except Exception: pass
-    items = load_page_items(); hold = load_holdings(); rmap = recon_map(latest_df)
+    items = load_page_items(); hold = load_holdings()
     (DOCS / "index.html").write_text(build_index(latest_df, meta), encoding="utf-8")
     (DOCS / "guide.html").write_text(build_guide(latest_df, meta, uni), encoding="utf-8")
     lt = compute_longterm(latest_df, meta["asof"])
@@ -455,7 +458,7 @@ def build_all(latest_df, uni, meta, p0, score_files):
     (DOCS / "products.html").write_text(build_products_dir(latest_df, uni, items), encoding="utf-8")
     pd_ = DOCS / "products"; pd_.mkdir(exist_ok=True)
     for u in uni.itertuples():
-        (pd_ / f"{u.ticker}.html").write_text(build_product(u.ticker, u, items.get(u.ticker, {}), hold.get(u.ticker), rmap.get(u.ticker, "")), encoding="utf-8")
+        (pd_ / f"{u.ticker}.html").write_text(build_product(u.ticker, u, items.get(u.ticker, {}), hold.get(u.ticker)), encoding="utf-8")
     write_series(uni)
     write_tickers_json(uni, p0)
     h = DOCS / "history.html"

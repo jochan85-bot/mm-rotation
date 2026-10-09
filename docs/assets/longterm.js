@@ -15,9 +15,9 @@
     tr: '그 기간 일별 추세 점수의 평균 (유니버스 내 상대 점수, 100=최상위)'
   };
   var COLS = [
-    { k: 'r', t: '순위', c: 'c', w: 8 }, { k: 't', t: '티커', c: 'l', w: 20 },
+    { k: 'r', t: '순위', c: 'c', w: 8 }, { k: 't', t: '티커', c: 'l', w: 22 },
     { k: 'm', t: '평균<br>M-score', c: 'n', w: 13 }, { k: 'v', t: '평균<br>변동성', c: 'n', w: 11 },
-    { k: 'rs', t: '평균<br>상대강도', c: 'n', w: 12 }, { k: 'tr', t: '평균<br>추세', c: 'n', w: 11 }, { k: 'w', t: '!', c: 'c', w: 25 }
+    { k: 'rs', t: '평균<br>상대강도', c: 'n', w: 12 }, { k: 'tr', t: '평균<br>추세', c: 'n', w: 11 }, { k: 'w', t: '!', c: 'c', w: 23 }
   ];
   function val(r, k) { var x = r[k]; return (x === '' || x === undefined) ? null : x; }
   function sorted(rows) {
@@ -61,12 +61,14 @@
       }).join('') + '</tr></thead><tbody>';
     sorted(t.rows).forEach(function (r) {
       var ic = r.w ? '<span class="wh" data-w="' + esc(shortW(r.w)) + '">!</span>' : '';
-      h += '<tr><td class="rk1">' + (r.r === null ? '—' : r.r) + '</td><td class="tk"><a href="products/' + esc(r.t) + '.html">' + esc(r.t) + '</a>' + ic + '</td><td class="m n">' + f1(r.m) +
+      var rcv = D.rc && D.rc[r.t], rc = rcv ? '<span class="rc" data-w="' + esc('되계산 비중 ' + rcv.p + '% · 공식 지수 ' + rcv.of + '부터 · 해제 예정 ' + rcv.rel) + '">◐</span>' : '';
+      h += '<tr><td class="rk1">' + (r.r === null ? '—' : r.r) + '</td><td class="tk"><a href="products/' + esc(r.t) + '.html">' + esc(r.t) + '</a><span class="ics">' + rc + ic + '</span></td><td class="m n">' + f1(r.m) +
         '</td><td class="sc n">' + iv(r.v) + '</td><td class="sc n">' + iv(r.rs) + '</td><td class="sc n">' + iv(r.tr) + '</td><td class="wc">' +
         (r.w ? '<span class="wr" data-w="' + esc(shortW(r.w)) + '">' + lines(r.w) + '</span>' : '') + '</td></tr>';
     });
     var el = $('lt'); el.className = 'rk sum'; el.innerHTML = h + '</tbody>';
     fitRows(el);
+    var nt = $('rcnote'); if (nt) { var anyRc = D.rc && Object.keys(D.rc).length; nt.hidden = !anyRc; nt.textContent = anyRc ? (D.note || '') : ''; }
     var miss = t.rows.filter(function (r) { return r.m === null; }).length;
     $('ltl').innerHTML = '<b>' + esc(D.asof) + ' 기준 · ' + t.label + ' 평균</b> <span>· 최근 ' + t.k + '거래일' + (miss ? ' · 표본 부족 ' + miss + '종 "—"' : '') + '</span>';
     tabs();

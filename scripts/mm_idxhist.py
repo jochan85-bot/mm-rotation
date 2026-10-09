@@ -14,10 +14,12 @@ DATA = ROOT / "data"; DOCS = ROOT / "docs"; LOCAL = ROOT / ".local"
 WINDOW = 252
 HIST_FILE = DATA / "index_history.json"
 REASON_FMT = "재구성 {pct}%"
-# MM-RECON-RULE-20261011: 점수 창 안에 이 방법의 연장 구간이 1일이라도 있으면 M-score 미산출·순위 제외(구성종목 복제 = 현재 구성을 과거에 소급한 선택 편향).
-# 허용: 관련 ETF 총수익·관련 지수(가격수익)·SG 인증서(모두 실존 가격), 꼬리 보정 1일.
-BLOCK_METHODS = ("구성종목 복제",)
-ALLOW_NOTE = {"구성종목 복제": "제외(창 안에 있으면 점수 미산출)", "관련 ETF 총수익": "허용", "관련 지수(가격수익)": "허용", "SG 인증서": "허용"}
+# MM-RECON-RULE-REV-20261011: 점수 창 안에 이 방법(구성종목 복제 = 현재 구성을 과거에 소급한 되계산)의 연장 구간이 1일이라도 있으면
+# 순위에는 그대로 포함하되 티커 옆에 ◐ 되계산 경고를 붙이고 ! 사유에 "재구성 N%"를 둔다(점수·순위 불변). 순위 제외는 1x 시계열 자체가 252일 미만일 때만.
+# 관련 ETF 총수익·관련 지수(가격수익)·SG 인증서 연장은 실존 가격이라 ◐ 대상이 아니다(꼬리 보정 1일 포함).
+BLOCK_METHODS = ("구성종목 복제",)           # 이름은 이전 규칙(제외)에서 유래 — 지금은 '◐ 경고 대상 방법'
+ALLOW_NOTE = {"구성종목 복제": "◐ 경고(순위 포함)", "관련 ETF 총수익": "경고 없음", "관련 지수(가격수익)": "경고 없음", "SG 인증서": "경고 없음"}
+RC_GLYPH = "◐"
 
 
 def load_history(path=HIST_FILE):
@@ -65,15 +67,28 @@ def window_stats(official_first, dates, asof):
 
 def window_pct(item, dates, asof):
     """연장이 창에 1일이라도 들어가면 올림 없이 반올림한 % (최소 1), 없으면 0."""
-    if not item or not (item.get("ext") or {}).get("has") or is_blocked_method(item): return 0     # 차단 방법은 순위 제외 — "재구성 N%" 사유는 허용 유형에만
+    if not item or not (item.get("ext") or {}).get("has"): return 0
     n, w = window_stats(item["official_first"], dates, asof)
     if n == 0 or w == 0: return 0
     return max(1, round(100 * n / w))
 
 
-def reason(item, dates, asof):
+def recon_icon(item, dates, asof):
+    """◐ 대상이면 dict(pct, of, rel) — 창에 구성종목 복제 연장이 1일이라도 있는 날. 아니면 None. rel = 해제 예정일(공식 첫 날짜 + 252거래일)."""
+    if not is_blocked_method(item): return None
     p = window_pct(item, dates, asof)
-    return REASON_FMT.format(pct=p) if p else ""
+    return dict(pct=p, of=item["official_first"], rel=eligible_date(item["official_first"])) if p else None
+
+
+def recon_tip(ic):
+    """◐ 탭 시 문구"""
+    return f'되계산 비중 {ic["pct"]}% · 공식 지수 {ic["of"]}부터 · 해제 예정 {ic["rel"]}'
+
+
+def reason(item, dates, asof):
+    """! 사유의 '재구성 N%' — ◐ 종목에만(관련 ETF 총수익 등 허용 연장은 사유에서 뺀다)"""
+    ic = recon_icon(item, dates, asof)
+    return REASON_FMT.format(pct=ic["pct"]) if ic else ""
 
 
 def table_rows(asof, dates=None, items=None):
