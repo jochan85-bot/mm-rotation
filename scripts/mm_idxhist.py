@@ -14,6 +14,10 @@ DATA = ROOT / "data"; DOCS = ROOT / "docs"; LOCAL = ROOT / ".local"
 WINDOW = 252
 HIST_FILE = DATA / "index_history.json"
 REASON_FMT = "지수 이력 일부 재구성({pct}%)"
+# MM-RECON-RULE-20261011: 점수 창 안에 이 방법의 연장 구간이 1일이라도 있으면 M-score 미산출·순위 제외(구성종목 복제 = 현재 구성을 과거에 소급한 선택 편향).
+# 허용: 관련 ETF 총수익·관련 지수(가격수익)·SG 인증서(모두 실존 가격), 꼬리 보정 1일.
+BLOCK_METHODS = ("구성종목 복제",)
+ALLOW_NOTE = {"구성종목 복제": "제외(창 안에 있으면 점수 미산출)", "관련 ETF 총수익": "허용", "관련 지수(가격수익)": "허용", "SG 인증서": "허용"}
 
 
 def load_history(path=HIST_FILE):
@@ -26,6 +30,32 @@ def trading_dates():
     except Exception: return []
 
 
+def is_blocked_method(item):
+    """index_history.json 의 방법 필드로 판정 — 연장이 있고 방법이 BLOCK_METHODS 인 종목"""
+    e = (item or {}).get("ext") or {}
+    return bool(e.get("has")) and e.get("method") in BLOCK_METHODS
+
+
+def eligible_date(official_first, sessions=WINDOW):
+    """산출 가능 예정일 = 점수 창(252거래일)이 공식 이력만으로 채워지는 첫 거래일 = 공식 첫 날짜를 1번째로 세어 252번째 NYSE 거래일(미래 휴장 반영)."""
+    import pandas as pd, pandas_market_calendars as pmc
+    cal = pmc.get_calendar("NYSE")
+    start = pd.Timestamp(official_first)
+    sch = cal.schedule(start_date=start, end_date=start + pd.Timedelta(days=int(sessions * 1.6) + 30))
+    days = sch.index
+    return str(days[sessions - 1].date()) if len(days) >= sessions else ""
+
+
+def recon_blocked(item, window_start):
+    """점수 창 첫 날(YYYY-MM-DD)이 공식 첫 날짜보다 앞이고 방법이 BLOCK_METHODS 면 True"""
+    return is_blocked_method(item) and str(window_start) < item["official_first"]
+
+
+def recon_reason(item):
+    """상태 문구 — '지수 이력 부족(공식 YYYY-MM-DD부터, 산출 가능 예정 YYYY-MM-DD)'"""
+    return f'지수 이력 부족(공식 {item["official_first"]}부터, 산출 가능 예정 {eligible_date(item["official_first"])})'
+
+
 def window_stats(official_first, dates, asof):
     """(연장 일수, 창 일수) — 창 = asof 이하 거래일 중 마지막 WINDOW 개. 연장 = 공식 첫 날짜 이전. dates 는 오름차순 'YYYY-MM-DD'."""
     win = [d for d in dates if d <= asof][-WINDOW:]
@@ -35,7 +65,7 @@ def window_stats(official_first, dates, asof):
 
 def window_pct(item, dates, asof):
     """연장이 창에 1일이라도 들어가면 올림 없이 반올림한 % (최소 1), 없으면 0."""
-    if not item or not (item.get("ext") or {}).get("has"): return 0
+    if not item or not (item.get("ext") or {}).get("has") or is_blocked_method(item): return 0     # 차단 방법은 순위 제외 — "재구성 N%" 사유는 허용 유형에만
     n, w = window_stats(item["official_first"], dates, asof)
     if n == 0 or w == 0: return 0
     return max(1, round(100 * n / w))
@@ -52,9 +82,10 @@ def table_rows(asof, dates=None, items=None):
     for t, it in items.items():
         n, w = window_stats(it["official_first"], dates, asof) if (it.get("ext") or {}).get("has") else (0, min(WINDOW, len([d for d in dates if d <= asof])))
         e = it.get("ext") or {}
-        rows.append(dict(ticker=t, kind=it["level_kind"], official_first=it["official_first"], has_ext=bool(e.get("has")), ext_method=e.get("method", "—"), ext_detail=e.get("detail", ""),
+        if is_blocked_method(it): n, w = window_stats(it["official_first"], dates, asof)
+        rows.append(dict(allow=ALLOW_NOTE.get(e.get("method"), "—") if e.get("has") else "해당 없음", ticker=t, kind=it["level_kind"], official_first=it["official_first"], has_ext=bool(e.get("has")), ext_method=e.get("method", "—"), ext_detail=e.get("detail", ""),
                          ext_start=e.get("start", ""), ext_end=e.get("end", ""), tail_days=(it.get("tail") or {}).get("days", 0), tail_src=(it.get("tail") or {}).get("src", ""),
-                         window_ext_days=n, window_days=w, window_pct=window_pct(it, dates, asof), listed=it.get("listed", ""), first_bar=it.get("first_bar", "")))
+                         window_ext_days=n, window_days=w, window_pct=(max(1, round(100 * n / w)) if (e.get("has") and n and w) else 0), listed=it.get("listed", ""), first_bar=it.get("first_bar", "")))
     return rows
 
 

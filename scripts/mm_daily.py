@@ -33,8 +33,9 @@ def run(push=True, fetch=True, manual=None):
     spy=S.loadp("SPY"); cal=[d for d in spy.index if d<=T]; pos={d:i for i,d in enumerate(cal)}
     # 소급·이력 보충: 2020-01-02 ~ T 중 파일이 없거나 규칙 버전이 다른 날짜(T 제외)를 산출 — 윈도우 선행분(약 64거래일)은 기록 없이 메모리로만
     first=L.RETRO_START
+    regen_from=pd.Timestamp(next((a.split("=",1)[1] for a in sys.argv if a.startswith("--regen-from=")),"2262-01-01"))   # 규칙 변경 시 이 날짜부터 날짜 파일 강제 재산출
     def stale_day(d):
-        h=L.day_header(L.day_path(d)); return h is None or h[2]!=L.RULE_VER
+        h=L.day_header(L.day_path(d)); return h is None or h[2]!=L.RULE_VER or d>=regen_from
     todo=[d for d in cal if first<=d<T and stale_day(d)]
     if todo:
         i0=pos[todo[0]]; warm=[d for d in cal[max(0,i0-64):i0] if stale_day(d) or d<first]
