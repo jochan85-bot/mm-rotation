@@ -1,0 +1,77 @@
+{
+ "date": "2026-10-09",
+ "lookback_days": 8,
+ "sources_ok": [
+  "SEC EDGAR Direxion CIK 0001424958 (5건 본문)",
+  "SEC EDGAR Direxion CIK 0001450922 (0건 본문)",
+  "SEC EDGAR ProShares CIK 0001415311 (0건 본문)",
+  "SEC EDGAR ProShares CIK 0001174610 (6건 본문)",
+  "SEC EDGAR BMO CIK 0000927971 (60건 본문)",
+  "microsectors.com"
+ ],
+ "sources_failed": [
+  "proshares.com 레버리지 목록 (RuntimeError: 본문 비정상(16 bytes))",
+  "BMO newsroom (TimeoutError: [Errno 60] Operation timed out)",
+  "Direxion press releases (HTTPError: HTTP Error 403: Forbidden)"
+ ],
+ "docs_scanned": 71,
+ "issues": [],
+ "actions": [],
+ "new_products": [
+  {
+   "ticker": "DULL",
+   "name": "",
+   "issuer": "BMO MicroSectors",
+   "type": "ETN",
+   "leverage": "-3x",
+   "index": "(발행사 문서 확인 필요)",
+   "found": "2026-10-09",
+   "source": "https://microsectors.com/",
+   "status": "대기(E1 미달 — 신규, 1x 매핑 미정)"
+  },
+  {
+   "ticker": "",
+   "name": "ProShares UltraPro Gold K-1 Free",
+   "issuer": "ProShares",
+   "type": "ETF",
+   "leverage": "3x",
+   "index": "(발행사 문서 확인 필요)",
+   "found": "2026-10-08",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001088/f46374d1.htm",
+   "status": "공시 단계(상장 전·티커 미정) — 상장 후 대기 표에 편입"
+  },
+  {
+   "ticker": "",
+   "name": "ProShares UltraPro Gold Miners",
+   "issuer": "ProShares",
+   "type": "ETF",
+   "leverage": "3x",
+   "index": "(발행사 문서 확인 필요)",
+   "found": "2026-10-08",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001088/f46374d1.htm",
+   "status": "공시 단계(상장 전·티커 미정) — 상장 후 대기 표에 편입"
+  },
+  {
+   "ticker": "",
+   "name": "ProShares UltraPro Magnificent 7 3.",
+   "issuer": "ProShares",
+   "type": "ETF",
+   "leverage": "3x",
+   "index": "(발행사 문서 확인 필요)",
+   "found": "2026-10-08",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001088/f46374d1.htm",
+   "status": "공시 단계(상장 전·티커 미정) — 상장 후 대기 표에 편입"
+  },
+  {
+   "ticker": "WTID",
+   "name": "",
+   "issuer": "BMO MicroSectors",
+   "type": "ETN",
+   "leverage": "-3x",
+   "index": "(발행사 문서 확인 필요)",
+   "found": "2026-10-09",
+   "source": "https://microsectors.com/",
+   "status": "대기(E1 미달 — 신규, 1x 매핑 미정)"
+  }
+ ]
+}
