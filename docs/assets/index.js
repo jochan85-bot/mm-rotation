@@ -41,7 +41,7 @@
   }
 
   /* ---- 주의 사유: 신규·저유동·무거래·표본부족 4종만(근사 배지는 아이콘 대상 아님) ---- */
-  /* ◐ 되계산 경고(MM-RECON-RULE-REV-20261011): 선택한 날짜 포함 최근 252거래일 중 공식 지수 첫 날짜 이전(구성종목 복제 연장)에 속한 날의 비율. 표시 전용 — 점수·순위 불변 */
+  /* 1Y 되계산 경고(구 ◐, 10-09 교체·! 뒤 배치)(MM-RECON-RULE-REV-20261011): 선택한 날짜 포함 최근 252거래일 중 공식 지수 첫 날짜 이전(구성종목 복제 연장)에 속한 날의 비율. 표시 전용 — 점수·순위 불변 */
   var hcache = {};
   function rcInfo(t, d) {
     var c = D.rc && D.rc[t]; if (!c) return null;
@@ -56,7 +56,7 @@
   }
   function rcIcon(t) {
     var r = rcInfo(t, st.date); if (!r) return '';
-    return '<span class="rc" data-w="' + esc('되계산 비중 ' + r.p + '% · 공식 지수 ' + r.of + '부터 · 해제 예정 ' + r.rel) + '">◐</span>';
+    return '<span class="rc" data-w="' + esc('되계산 비중 ' + r.p + '% · 공식 지수 ' + r.of + '부터 · 해제 예정 ' + r.rel) + '">1Y</span>';
   }
   function why(r) {
     var o = [], b = r.badges ? r.badges.split(' · ') : [];
@@ -144,12 +144,12 @@
   /* 열 정의: k=정렬 키, f=정렬값(그룹은 대표 종목 값으로 참여), n=숫자 열(우측 정렬) */
   var BASE = [
     { k: 'rank', t: '순위', c: 'c', f: function (g) { return g.rep.rank; }, w: 8 },
-    { k: 'tk', t: '티커', c: 'l', f: function (g) { return g.rep.ticker; }, w: 22 },
-    { k: 'M', t: 'M-score', c: 'n', tip: TIPS.M, f: function (g) { return g.rep.M; }, w: 13 },
-    { k: 'V', t: '변동성', c: 'n', tip: TIPS.V, f: function (g) { return g.rep.p_sig; }, w: 11 },
-    { k: 'R', t: '상대강도', c: 'n', tip: TIPS.R, f: function (g) { return g.rep.p_rsA; }, w: 12 },
-    { k: 'T', t: '추세', c: 'n', tip: TIPS.T, f: function (g) { return g.rep.p_f1b; }, w: 11 },
-    { k: 'W', t: '!', c: 'c', f: function (g) { return whyText(g) || null; }, w: 23 }
+    { k: 'tk', t: '티커', c: 'l', f: function (g) { return g.rep.ticker; }, w: 28 },
+    { k: 'M', t: 'M-score', c: 'n', tip: TIPS.M, f: function (g) { return g.rep.M; }, w: 12 },
+    { k: 'V', t: '변동성', c: 'n', tip: TIPS.V, f: function (g) { return g.rep.p_sig; }, w: 10 },
+    { k: 'R', t: '상대강도', c: 'n', tip: TIPS.R, f: function (g) { return g.rep.p_rsA; }, w: 11 },
+    { k: 'T', t: '추세', c: 'n', tip: TIPS.T, f: function (g) { return g.rep.p_f1b; }, w: 10 },
+    { k: 'W', t: '!', c: 'c', f: function (g) { return whyText(g) || null; }, w: 21 }
   ];
   var XKEYS = [
     function (g) { return g.rep.sig; }, function (g) { return g.rep.rsA; }, function (g) { return g.rep.f1b; }, function (g) { return g.rep.c1_ma200; },
@@ -189,7 +189,7 @@
     var r = g.rep, wt = whyText(g), det = st.mode === 'det';
     var ic = wt ? '<span class="wh" data-w="' + esc(wt) + '">!</span>' : '';
     var rci = rcIcon(r.ticker);
-    var tk = g.grp ? '<span class="nw"><span class="car">▸</span>' + esc(r.ticker) + '<span class="more">+' + (g.mem.length - 1) + '</span></span>' + rci + ic : tkLink(r.ticker) + '<span class="ics">' + rci + ic + '</span>';
+    var tk = g.grp ? '<span class="nw"><span class="car">▸</span>' + esc(r.ticker) + '<span class="more">+' + (g.mem.length - 1) + '</span></span>' + ic + rci : tkLink(r.ticker) + '<span class="ics">' + ic + rci + '</span>';
     var h = '<tr class="' + (mem ? 'mr' : 'r') + '"' + (mem ? ' hidden' : ' data-i="' + i + '"') + '><td class="rk1">' + fx(r.rank, 0) + '</td><td class="tk">' + tk + '</td><td class="m n">' + fx(r.M, 1) +
       '</td><td class="sc n">' + pct(r.p_sig) + '</td><td class="sc n">' + pct(r.p_rsA) + '</td><td class="sc n">' + pct(r.p_f1b) + '</td>' +
       '<td class="wc">' + (wt ? '<span class="wr" data-w="' + esc(wt) + '">' + whyLines(g) + '</span>' : '') + '</td>';

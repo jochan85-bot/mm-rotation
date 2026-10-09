@@ -175,9 +175,9 @@ table.rk td.wc{text-align:center}
 .wr{text-align:center}
 /* ---- MM-BT-CHARTS-20261011: 사유는 짧은 문구 + 3줄 제한 복원(넘치면 말줄임, 탭하면 전체). 전 행 높이는 가장 높은 행(최대 3줄)에 맞춘다(fitRows) ---- */
 .wr{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis}
-/* ---- ◐ 되계산 경고(MM-RECON-RULE-REV-20261011) ---- */
-.rc{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-left:4px;font-size:14px;line-height:1;color:#58a6ff;cursor:pointer;vertical-align:middle;font-weight:700}
+/* ---- 1Y 되계산 경고(MM-RECON-RULE-REV-20261011; 구 ◐ → 1Y 알약·주황 빨강, MM-ICON-1Y-20261009) ---- */
+.rc{display:inline-flex;align-items:center;justify-content:center;height:14px;padding:0 5px;margin-left:4px;border-radius:7px;background:#f26a3d;color:#111;font-size:9px;font-weight:800;line-height:1;letter-spacing:.2px;cursor:pointer;vertical-align:middle}
 .ics{white-space:nowrap}
-.capt.rcn{color:#9fb6d6;border-left:2px solid #58a6ff;padding-left:8px;margin:0 0 8px;line-height:1.55}
+.capt.rcn{color:#9fb6d6;border-left:2px solid #f26a3d;padding-left:8px;margin:0 0 8px;line-height:1.55}
 .capt.rcn[hidden]{display:none}
-.rcl{color:#9fb6d6;line-height:1.6}.rcl b{color:#58a6ff}
+.rcl{color:#9fb6d6;line-height:1.6}.rcl .rc{margin:0 4px 0 0;cursor:default}

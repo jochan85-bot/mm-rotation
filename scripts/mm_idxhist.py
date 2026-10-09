@@ -15,11 +15,11 @@ WINDOW = 252
 HIST_FILE = DATA / "index_history.json"
 REASON_FMT = "재구성 {pct}%"
 # MM-RECON-RULE-REV-20261011: 점수 창 안에 이 방법(구성종목 복제 = 현재 구성을 과거에 소급한 되계산)의 연장 구간이 1일이라도 있으면
-# 순위에는 그대로 포함하되 티커 옆에 ◐ 되계산 경고를 붙이고 ! 사유에 "재구성 N%"를 둔다(점수·순위 불변). 순위 제외는 1x 시계열 자체가 252일 미만일 때만.
-# 관련 ETF 총수익·관련 지수(가격수익)·SG 인증서 연장은 실존 가격이라 ◐ 대상이 아니다(꼬리 보정 1일 포함).
-BLOCK_METHODS = ("구성종목 복제",)           # 이름은 이전 규칙(제외)에서 유래 — 지금은 '◐ 경고 대상 방법'
-ALLOW_NOTE = {"구성종목 복제": "◐ 경고(순위 포함)", "관련 ETF 총수익": "경고 없음", "관련 지수(가격수익)": "경고 없음", "SG 인증서": "경고 없음"}
-RC_GLYPH = "◐"
+# 순위에는 그대로 포함하되 티커 옆에 1Y 되계산 경고를 붙이고 ! 사유에 "재구성 N%"를 둔다(점수·순위 불변). 순위 제외는 1x 시계열 자체가 252일 미만일 때만.
+# 관련 ETF 총수익·관련 지수(가격수익)·SG 인증서 연장은 실존 가격이라 1Y 대상이 아니다(꼬리 보정 1일 포함).
+BLOCK_METHODS = ("구성종목 복제",)           # 이름은 이전 규칙(제외)에서 유래 — 지금은 '1Y 경고 대상 방법'
+ALLOW_NOTE = {"구성종목 복제": "1Y 경고(순위 포함)", "관련 ETF 총수익": "경고 없음", "관련 지수(가격수익)": "경고 없음", "SG 인증서": "경고 없음"}
+RC_GLYPH = "1Y"
 
 
 def load_history(path=HIST_FILE):
@@ -74,19 +74,19 @@ def window_pct(item, dates, asof):
 
 
 def recon_icon(item, dates, asof):
-    """◐ 대상이면 dict(pct, of, rel) — 창에 구성종목 복제 연장이 1일이라도 있는 날. 아니면 None. rel = 해제 예정일(공식 첫 날짜 + 252거래일)."""
+    """1Y 대상이면 dict(pct, of, rel) — 창에 구성종목 복제 연장이 1일이라도 있는 날. 아니면 None. rel = 해제 예정일(공식 첫 날짜 + 252거래일)."""
     if not is_blocked_method(item): return None
     p = window_pct(item, dates, asof)
     return dict(pct=p, of=item["official_first"], rel=eligible_date(item["official_first"])) if p else None
 
 
 def recon_tip(ic):
-    """◐ 탭 시 문구"""
+    """1Y 탭 시 문구"""
     return f'되계산 비중 {ic["pct"]}% · 공식 지수 {ic["of"]}부터 · 해제 예정 {ic["rel"]}'
 
 
 def reason(item, dates, asof):
-    """! 사유의 '재구성 N%' — ◐ 종목에만(관련 ETF 총수익 등 허용 연장은 사유에서 뺀다)"""
+    """! 사유의 '재구성 N%' — 1Y 종목에만(관련 ETF 총수익 등 허용 연장은 사유에서 뺀다)"""
     ic = recon_icon(item, dates, asof)
     return REASON_FMT.format(pct=ic["pct"]) if ic else ""
 

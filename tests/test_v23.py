@@ -173,5 +173,5 @@ check("소개 4~6문장·금지어 0 (37종 전부)",all(4<=len([x for x in _re.
 _dir=ms.build_products_dir(pd.DataFrame(),_u,_it)
 check("종목 목록: 열 = 티커·섹터·구분·발행사(M-score·순위 없음), 기본 티커순",all(x in _dir for x in ("티커","섹터·테마","구분","발행사")) and "M-score" not in _dir.split("<tbody>")[0].split("</h1>")[1] and [x for x in _re.findall(r'products/([A-Z]+)\.html"><b>',_dir)]==sorted(_u.ticker))
 _ij=open(ms.DOCS/"assets"/"index.js",encoding="utf-8").read(); _lj=open(ms.DOCS/"assets"/"longterm.js",encoding="utf-8").read()
-check("JS: 정렬(▲▼)·열 폭 8/22/13/11/12/11/23(RECON-REV)·기본 정렬 순위 오름차순·달력 연월 선택",all(x in _ij for x in ("data-s","▼","width:' + c.w","cyear","cmonth","sort: { k: 'rank', dir: 1 }")) and all(x in _lj for x in ("data-s","▼","w: 23","sort = { k: 'r', dir: 1 }")))
+check("JS: 정렬(▲▼)·열 폭 8/28/12/10/11/10/21(ICON-1Y)·기본 정렬 순위 오름차순·달력 연월 선택",all(x in _ij for x in ("data-s","▼","width:' + c.w","cyear","cmonth","sort: { k: 'rank', dir: 1 }")) and all(x in _lj for x in ("data-s","▼","w: 21","sort = { k: 'r', dir: 1 }")))
 print(f"\n{ok} PASS / {len(bad)} FAIL"); sys.exit(1 if bad else 0)

@@ -110,14 +110,14 @@ def date_list():
         return "", "", []
 
 
-RC_NOTE = ("◐ 표시 종목은 상장 1년 미만이라 점수 계산 기간의 일부가 실제 지수 가격이 아니라 현재 구성종목으로 되계산한 값입니다. "
+RC_NOTE = ("1Y 표시 종목은 상장 1년 미만이라 점수 계산 기간의 일부가 실제 지수 가격이 아니라 현재 구성종목으로 되계산한 값입니다. "
            "되계산 구간은 실제보다 유리하게 나올 수 있어(실측 비교: 12개월 수익률이 실제 운용 지수보다 43~51%p 높음) 상대강도·추세 점수는 할인해서 보셔야 합니다.")
-RC_LINES = ("◐ 표시 종목은 상장 1년 미만이라 점수 계산 기간의 일부가 실제 지수 가격이 아니라 현재 구성종목으로 되계산한 값입니다.",
+RC_LINES = ("1Y 표시 종목은 상장 1년 미만이라 점수 계산 기간의 일부가 실제 지수 가격이 아니라 현재 구성종목으로 되계산한 값입니다.",
             "되계산 구간은 실제보다 유리하게 나올 수 있어(실측 비교: 12개월 수익률이 실제 운용 지수보다 43~51%p 높음) 상대강도·추세 점수는 할인해서 보셔야 합니다.")
 
 
 def rc_map():
-    """{티커: {of, rel}} — ◐ 대상 방법(구성종목 복제 연장이 있는) 종목. 날짜별 ◐ 여부는 JS 가 선택 날짜의 252거래일 창으로 판정한다."""
+    """{티커: {of, rel}} — 1Y 대상 방법(구성종목 복제 연장이 있는) 종목. 날짜별 1Y 여부는 JS 가 선택 날짜의 252거래일 창으로 판정한다."""
     return {t: dict(of=it["official_first"], rel=mm_idxhist.eligible_date(it["official_first"])) for t, it in mm_idxhist.load_history().items() if mm_idxhist.is_blocked_method(it)}
 
 
@@ -339,7 +339,7 @@ def hist_line(t):
     out = f'<div class="chartnote">지수 공식 이력 시작 {E(h["official_first"])}</div>'
     dates = mm_idxhist.trading_dates(); ic = mm_idxhist.recon_icon(h, dates, dates[-1]) if dates else None
     if ic:
-        out += f'<div class="chartnote rcl"><b>{mm_idxhist.RC_GLYPH}</b> {E(RC_LINES[0][2:])}<br>{E(RC_LINES[1])}</div><div class="chartnote">{E(mm_idxhist.recon_tip(ic))}</div>'
+        out += f'<div class="chartnote rcl"><span class="rc">{mm_idxhist.RC_GLYPH}</span>{E(RC_LINES[0][len(mm_idxhist.RC_GLYPH) + 1:])}<br>{E(RC_LINES[1])}</div><div class="chartnote">{E(mm_idxhist.recon_tip(ic))}</div>'
     return out
 
 
