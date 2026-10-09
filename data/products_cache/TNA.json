@@ -1,10 +1,10 @@
 {
  "ticker": "TNA",
- "input_hash": "94d237ea991e1296",
+ "input_hash": "2bd80e5ad89048a8",
  "model": "claude-sonnet-5-5",
  "prompt_version": "v1",
  "status": "ok",
- "generated": "2026-10-09T12:59:25",
+ "generated": "2026-10-09T14:54:31",
  "feature_input": {
   "티커": "TNA",
   "유형": "ETF",
@@ -14,7 +14,7 @@
   "지수 제공사": "Frank Russell Company (\"Russell\") named as trademark owner/licensor in \"Index Information\"; the Direxion 497K does not name FTSE Russell (ProShares URTY 497K says \"constructed and maintained by FTSE Russell\")",
   "섹터/테마": "미국 소형주 (Russell 2000)",
   "지수 가중방식": "유동주식 조정 시가총액 가중 (float-adjusted market-cap weighted)",
-  "리밸런스": "Not a rebalance statement: \"reconstituted annually and enhanced by initial public offerings quarterly\"",
+  "리밸런스": "반기(6월·12월, FTSE Russell 방법론 v7.2 §4.2.3)",
   "지수 종목 수": "1,958 (497K 서술)",
   "상위 구성": [
    "XTSLA 0.48%",
@@ -33,11 +33,11 @@
    "운용보수 면제/비용상한 계약 기한 September 1, 2027 (497K 보수표 각주) — 497K: 이사회 동의로 종료·변경될 수 있음"
   ]
  },
- "feature_text": "TNA는 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, 미국 소형주 지수인 Russell 2000® Index의 일간 성과를 3배(일간 리셋)로 추종한다.\n지수는 유동주식 조정 시가총액 가중 방식이며 497K 서술 기준 종목 수는 1,958개이고, 연 1회 재구성되며 신규 상장(IPO)은 분기별로 반영된다고 명시돼 있다. 상위 구성은 1x ETF IWM 상위 보유 기준(지수 구성과 동일 가정)으로 XTSLA 0.48%, TWST 0.43%, MOG-A 0.37%, FROG 0.36%, TXG 0.36% 순이다.\n497K(2026-02-27)에는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며, 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있다.",
+ "feature_text": "TNA는 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, 미국 소형주 지수인 Russell 2000® Index의 일간 수익률을 3배(일간 리셋)로 추종한다.\n지수는 유동주식 조정 시가총액 가중 방식이며 6월·12월 반기 리밸런스로 명시돼 있고, 497K는 지수 종목 수를 1,958개로 서술한다. 상위 구성은 1x ETF IWM의 상위 보유를 지수 구성과 동일하다고 가정한 기준으로 XTSLA 0.48%, TWST 0.43%, MOG-A 0.37%, FROG 0.36%, TXG 0.36% 순이다.\n497K는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며, 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시한다.",
  "attempts": [
   {
    "n": 1,
-   "text": "TNA는 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, 미국 소형주 지수인 Russell 2000® Index의 일간 성과를 3배(일간 리셋)로 추종한다.\n지수는 유동주식 조정 시가총액 가중 방식이며 497K 서술 기준 종목 수는 1,958개이고, 연 1회 재구성되며 신규 상장(IPO)은 분기별로 반영된다고 명시돼 있다. 상위 구성은 1x ETF IWM 상위 보유 기준(지수 구성과 동일 가정)으로 XTSLA 0.48%, TWST 0.43%, MOG-A 0.37%, FROG 0.36%, TXG 0.36% 순이다.\n497K(2026-02-27)에는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며, 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있다.",
+   "text": "TNA는 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, 미국 소형주 지수인 Russell 2000® Index의 일간 수익률을 3배(일간 리셋)로 추종한다.\n지수는 유동주식 조정 시가총액 가중 방식이며 6월·12월 반기 리밸런스로 명시돼 있고, 497K는 지수 종목 수를 1,958개로 서술한다. 상위 구성은 1x ETF IWM의 상위 보유를 지수 구성과 동일하다고 가정한 기준으로 XTSLA 0.48%, TWST 0.43%, MOG-A 0.37%, FROG 0.36%, TXG 0.36% 순이다.\n497K는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며, 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시한다.",
    "violations": []
   }
  ]

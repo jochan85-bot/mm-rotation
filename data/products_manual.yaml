@@ -21,7 +21,9 @@ TNA:
       form: 'FTSE Russell, Russell US Equity Indexes Construction and Methodology v7.2 (August 2026) §1.1.1 "float-adjusted, market capitalization-weighted indexes", §7.1.1 "Stocks in the Russell US indexes are weighted by their available (also called float-adjusted) market capitalization"'
       doc_date: '2026-08'
       note: 제공사 방법론 원문 직접 확인(대체 출처 아님). 보조 확인 — iShares Russell 2000 ETF(IWM) 497K 2026-07-31 "float-adjusted capitalization-weighted index of equity securities issued by the approximately 1,933 smallest issuers in the Russell 3000 Index" (https://www.sec.gov/Archives/edgar/data/1100663/000119312526327900/d25568d497k.htm)
-    weighting_note: 'Direxion 497K 는 가중방식을 적지 않음. 방법론 v7.2 §6.10.1 은 Russell 2000 을 Russell 3000E 시총 순위 #1,001-3,000 으로 정의. 재구성 주기는 방법론 §4.1.2·§4.2.3 이 "semi-annual"(6월 넷째 금요일·12월 둘째 금요일)이라 적은 반면 Direxion 497K 는 "reconstituted annually"로 서술 — 두 문서가 다르며 rebalance 필드는 497K 서술 그대로 둠'
+    weighting_note: 'Direxion 497K 는 가중방식을 적지 않음. 방법론 v7.2 §6.10.1 은 Russell 2000 을 Russell 3000E 시총 순위 #1,001-3,000 으로 정의.'
+    rebalance: 반기(6월·12월, FTSE Russell 방법론 v7.2 §4.2.3)
+    rebalance_note: 'Direxion 497K 는 연 1회("reconstituted annually")로 기재(구 규정). 오너 결정 2026-10-09(MM-CLOSE-20261017 §1)로 제공사 방법론 기준을 채택. 방법론 §4.1.2·§4.2.3: semi-annual(6월 넷째 금요일·12월 둘째 금요일).'
 URTY:
   sector_theme: 미국 소형주 (Russell 2000)
 MIDU:

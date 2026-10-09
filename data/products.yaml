@@ -27,7 +27,7 @@
 #   생성 메타 data/products_cache/_gen_stats.json (금지어 검출·재생성 통계)
 # =====================================================================================================
 meta:
-  generated: '2026-10-09T12:59:25'
+  generated: '2026-10-09T14:54:31'
   checked: '2026-10-09'
   block: MM-PAGE-V2.3-20261015 §6
   count: 37
@@ -472,7 +472,7 @@ products:
     sector_theme: 미국 소형주 (Russell 2000)
     construction:
       weighting: 유동주식 조정 시가총액 가중 (float-adjusted market-cap weighted)
-      rebalance: 'Not a rebalance statement: "reconstituted annually and enhanced by initial public offerings quarterly"'
+      rebalance: 반기(6월·12월, FTSE Russell 방법론 v7.2 §4.2.3)
       n_constituents: 1,958 (497K 서술)
       description: The Index measures the performance of approximately 2,000 small-capitalization companies in the Russell 3000 ® Index, based
         on a combination of their market capitalization and current index membership. The Index is reconstituted annually and enhanced by initial
@@ -482,8 +482,7 @@ products:
         url: https://www.sec.gov/Archives/edgar/data/1424958/000119312526078554/d69000d497k.htm
         form: 497K Principal Investment Strategy
         doc_date: '2026-02-27'
-      weighting_note: 'Direxion 497K 는 가중방식을 적지 않음. 방법론 v7.2 §6.10.1 은 Russell 2000 을 Russell 3000E 시총 순위 #1,001-3,000 으로 정의. 재구성 주기는 방법론 §4.1.2·§4.2.3
-        이 "semi-annual"(6월 넷째 금요일·12월 둘째 금요일)이라 적은 반면 Direxion 497K 는 "reconstituted annually"로 서술 — 두 문서가 다르며 rebalance 필드는 497K 서술 그대로 둠'
+      weighting_note: 'Direxion 497K 는 가중방식을 적지 않음. 방법론 v7.2 §6.10.1 은 Russell 2000 을 Russell 3000E 시총 순위 #1,001-3,000 으로 정의.'
       weighting_source:
         url: https://research.ftserussell.com/products/downloads/Russell-US-indexes.pdf
         form: FTSE Russell, Russell US Equity Indexes Construction and Methodology v7.2 (August 2026) §1.1.1 "float-adjusted, market capitalization-weighted
@@ -491,6 +490,8 @@ products:
         doc_date: 2026-08
         note: 제공사 방법론 원문 직접 확인(대체 출처 아님). 보조 확인 — iShares Russell 2000 ETF(IWM) 497K 2026-07-31 "float-adjusted capitalization-weighted index
           of equity securities issued by the approximately 1,933 smallest issuers in the Russell 3000 Index" (https://www.sec.gov/Archives/edgar/data/1100663/000119312526327900/d25568d497k.htm)
+      rebalance_note: 'Direxion 497K 는 연 1회("reconstituted annually")로 기재(구 규정). 오너 결정 2026-10-09(MM-CLOSE-20261017 §1)로 제공사 방법론 기준을 채택. 방법론 §4.1.2·§4.2.3:
+        semi-annual(6월 넷째 금요일·12월 둘째 금요일).'
     top_constituents:
       basis: 1x ETF IWM 상위 보유 (지수 구성과 동일 가정)
       as_of: '2026-10-09'
@@ -547,9 +548,9 @@ products:
     - https://www.sec.gov/Archives/edgar/data/1424958/000119312517059524/d330843d497k.htm
     checked: '2026-10-09'
     feature_text: |-
-      TNA는 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, 미국 소형주 지수인 Russell 2000® Index의 일간 성과를 3배(일간 리셋)로 추종한다.
-      지수는 유동주식 조정 시가총액 가중 방식이며 497K 서술 기준 종목 수는 1,958개이고, 연 1회 재구성되며 신규 상장(IPO)은 분기별로 반영된다고 명시돼 있다. 상위 구성은 1x ETF IWM 상위 보유 기준(지수 구성과 동일 가정)으로 XTSLA 0.48%, TWST 0.43%, MOG-A 0.37%, FROG 0.36%, TXG 0.36% 순이다.
-      497K(2026-02-27)에는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며, 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시돼 있다.
+      TNA는 Direxion이 발행하고 Rafferty Asset Management, LLC가 운용하는 ETF로, 미국 소형주 지수인 Russell 2000® Index의 일간 수익률을 3배(일간 리셋)로 추종한다.
+      지수는 유동주식 조정 시가총액 가중 방식이며 6월·12월 반기 리밸런스로 명시돼 있고, 497K는 지수 종목 수를 1,958개로 서술한다. 상위 구성은 1x ETF IWM의 상위 보유를 지수 구성과 동일하다고 가정한 기준으로 XTSLA 0.48%, TWST 0.43%, MOG-A 0.37%, FROG 0.36%, TXG 0.36% 순이다.
+      497K는 1일보다 길거나 짧게 보유한 투자자의 수익률을 지수 성과의 300%로 간주해서는 안 되며, 1일을 넘는 기간의 수익률은 일별 수익률을 복리로 곱한 결과라 지수의 300%와 크게 다를 수 있다고 명시한다.
   URTY:
     ticker: URTY
     issuer: 'ProShares (운용: ProShare Advisors LLC; 497K 명시)'

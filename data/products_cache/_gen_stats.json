@@ -402,6 +402,21 @@
     "FLYU"
    ],
    "run_at": "2026-10-09T12:59:25"
+  },
+  {
+   "calls": 1,
+   "regens": 0,
+   "cache_hit": 0,
+   "skipped_no_llm": 0,
+   "llm_errors": 0,
+   "violation_attempts": 0,
+   "first_try_violation": 0,
+   "violation_terms": {},
+   "failed": [],
+   "updated": [
+    "TNA"
+   ],
+   "run_at": "2026-10-09T14:54:31"
   }
  ]
 }
