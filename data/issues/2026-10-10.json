@@ -1,0 +1,26 @@
+{
+ "date": "2026-10-10",
+ "lookback_days": 8,
+ "sources_ok": [
+  "SEC EDGAR Direxion CIK 0001424958 (4건 본문)",
+  "SEC EDGAR ProShares CIK 0001415311 (0건 본문)",
+  "SEC EDGAR ProShares CIK 0001174610 (5건 본문)",
+  "SEC EDGAR BMO CIK 0000927971 (60건 본문)",
+  "microsectors.com"
+ ],
+ "sources_failed": [],
+ "sources_substituted": [
+  "proshares.com 레버리지 목록 (RuntimeError: 본문 비정상(16 bytes)) → 대체 확인(EDGAR ProShares)",
+  "BMO newsroom (TimeoutError: [Errno 60] Operation timed out) → 대체 확인(EDGAR BMO)",
+  "Direxion press releases (HTTPError 403: HTTP Error 403: Forbidden) → 대체 확인(EDGAR Direxion)"
+ ],
+ "docs_scanned": 69,
+ "issues": [],
+ "actions": [],
+ "new_products": {
+  "pipeline_added": [],
+  "listed_added": [],
+  "excluded_added": [],
+  "skipped": 97
+ }
+}
