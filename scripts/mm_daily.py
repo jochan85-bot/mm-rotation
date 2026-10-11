@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """mm_rotation 일일 산출 — 수신 → 정제 → 적격 판정 → M-score → 저장 → 페이지 → push. 정상 시 텔레그램 0건, 실패 시 1건."""
 import os, sys, signal, subprocess, traceback
+import datetime as dt_mod
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import numpy as np, pandas as pd
@@ -68,14 +69,30 @@ def git_push(T):
     r=g("push","origin","main")
     if r.returncode!=0: raise RuntimeError("git push 실패: "+r.stderr[-300:])
     L.log("push 완료")
+def needs_retry(now=None):
+    """10:15 재실행 가드(MM-STALE-FIX-20261011 §2c): 최신 산출에 ⚠ 가 있거나, 오늘(KST) 산출 자체가 없으면 True. 그 외엔 아무것도 하지 않는다."""
+    p=L.DATA/"scores_latest.csv"
+    if not p.exists(): return True,"scores_latest.csv 없음"
+    now=now or L.now_kst()
+    mt=dt_mod.datetime.fromtimestamp(p.stat().st_mtime,L.KST)
+    if mt.date()!=now.date(): return True,f"오늘 산출 없음(마지막 {mt:%Y-%m-%d %H:%M})"
+    d=pd.read_csv(p); w=d[d.table=="⚠"]
+    if len(w): return True,f"⚠ {len(w)}종: {','.join(w.ticker)}"
+    return False,"⚠ 0 · 오늘 산출 있음"
 if __name__=="__main__":
+    if "--only-if-warn" in sys.argv:
+        need,why=needs_retry(); L.log(f"[재실행 가드] {'재실행' if need else '불필요 — 종료'}: {why}")
+        if not need: sys.exit(0)
     push="--no-push" not in sys.argv; fetch="--no-fetch" not in sys.argv
     # launchd 가 띄운 실행이면 XPC_SERVICE_NAME 이 라벨과 같다 -> 자동 산출. 그 외(수동)는 페이지 상단에 '수동 산출' 표기(§5)
     manual=is_manual()
     if "--rebuild-history" not in sys.argv:
         signal.signal(signal.SIGALRM,_timeout); signal.alarm(300)
     try:
-        run(push,fetch,manual)
+        df_=run(push,fetch,manual)
+        if "--only-if-warn" in sys.argv:
+            w=df_[df_.table=="⚠"]
+            if len(w): L.log(f"[재실행 후에도 ⚠ {len(w)}종] "+"; ".join(f"{r.ticker}: {r.reason}" for r in w.itertuples()),"alerts")
     except BaseException as e:
         msg=f"[mm_rotation] 일일 산출 실패: {type(e).__name__}: {str(e)[:300]}"
         L.log(msg+"\n"+traceback.format_exc()[-1500:],"alerts")

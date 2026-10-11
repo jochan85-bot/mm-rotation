@@ -8,6 +8,8 @@
   - src=nasdaq : 나스닥 일별 기록(시가·고가·저가·종가·거래량 그대로, 수정종가=종가)
   - src=filled : 나스닥 기록 사이의 빈 거래일(거래 없음) — 직전 종가 그대로, 거래량 0. 마지막 나스닥 기록 **뒤**는 채우지 않는다(수신 지연을 '무거래'로 가리지 않음 → 신선도 ⚠ 유지).
   - src=yahoo  : 나스닥 수신 실패 시 야후 전체(2차). 이 경우 파일은 야후 값 그대로 + src=yahoo.
+전 종목 폴백(MM-STALE-FIX-20261011 §2b): 위 극저유동 선정과 별개로, **개별 3배 상품 전부**에 대해 야후 최신 봉이 SPY 기준일보다 오래됐거나(봉 없음) 마지막 행 Close 가 NaN 이면
+  그 빠진 날짜의 봉만 나스닥 기록으로 보충한다(야후 기존 행은 그대로, 행마다 src 열: 기존 yahoo · 보충분 nasdaq). 나스닥에도 없으면 그대로 두어 ⚠ 가 남는다(→ 같은 날 10:15 재실행 잡).
 점수(M-score)는 1x 만 쓴다 — 3배 일봉은 거래대금·무거래·신선도·표본 배지와 β/R² 품질에만 쓰인다. 1x·점수 계산 코드는 건드리지 않는다.
 사용: mm_daily/mm_weekly_scan 이 fetch_all 직후 apply_after_fetch() 호출. 단독 시험: python3 scripts/mm_nasdaq.py --dry"""
 import json, sys, time, datetime, urllib.error, urllib.parse, urllib.request
@@ -17,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"; LOCAL = ROOT / ".local"; FETCHED = LOCAL / "fetched"
 LOW_VOL_THRESHOLD = 1000          # 야후 수신분 20일 평균 거래량(주) 미만이면 나스닥 1차
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
-URL = "https://api.nasdaq.com/api/quote/{t}/historical?assetclass=etf&fromdate={f}&limit=9999&todate={to}"
+URL = "https://api.nasdaq.com/api/quote/{t}/historical?assetclass={ac}&fromdate={f}&limit=9999&todate={to}"
 COLS = ["Open", "High", "Low", "Close", "Adj Close", "Volume", "Dividends", "Stock Splits", "Capital Gains"]
 
 
@@ -70,9 +72,9 @@ def fill_gaps(df, calendar):
     return pd.concat([df, add]).sort_index()
 
 
-def fetch_nasdaq(t, since, opener=None, retries=3):
+def fetch_nasdaq(t, since, opener=None, retries=3, ac="etf"):
     """나스닥 일별 기록 → rows(list). 실패 시 예외."""
-    url = URL.format(t=urllib.parse.quote(t), f=since, to=(datetime.date.today() + datetime.timedelta(days=1)).isoformat())
+    url = URL.format(t=urllib.parse.quote(t), ac=ac, f=since, to=(datetime.date.today() + datetime.timedelta(days=1)).isoformat())
     last = None
     for k in range(retries):
         try:
@@ -95,7 +97,71 @@ def to_fetched_format(df):
     return out[COLS + ["src"]]
 
 
-def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=None, calendar=None):
+def three_x_tickers():
+    return pd.read_csv(DATA / "universe.csv").ticker.tolist()
+
+
+def _et_dates(index):
+    return pd.to_datetime(index, utc=True).tz_convert("America/New_York").tz_localize(None).normalize()
+
+
+def fallback_missing_bars(log=print, write=True, opener=None, fetched=None, tickers=None, calendar=None):
+    """개별 3배 상품 전부: 야후 마지막 유효 봉(Close 非NaN) < 기준일(SPY 마지막 날짜)이면 빠진 날짜만 나스닥 기록으로 보충. 반환 {티커: 상태}."""
+    fetched = Path(fetched or FETCHED); res = {}
+    tickers = tickers or three_x_tickers()
+    cal = calendar
+    if cal is None:
+        spy = pd.read_csv(fetched / "SPY.csv", index_col=0); cal = _et_dates(spy.index)
+    target = pd.DatetimeIndex(cal).max()
+    for t in tickers:
+        p = fetched / f"{t}.csv"
+        if not p.exists(): continue
+        h = pd.read_csv(p, index_col=0)
+        if "src" in h.columns and (h["src"] == "nasdaq").any(): continue          # 극저유동 교체본 — 이미 나스닥 1차
+        d = _et_dates(h.index); valid = h["Close"].notna().values
+        if not valid.any(): continue
+        last_valid = d[valid].max()
+        if last_valid >= target: continue
+        why = "봉 없음" if d.max() < target else "Close NaN"
+        try:
+            nd = None; err = None
+            for ac in ("etf", "stocks"):                                          # ETN 은 분류가 다를 수 있어 etf → stocks 순
+                try:
+                    rows = fetch_nasdaq(t, (last_valid - pd.Timedelta(days=10)).date().isoformat(), opener=opener, ac=ac)
+                    nd = parse_rows(rows)
+                    if len(nd): break
+                except Exception as e: err = e
+            if nd is None or len(nd) == 0: raise err or ValueError("파싱된 행 0")
+            add = nd[(nd.index > last_valid) & (nd.index <= target)]
+            if len(add) == 0:
+                res[t] = f"보충 불가({why}) — 나스닥에 {last_valid.date()} 이후 기록 없음"
+                log(f"[mm_nasdaq] {t} 야후 {why}(마지막 유효 {last_valid.date()} < 기준일 {target.date()}) · 나스닥에도 기록 없음 → ⚠ 유지")
+                try:
+                    sys.path.insert(0, str(Path(__file__).resolve().parent)); import mm_lib; mm_lib.log(f"[mm_nasdaq] {t} {why} · 나스닥 보충 불가 → ⚠ 유지", "alerts")
+                except Exception: pass
+                continue
+            keep = h[~(d > last_valid)].copy()                                    # Close NaN 행 포함 마지막 유효 봉 뒤는 버리고 나스닥 값으로
+            if "src" not in keep.columns: keep["src"] = "yahoo"
+            out = pd.concat([keep, _to_cols(add, keep.columns)])
+            if write: out.to_csv(p)
+            res[t] = f"야후 {why} → 나스닥 {len(add)}봉 보충 ({', '.join(str(x.date()) for x in add.index)})"
+        except Exception as e:
+            res[t] = f"보충 실패({why}): {type(e).__name__}: {str(e)[:150]}"
+            log(f"[mm_nasdaq] {t} 나스닥 보충 실패 → ⚠ 유지: {type(e).__name__}: {str(e)[:200]}")
+        time.sleep(0.3)
+    for t, s_ in res.items(): log(f"[mm_nasdaq] {t}: {s_}")
+    return res
+
+
+def _to_cols(add, columns):
+    """나스닥 보충분을 fetched 파일 인덱스 형식(ET tz)·열 순서로."""
+    out = add.copy(); out.index = out.index.tz_localize("America/New_York"); out.index.name = "Date"
+    for c in columns:
+        if c not in out.columns: out[c] = float("nan")
+    return out[list(columns)]
+
+
+def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=None, calendar=None, three_x=None):
     """수신 직후 호출. 반환 {선정 티커: 상태 문자열}. 어떤 실패도 예외로 올리지 않는다(야후 값 유지 + src=yahoo)."""
     fetched = Path(fetched or FETCHED); res = {}
     try:
@@ -137,6 +203,10 @@ def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=
         for t, s in res.items(): log(f"[mm_nasdaq] {t}: {s}")
     except Exception as e:
         log(f"[mm_nasdaq] 건너뜀(야후 값 유지): {type(e).__name__}: {str(e)[:200]}")
+    try:                                                                           # 전 종목 폴백 (MM-STALE-FIX-20261011 §2b)
+        res.update({f"{k}(폴백)": v for k, v in fallback_missing_bars(log, write=write, opener=opener, fetched=fetched, tickers=three_x, calendar=calendar).items()})
+    except Exception as e:
+        log(f"[mm_nasdaq] 폴백 건너뜀: {type(e).__name__}: {str(e)[:200]}")
     return res
 
 

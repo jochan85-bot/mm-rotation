@@ -115,6 +115,7 @@ def clean_all(tickers):
         last=h.iloc[-1]
         if pd.isna(last["Close"]): return False,"Close 가 NaN(미확정)"
         if t.startswith("^") or t in SYNK: return True,""          # 지수 레벨·합성 계열은 거래량 개념 없음 — Close 유무만 본다
+        if t!="SPY": return True,""                                 # MM-STALE-FIX-20261011 §2a: 거래량 50% 규칙은 기준일 판정용 SPY 에만 — 개별 상품은 거래량 적은 날이 정상(10-09 URTY·TPOR·RETL·XPH 오삭제)
         med=h["Volume"].iloc[-21:-1].median()
         if med>=10000 and last["Volume"]<0.5*med: return False,"거래량이 직전 20봉 중앙값의 50% 미만(미확정)"   # 극저유동 ETN(중앙값<1만주)은 무거래일이 정상이라 제외
         return True,""
