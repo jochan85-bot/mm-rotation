@@ -35,7 +35,7 @@ with tempfile.TemporaryDirectory() as td:
     mk(dates, 1_000_000, last_vol=400_000).to_csv(L.FETCHED / "SPY.csv")        # SPY 마지막 봉 40%
     mk(dates, 100_000).to_csv(L.FETCHED / "URTY.csv")
     T, prov, dropped = L.clean_all(["SPY", "URTY"])
-    check("SPY: 거래량 40% 봉은 여전히 미확정 처리(기준일 1봉 앞)", prov is not None and T == dates[-2], (T, prov))
+    check("SPY: 거래량 40% 봉도 확정(거래량 규칙 삭제 — MM-CONFIRM-FIX-20261013)", prov is None and T == dates[-1], (T, prov))
 
 # ---- (b) 전 종목 나스닥 폴백
 cal = pd.DatetimeIndex(pd.bdate_range("2026-09-14", periods=20))               # 마지막 = 2026-10-09

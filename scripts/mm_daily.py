@@ -70,7 +70,7 @@ def git_push(T):
     if r.returncode!=0: raise RuntimeError("git push 실패: "+r.stderr[-300:])
     L.log("push 완료")
 def needs_retry(now=None):
-    """10:15 재실행 가드(MM-STALE-FIX-20261011 §2c): 최신 산출에 ⚠ 가 있거나, 오늘(KST) 산출 자체가 없으면 True. 그 외엔 아무것도 하지 않는다."""
+    """10:15 재실행 가드(MM-STALE-FIX-20261011 §2c): 최신 산출에 ⚠ 가 있거나, 잠정 기준일이거나(MM-CONFIRM-FIX-20261013 §2), 오늘(KST) 산출 자체가 없으면 True. 그 외엔 아무것도 하지 않는다."""
     p=L.DATA/"scores_latest.csv"
     if not p.exists(): return True,"scores_latest.csv 없음"
     now=now or L.now_kst()
@@ -78,7 +78,8 @@ def needs_retry(now=None):
     if mt.date()!=now.date(): return True,f"오늘 산출 없음(마지막 {mt:%Y-%m-%d %H:%M})"
     d=pd.read_csv(p); w=d[d.table=="⚠"]
     if len(w): return True,f"⚠ {len(w)}종: {','.join(w.ticker)}"
-    return False,"⚠ 0 · 오늘 산출 있음"
+    if "provisional" in d.columns and int(d["provisional"].fillna(0).max())==1: return True,"잠정 기준일(MM-CONFIRM-FIX-20261013 §2)"
+    return False,"⚠ 0 · 확정 기준일 · 오늘 산출 있음"
 if __name__=="__main__":
     if "--only-if-warn" in sys.argv:
         need,why=needs_retry(); L.log(f"[재실행 가드] {'재실행' if need else '불필요 — 종료'}: {why}")

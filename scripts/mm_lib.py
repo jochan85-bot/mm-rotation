@@ -106,19 +106,24 @@ def _read(t):
 def _write(t,h):
     (RAW/"data").mkdir(parents=True,exist_ok=True)
     h=h.copy(); h.index=h.index.tz_localize("America/New_York"); h.to_csv(RAW/"data"/f"{t}.csv")
-def clean_all(tickers):
-    """미확정 마지막 행 제거 + SPY 달력에 없는 행 제거. 반환 (T, provisional_info, dropped{ticker:reason})"""
+def bar_settled(bar_date, now=None):
+    """MM-CONFIRM-FIX-20261013 §1: 봉 날짜의 미장 마감(16:00 ET) 후 2시간이 지났으면 True. now 는 tz-aware(기본 현재)."""
+    from zoneinfo import ZoneInfo
+    ny=ZoneInfo("America/New_York")
+    close=dt.datetime(bar_date.year,bar_date.month,bar_date.day,16,0,tzinfo=ny)
+    now=now or dt.datetime.now(dt.timezone.utc)
+    return now>=close+dt.timedelta(hours=2)
+def clean_all(tickers, now=None):
+    """미확정 마지막 행 제거 + SPY 달력에 없는 행 제거. 반환 (T, provisional_info, dropped{ticker:reason})
+    기준일 확정(MM-CONFIRM-FIX-20261013 §1): SPY 최신 봉이 마감(16:00 ET) 후 2시간 경과 + Close 비NaN 이면 확정, 아니면 직전 확정일·잠정. (구 거래량 50% 규칙 삭제)"""
     dropped={}
     SYNK=set(synthetic_keys())
     def conf(h,t=""):
         if len(h)<22: return True,""
         last=h.iloc[-1]
         if pd.isna(last["Close"]): return False,"Close 가 NaN(미확정)"
-        if t.startswith("^") or t in SYNK: return True,""          # 지수 레벨·합성 계열은 거래량 개념 없음 — Close 유무만 본다
-        if t!="SPY": return True,""                                 # MM-STALE-FIX-20261011 §2a: 거래량 50% 규칙은 기준일 판정용 SPY 에만 — 개별 상품은 거래량 적은 날이 정상(10-09 URTY·TPOR·RETL·XPH 오삭제)
-        med=h["Volume"].iloc[-21:-1].median()
-        if med>=10000 and last["Volume"]<0.5*med: return False,"거래량이 직전 20봉 중앙값의 50% 미만(미확정)"   # 극저유동 ETN(중앙값<1만주)은 무거래일이 정상이라 제외
-        return True,""
+        if t=="SPY" and not bar_settled(h.index[-1],now): return False,"마감(16:00 ET) 후 2시간 미경과(미확정)"
+        return True,""                                              # 개별 상품·지수·합성은 Close 유무만 본다
     spy=_read("SPY"); ok,why=conf(spy,"SPY"); spy_raw_last=spy.index.max(); prov=None
     if not ok:
         spy=spy.iloc[:-1]; prov={"raw_last":str(spy_raw_last.date()),"reason":why}
