@@ -1,0 +1,43 @@
+{
+ "date": "2026-10-17",
+ "lookback_days": 8,
+ "sources_ok": [
+  "SEC EDGAR Direxion CIK 0001424958 (2건 본문)",
+  "SEC EDGAR ProShares CIK 0001415311 (0건 본문)",
+  "SEC EDGAR ProShares CIK 0001174610 (4건 본문)",
+  "SEC EDGAR BMO CIK 0000927971 (60건 본문)",
+  "microsectors.com"
+ ],
+ "sources_failed": [],
+ "sources_substituted": [
+  "proshares.com 레버리지 목록 (RuntimeError: 본문 비정상(16 bytes)) → 대체 확인(EDGAR ProShares)",
+  "BMO newsroom (timeout: The read operation timed out) → 대체 확인(EDGAR BMO)",
+  "Direxion press releases (HTTPError 403: HTTP Error 403: Forbidden) → 대체 확인(EDGAR Direxion)"
+ ],
+ "docs_scanned": 66,
+ "issues": [],
+ "actions": [],
+ "new_products": {
+  "pipeline_added": [],
+  "listed_added": [],
+  "excluded_added": [
+   "ProShares UltraShort Anduril: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort ByteDance: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort Crusoe: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort Databricks: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort DayOne: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort Discord: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort Kioxia: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort Kraken: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort Lambda: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort Nscale: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort Oura: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort Revolut: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort Roze: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort SB Energy This: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort Stripe: 인버스(-2배) — 롱 +3배 아님",
+   "ProShares UltraShort VAST Data This: 인버스(-2배) — 롱 +3배 아님"
+  ],
+  "skipped": 20
+ }
+}
