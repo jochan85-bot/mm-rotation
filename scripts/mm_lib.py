@@ -43,6 +43,18 @@ def tg_send(text, retries=3, wait=30):
             log(f"tg_send 시도 {k}/{retries} 실패: {type(e).__name__}: {str(e).replace(tok,'<token>') if 'tok' in locals() and tok else str(e)}{extra}\n{tb}","alerts")
         if k<retries: time.sleep(wait)
     return False
+def alert(msg, retries=3, wait=30):
+    """경보 1건 — alerts.log 에 먼저 남기고(텔레그램 실패와 무관) 텔레그램 1건. 종료 코드와 무관하게 쓴다(MM-FEED-LAG-FIX-20261018 §3). 반환 = 텔레그램 성공 여부."""
+    log(msg,"alerts")
+    return tg_send(msg,retries=retries,wait=wait)
+def prev_us_session(now=None):
+    """now(tz-aware, 기본 현재) 시점에 '마감 후 2시간이 지난 가장 최근 NYSE 거래일'(bar_settled 와 같은 기준) — 일일 산출 기준일 T 가 이것이어야 정상. naive Timestamp(날짜) 반환."""
+    import pandas_market_calendars as pmc
+    now=pd.Timestamp(now or dt.datetime.now(dt.timezone.utc))
+    if now.tzinfo is None: now=now.tz_localize("UTC")
+    sch=pmc.get_calendar("NYSE").schedule(start_date=(now-pd.Timedelta(days=14)).date(),end_date=now.date())
+    done=sch[sch.market_close+pd.Timedelta(hours=2)<=now]
+    return pd.Timestamp(done.index[-1]).tz_localize(None).normalize()
 # ---------- 설정 ----------
 def load_yaml_simple(p):
     out={}; cur=None
@@ -87,6 +99,24 @@ def proxy_info():
     if _PI is None:
         p=LOCAL/"proxy_build_info.json"; _PI=json.load(open(p,encoding="utf-8")) if p.exists() else {}
     return _PI
+_TN=None
+def tail_etn_info(reload=False):
+    """.local/tail_etn_info.json — mm_tailetn.fill 이 매 실행 새로 쓴다(없으면 보정 0)."""
+    global _TN
+    if _TN is None or reload:
+        import mm_tailetn; _TN=mm_tailetn.load_info(LOCAL/"tail_etn_info.json")
+    return _TN
+def days_tail_etn(px, asof):
+    import mm_tailetn; return mm_tailetn.days_for(tail_etn_info(),px,asof)
+def tail_etn_via(px):
+    return (tail_etn_info().get(px) or {}).get("via","")
+def apply_tail_etn(T, log=print, write=True):
+    """clean_all 직후·load_study 이전: RAW 의 1x 최신 봉이 T 보다 늦으면 3배÷3 으로 보정(MM-FEED-LAG-FIX-20261018 §2). 반환 {proxy: 정보}"""
+    import mm_tailetn
+    uni=pd.read_csv(DATA/"universe.csv")
+    info=mm_tailetn.fill(T,uni,RAW/"data",log=log,write=write,info_path=(LOCAL/"tail_etn_info.json") if write else None)
+    global _TN; _TN=info                                  # 이번 실행의 결과가 곧 정본(파일은 같은 내용을 기록)
+    return info
 def fetch_all(tickers):
     import yfinance as yf
     FETCHED.mkdir(parents=True,exist_ok=True); fails=[]
@@ -183,7 +213,7 @@ def scan_anomalies(S, uni, cfg):
                 rows.append(dict(series=ser,ticker=(r.ticker if ser=="3x" else key),used_by=(r.ticker if ser=="3x" else ",".join(uni[uni.proxy==key].ticker)),date=str(d.date()),ret=round(ret,4),prev_close=pc,close=c,thr=thr))
     return pd.DataFrame(rows).sort_values(["date","series","ticker"]) if rows else pd.DataFrame(columns=["series","ticker","used_by","date","ret","prev_close","close","thr"])
 # ---------- 거래 가능성 배지 ----------
-def badges_for(listed_days, adtv, zero, beta, r2, nb, cfg):
+def badges_for(listed_days, adtv, zero, beta, r2, nb, cfg, tailn=0):
     """V2.3 §1: 점수·순위에는 영향 없는 표시 배지(글자). 반환 list[str]"""
     out=[]
     if beta is None or nb<60: out.append("표본부족")
@@ -191,6 +221,7 @@ def badges_for(listed_days, adtv, zero, beta, r2, nb, cfg):
     if listed_days<cfg["E1"]["threshold"]: out.append("신규")
     if not (adtv>=cfg["E2"]["threshold"]): out.append("저유동")
     if zero>=1: out.append(f"무거래{zero}")
+    if tailn>=1: out.append(f"지수보정{int(tailn)}")        # MM-FEED-LAG-FIX-20261018: 1x 최신 봉 N일을 3배÷3 으로 보정(점수·순위 불변, 표시 전용)
     return out
 RULE_VER="V2.3"
 # ---------- 산출 ----------
@@ -204,7 +235,8 @@ def compute(S,asof,T,cfg,status,uni,pq,remeasure=False):
         _s=lambda v:(v if isinstance(v,str) else "")
         rec.update(proxy_disp=_s(getattr(r,"proxy_disp","")),proxy_tip=_s(getattr(r,"proxy_tip","")))
         _pi=proxy_info().get(px,{})
-        rec["proxy_tail"]=(f"공식 레벨 {_pi['official_last']}까지 + {_pi['tail_days']}일 연장({_pi['tail_src']})" if _pi.get("tail_days") else "")+(" · 공식 레벨 캐시 사용" if _pi.get("official_from_cache") else "")
+        _tn=days_tail_etn(px,asof)
+        rec["proxy_tail"]=(f"공식 레벨 {_pi['official_last']}까지 + {_pi['tail_days']}일 연장({_pi['tail_src']})" if _pi.get("tail_days") else "")+(" · 공식 레벨 캐시 사용" if _pi.get("official_from_cache") else "")+(f" · 지수 {_tn}일 보정(3배 일간수익률÷3, {tail_etn_via(px)})" if _tn else "")
         try:
             h3=S.loadp(t); h1=S.loadp(px)
         except Exception as e:
@@ -242,7 +274,7 @@ def compute(S,asof,T,cfg,status,uni,pq,remeasure=False):
                     beta,r2,nb=b2,q2,n2; ok4=e4_ok(beta,r2,cfg); mdate=str(asof.date())
                     pq_upd[t]=dict(ticker=t,proxy=px,beta=beta,r2=r2,n=nb,measured=mdate,ok=int(ok4),source="mm_daily 재측정(trailing 365d)")
         rec.update(beta=beta,r2=r2,n_beta=nb,proxy_measured=mdate)
-        bd=badges_for(rec["listed_days"],adtv if adtv==adtv else 0.0,zero if zero==zero else 0,beta,r2,nb,cfg)
+        bd=badges_for(rec["listed_days"],adtv if adtv==adtv else 0.0,zero if zero==zero else 0,beta,r2,nb,cfg,tailn=_tn)
         rec["badges"]=" · ".join(bd)
         ex=status.get("excluded",{}).get(t)
         if stale:

@@ -39,8 +39,25 @@ def new_names_from_text(txt):
         if len(mid)<2: continue
         names.add((f"ProShares {m.group(1)} {mid}","ProShares",PRO_LEV[m.group(1)]))
     return names
+def pre_daily_if_stale(push=True):
+    """MM-FEED-LAG-FIX-20261018 §3: 시작 시 scores_latest 기준일이 직전 US 거래일(토요일 실행이면 금요일)이 아니면 일일 산출을 먼저 1회 실행.
+    실패는 경보(alerts.log + 텔레그램) 후 주간 점검을 계속한다. 반환 = 선행 산출을 시도했는지."""
+    try:
+        import mm_daily
+        ok_,got_,exp_,why_=mm_daily.basis_check()
+        if ok_: return False
+        L.log(f"[주간 선행 산출] {why_} — 일일 산출을 먼저 1회 실행","weekly")
+        mm_daily.run(push=push,fetch=True,manual=None)
+        return True
+    except BaseException as e:
+        if isinstance(e,(KeyboardInterrupt,SystemExit,TimeoutError)): raise
+        _m=f"[mm_rotation] 주간 선행 일일 산출 실패(주간 점검은 계속): {type(e).__name__}: {str(e)[:250]}"
+        if "--no-alert" in sys.argv: L.log(_m,"alerts")
+        else: L.alert(_m)
+        return True
 def main(push=True):
     L.check_formula()
+    pre_daily_if_stale(push)                                                   # MM-FEED-LAG-FIX-20261018 §3
     today=dt.date.today(); since=today-dt.timedelta(days=LOOKBACK)
     uni=pd.read_csv(L.DATA/"universe.csv"); info=pd.read_csv(L.DATA/"product_info.csv"); status=L.load_status()
     np_path=L.DATA/"new_products.json"; newp=json.load(open(np_path,encoding="utf-8"))
@@ -49,6 +66,9 @@ def main(push=True):
     try:
         import mm_nasdaq; mm_nasdaq.apply_after_fetch(lambda m: L.log(m,"weekly"))   # 극저유동 ETN 3배 일봉: 나스닥 1차·야후 2차(MM-WRAP-BT §1)
     except Exception as e: L.log(f"[mm_nasdaq] 건너뜀: {type(e).__name__}: {str(e)[:150]}","weekly")
+    try:                                                                         # 주간 재산출(fetch=False)도 최신 합성 1x 를 쓰도록 — 이전엔 직전 일일 실행의 합성 1x(더 일찍 만든 것)를 그대로 써서 2026-10-17 12:04 에 ⚠13 이 push 됐다
+        binfo=L.build_synthetic(lambda m: L.log(m,"weekly")); fails=fails+[k for k,v in binfo.items() if "error" in v]
+    except Exception as e: L.log(f"[mm_proxy] 합성 1x 생성 건너뜀: {type(e).__name__}: {str(e)[:200]}","weekly")
     if fails: fail_src.append('yfinance 시세 수신 실패: '+','.join(fails))
     al=aliases(uni,info)
     known_names={n for names,_ in al.values() for n in names}
@@ -179,7 +199,7 @@ def main(push=True):
     if "--no-alert" not in sys.argv: L.tg_send("\n".join(lines))
     else: print("\n".join(lines))
 if __name__=="__main__":
-    signal.signal(signal.SIGALRM,lambda *a:(_ for _ in ()).throw(TimeoutError("상한 15분 초과"))); signal.alarm(900)
+    signal.signal(signal.SIGALRM,lambda *a:(_ for _ in ()).throw(TimeoutError("상한 25분 초과"))); signal.alarm(1500)
     try: main(push="--no-push" not in sys.argv)
     except BaseException as e:
         msg=f"[mm_rotation] 주간 점검 실패: {type(e).__name__}: {str(e)[:300]}"

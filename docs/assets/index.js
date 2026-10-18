@@ -65,6 +65,7 @@
       else if (x === '저유동') o.push('$' + fx(r.adtv, 2) + 'M');
       else if (x.indexOf('무거래') === 0) o.push('무거래 ' + x.slice(3) + '일');
       else if (x === '표본부족') o.push('표본 ' + r.n_beta);
+      else if (x.indexOf('지수보정') === 0) o.push('지수 ' + x.slice(4) + '일 보정');
     });
     var rc = rcInfo(r.ticker, st.date);
     if (rc) o.push('재구성 ' + rc.p + '%');

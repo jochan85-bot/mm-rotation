@@ -171,6 +171,7 @@ def _why_text(r):
         elif b == "저유동": o.append(f"${r['adtv']:,.2f}M")
         elif b.startswith("무거래"): o.append(f"무거래 {b[3:]}일")
         elif b == "표본부족": o.append(f"표본 {int(r['n_beta'])}")
+        elif b.startswith("지수보정"): o.append(f"지수 {b[4:]}일 보정")
     return " · ".join(o)
 
 

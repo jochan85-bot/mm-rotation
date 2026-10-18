@@ -9,8 +9,24 @@ import mm_lib as L, mm_site
 def _timeout(sig,frm): raise TimeoutError("상한 5분 초과")
 def is_manual():
     return os.environ.get("XPC_SERVICE_NAME","") not in ("com.mm.rotation_daily","com.mm.rotation_weekly") and os.environ.get("MM_AUTO")!="1"
-def run(push=True, fetch=True, manual=None):
+def feed_check(T, prov, dropped, df, tail, now=None):
+    """MM-FEED-LAG-FIX-20261018 §3: 산출 기준일 T 가 '직전 US 거래일'(마감 후 2시간 경과한 가장 최근 NYSE 거래일)이 아니면 경보 문구(사유 포함), 맞으면 None."""
+    exp=L.prev_us_session(now)
+    if pd.Timestamp(T).normalize()==exp: return None
+    why=[]
+    if prov: why.append(f"SPY 최신 봉 {prov['raw_last']} 미확정({prov['reason']}) → 직전 확정일 사용")
+    if dropped: why.append(f"미확정 행 제거 {len(dropped)}종")
+    w=df[df.table=="⚠"]
+    if len(w): why.append(f"⚠ {len(w)}종: "+", ".join(w.ticker.head(8))+(" 외" if len(w)>8 else ""))
+    try:
+        import mm_tailetn; un=mm_tailetn.unresolved(tail)
+        if un: why.append("1x 보정 불가: "+", ".join(f"{k}({v['status']})" for k,v in un.items()))
+    except Exception: pass
+    if not why: why.append("SPY 최신 봉이 기대 거래일보다 오래됨(수신 지연 추정)")
+    return f"[mm_rotation] 미산출: 기준일 {pd.Timestamp(T).date()} ≠ 직전 US 거래일 {exp.date()} — "+"; ".join(why)
+def run(push=True, fetch=True, manual=None, alert=None):
     if manual is None: manual=is_manual()
+    if alert is None: alert="--no-alert" not in sys.argv
     L.check_formula()
     cfg=L.load_yaml_simple(L.DATA/"eligibility.yaml"); uni=pd.read_csv(L.DATA/"universe.csv"); status=L.load_status()
     need=L.need_tickers(); fails=[]
@@ -22,6 +38,8 @@ def run(push=True, fetch=True, manual=None):
         binfo=L.build_synthetic(L.log); L.log(f"합성 1x 생성 {sum('error' not in v for v in binfo.values())}/{len(binfo)}")
         fails=fails+[k for k,v in binfo.items() if "error" in v]
     T,prov,dropped=L.clean_all(need+L.synthetic_keys()); L.log(f"기준일 T={T.date()} 잠정={prov} 미확정 행 제거={len(dropped)}종")
+    try: tail=L.apply_tail_etn(T,log=L.log)                                   # 1x 최신 봉 < 기준일 → 3배 일간수익률÷3 으로 보정(최대 3일, MM-FEED-LAG-FIX-20261018 §2)
+    except Exception as e: tail={}; L.log(f"[mm_tailetn] 보정 단계 실패(보정 없이 계속): {type(e).__name__}: {str(e)[:200]}","alerts")
     S=L.load_study(T)
     pq=pd.read_csv(L.DATA/"proxy_quality.csv")
     df,upd=L.compute(S,T,T,cfg,status,uni,pq,remeasure=True)
@@ -59,7 +77,16 @@ def run(push=True, fetch=True, manual=None):
     mm_site.build_all(df,uni,meta,p0,[])
     n_el=int((df.table=="순위").sum()); L.log(f"산출 완료 순위 {n_el}/{len(df)} 제외 {(df.table=='제외').sum()} ⚠ {(df.table=='⚠').sum()} 배지 종목 {(df.badges.fillna('')!='').sum()} 이상봉 {len(an)}건")
     if push: git_push(T)
+    check_and_alert(T,prov,dropped,df,tail,alert=alert)                    # 미산출 감시(§3): 기준일 ≠ 직전 US 거래일이면 경보 1건
     return df
+def check_and_alert(T, prov, dropped, df, tail, alert=True, now=None):
+    """feed_check 결과가 있으면 alerts.log + (alert=True 면) 텔레그램 1건. 확인 자체가 실패해도 산출을 깨지 않는다. 반환 = 경보 문구 또는 None."""
+    try: msg=feed_check(T,prov,dropped,df,tail,now=now)
+    except Exception as e: msg=None; L.log(f"[미산출 감시] 기준일 확인 실패(무시): {type(e).__name__}: {str(e)[:150]}","alerts")
+    if msg:
+        if alert: L.alert(msg)
+        else: L.log(msg,"alerts")
+    return msg
 def git_push(T):
     def g(*a): return subprocess.run(["git","-C",str(L.ROOT),*a],capture_output=True,text=True,timeout=120)
     g("add","-A")
@@ -69,6 +96,14 @@ def git_push(T):
     r=g("push","origin","main")
     if r.returncode!=0: raise RuntimeError("git push 실패: "+r.stderr[-300:])
     L.log("push 완료")
+def basis_check(now=None):
+    """scores_latest.csv 기준일이 직전 US 거래일(마감 후 2시간 경과한 가장 최근 NYSE 거래일 — 토요일 실행이면 금요일)인지. 반환 (정상여부, 기준일 또는 None, 직전 거래일, 사유). MM-FEED-LAG-FIX-20261018 §3"""
+    exp=L.prev_us_session(now); p=L.DATA/"scores_latest.csv"
+    if not p.exists(): return False,None,exp,"scores_latest.csv 없음"
+    d=pd.read_csv(p,usecols=["date"])
+    if not len(d): return False,None,exp,"scores_latest.csv 비어 있음"
+    got=pd.Timestamp(str(d["date"].iloc[0])).normalize()
+    return got==exp,got,exp,("" if got==exp else f"기준일 {got.date()} ≠ 직전 US 거래일 {exp.date()}")
 def needs_retry(now=None):
     """10:15 재실행 가드(MM-STALE-FIX-20261011 §2c): 최신 산출에 ⚠ 가 있거나, 잠정 기준일이거나(MM-CONFIRM-FIX-20261013 §2), 오늘(KST) 산출 자체가 없으면 True. 그 외엔 아무것도 하지 않는다."""
     p=L.DATA/"scores_latest.csv"
@@ -79,21 +114,27 @@ def needs_retry(now=None):
     d=pd.read_csv(p); w=d[d.table=="⚠"]
     if len(w): return True,f"⚠ {len(w)}종: {','.join(w.ticker)}"
     if "provisional" in d.columns and int(d["provisional"].fillna(0).max())==1: return True,"잠정 기준일(MM-CONFIRM-FIX-20261013 §2)"
+    if "date" in d.columns and len(d):                                           # MM-FEED-LAG-FIX-20261018 §3: 기준일이 직전 US 거래일이 아니면 재실행
+        try:
+            exp=L.prev_us_session(now); got=pd.Timestamp(str(d["date"].iloc[0])).normalize()
+            if got!=exp: return True,f"기준일 {got.date()} ≠ 직전 US 거래일 {exp.date()}"
+        except Exception as e: L.log(f"[재실행 가드] 기준일 확인 실패(무시): {type(e).__name__}: {str(e)[:100]}","alerts")
     return False,"⚠ 0 · 확정 기준일 · 오늘 산출 있음"
 if __name__=="__main__":
-    if "--only-if-warn" in sys.argv:
-        need,why=needs_retry(); L.log(f"[재실행 가드] {'재실행' if need else '불필요 — 종료'}: {why}")
-        if not need: sys.exit(0)
+    # MM-FEED-LAG-FIX-20261018 §3: 가드·산출·push 전부 한 try 안 — 예외·타임아웃·push 실패는 종료 코드와 무관하게 alerts.log + 텔레그램(L.alert)
     push="--no-push" not in sys.argv; fetch="--no-fetch" not in sys.argv
-    # launchd 가 띄운 실행이면 XPC_SERVICE_NAME 이 라벨과 같다 -> 자동 산출. 그 외(수동)는 페이지 상단에 '수동 산출' 표기(§5)
     manual=is_manual()
     if "--rebuild-history" not in sys.argv:
         signal.signal(signal.SIGALRM,_timeout); signal.alarm(300)
     try:
+        if "--only-if-warn" in sys.argv:
+            need,why=needs_retry(); L.log(f"[재실행 가드] {'재실행' if need else '불필요 — 종료'}: {why}")
+            if not need: sys.exit(0)
         df_=run(push,fetch,manual)
         if "--only-if-warn" in sys.argv:
             w=df_[df_.table=="⚠"]
             if len(w): L.log(f"[재실행 후에도 ⚠ {len(w)}종] "+"; ".join(f"{r.ticker}: {r.reason}" for r in w.itertuples()),"alerts")
+    except SystemExit: raise
     except BaseException as e:
         msg=f"[mm_rotation] 일일 산출 실패: {type(e).__name__}: {str(e)[:300]}"
         L.log(msg+"\n"+traceback.format_exc()[-1500:],"alerts")
