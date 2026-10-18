@@ -105,14 +105,14 @@ def _et_dates(index):
     return pd.to_datetime(index, utc=True).tz_convert("America/New_York").tz_localize(None).normalize()
 
 
-def fallback_missing_bars(log=print, write=True, opener=None, fetched=None, tickers=None, calendar=None):
+def fallback_missing_bars(log=print, write=True, opener=None, fetched=None, tickers=None, calendar=None, target=None):
     """개별 3배 상품 전부: 야후 마지막 유효 봉(Close 非NaN) < 기준일(SPY 마지막 날짜)이면 빠진 날짜만 나스닥 기록으로 보충. 반환 {티커: 상태}."""
     fetched = Path(fetched or FETCHED); res = {}
     tickers = tickers or three_x_tickers()
     cal = calendar
-    if cal is None:
+    if cal is None and target is None:
         spy = pd.read_csv(fetched / "SPY.csv", index_col=0); cal = _et_dates(spy.index)
-    target = pd.DatetimeIndex(cal).max()
+    target = pd.Timestamp(target).normalize() if target is not None else pd.DatetimeIndex(cal).max()
     for t in tickers:
         p = fetched / f"{t}.csv"
         if not p.exists(): continue
@@ -153,6 +153,16 @@ def fallback_missing_bars(log=print, write=True, opener=None, fetched=None, tick
     return res
 
 
+def fallback_spy(log=print, write=True, opener=None, fetched=None, expected=None):
+    """MM-FEED-LAG-FIX 후속 §1: 기준일 판정용 SPY 의 마지막 유효 봉(Close 非NaN)이 '직전 US 거래일'(expected)보다 오래됐으면(봉 없음·Close NaN) 나스닥 일별 기록으로 보충.
+    나스닥에도 없으면 파일 무변경(→ clean_all 이 직전 확정일로 후퇴·잠정 처리, 경보는 일일 가드가 낸다). 반환 {'SPY': 상태} (보충 필요 없으면 {})."""
+    fetched = Path(fetched or FETCHED)
+    if not (fetched / "SPY.csv").exists(): return {}
+    if expected is None:
+        sys.path.insert(0, str(Path(__file__).resolve().parent)); import mm_lib; expected = mm_lib.prev_us_session()
+    return fallback_missing_bars(log, write=write, opener=opener, fetched=fetched, tickers=["SPY"], target=expected)
+
+
 def _to_cols(add, columns):
     """나스닥 보충분을 fetched 파일 인덱스 형식(ET tz)·열 순서로."""
     out = add.copy(); out.index = out.index.tz_localize("America/New_York"); out.index.name = "Date"
@@ -161,9 +171,14 @@ def _to_cols(add, columns):
     return out[list(columns)]
 
 
-def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=None, calendar=None, three_x=None):
+def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=None, calendar=None, three_x=None, expected=None):
     """수신 직후 호출. 반환 {선정 티커: 상태 문자열}. 어떤 실패도 예외로 올리지 않는다(야후 값 유지 + src=yahoo)."""
     fetched = Path(fetched or FETCHED); res = {}
+    try:                                                                           # SPY 기준일 폴백 (MM-FEED-LAG-FIX 후속 §1) — 3배 폴백이 SPY 마지막 날짜를 목표로 삼으므로 가장 먼저
+        if expected is not None or calendar is None:         # calendar 만 직접 준 호출(합성 환경)은 직전 US 거래일을 알 수 없으므로 건너뜀
+            res.update({f"{k}(SPY 폴백)": v for k, v in fallback_spy(log, write=write, opener=opener, fetched=fetched, expected=expected).items()})
+    except Exception as e:
+        log(f"[mm_nasdaq] SPY 폴백 건너뜀: {type(e).__name__}: {str(e)[:200]}")
     try:
         tickers = tickers or etn_tickers()
         frames = {}

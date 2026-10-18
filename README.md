@@ -6,7 +6,7 @@
 - 일일: `scripts/mm_daily.py` (launchd `com.mm.rotation_daily`, 화~토 08:15 KST) → `docs/data/scores/YYYY-MM-DD.csv`, `docs/data/index.json`, `docs/`. 파일이 없거나 규칙 버전(첫 줄 `rule=`)이 다른 날짜는 자동으로 다시 산출한다.
 - 주간: `scripts/mm_weekly_scan.py` (launchd `com.mm.rotation_weekly`, 토 12:00 KST) → `data/issues/`, `data/status.json`, `data/pipeline.json`(발행 예정), `data/new_products.json`(상장·분류 통과), `data/excluded_candidates.json`(규칙 제외 사유), `data/candidate_overrides.json`(오너 지시 제외). 판정 규칙 `scripts/mm_rules.py`, 신규 상품 분류 `scripts/mm_newprod.py`.
 - 페이지(MM-PAGE-V3-DESIGN-20261010): `docs/` (GitHub Pages) — `index.html`(달력 통합 순위표) · `guide.html`(기술 설명) · `products.html`(목록) · `products/<티커>.html`(37종) · `data/series/<티커>.json`(차트). 스타일 `docs/assets/mm.css`, 동작 `assets/index.js`·`chart.js`. 렌더러 `scripts/mm_site.py`·`mm_guide.py`, 종목 문구 `scripts/mm_page_text.py`(products.yaml 이 바뀐 종목만 LLM 재생성 → `data/products_page.json`, 마지막 수정일 갱신), 제외 사유 문장표 `data/exclusion_text.yaml`.
-- 수동 실행한 산출물은 페이지 상단에 `수동 산출`이 표시된다(예약 실행이면 launchd 가 설정하는 `XPC_SERVICE_NAME` 으로 구분).
+- 수동 실행 여부는 산출 메타(`manual`)에만 기록되고 페이지에는 표시하지 않는다(배너는 2026-10-09 예약 실행 확인 후 제거됨).
 - 테스트: `python3 tests/test_v23.py`(배지·이상 봉·E3·기간 평균·분류·렌더), `python3 tests/run_fixtures.py`(공시 판정 규칙 7종 픽스처).
 
 - 1x 원칙·경로 집계·백테스트 한계·알려진 한계·달력 소급 규칙은 모두 `docs/guide.html` 에 있다. 지수 명세 `data/index_specs.yaml`, 합성 계열 `data/proxy_specs.json`+`data/ext/`, 생성기 `scripts/mm_proxy.py`, 매핑 교체 전 이력 `data/scores_old_mapping_20261009/`.
