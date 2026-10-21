@@ -36,6 +36,9 @@ fr_ok2 = {"XLCU": fr(CAL[-(exp - 19):])}                    # 부족 19봉 → �
 check("부족 19봉(경계 미만) 비선정", N.select_short_history(fr_ok2, ["XLCU"], CAL, TGT, FB) == [], N.select_short_history(fr_ok2, ["XLCU"], CAL, TGT, FB))
 fr_ok3 = {"XLCU": fr(CAL[-(exp - 20):])}                    # 부족 정확히 20봉 → 선정
 check("부족 20봉(경계) 선정", N.select_short_history(fr_ok3, ["XLCU"], CAL, TGT, FB) == ["XLCU"])
+# 1b) product_info 상장일 정정(나스닥 실측 첫 거래일 2026-09-10)
+fbm = N.first_bars()
+check("product_info first_bar: XLCU·XLPU = 2026-09-10 (나스닥 실측)", fbm.get("XLCU") == pd.Timestamp("2026-09-10") and fbm.get("XLPU") == pd.Timestamp("2026-09-10") and L.first_bar("XLCU") == pd.Timestamp("2026-09-10"), (fbm.get("XLCU"), fbm.get("XLPU")))
 # 2) 조회 시작일 = min(야후 첫 봉, 상장일) − 10일
 yh = fr(CAL[-3:])
 check("시작일: 야후 첫 봉(10-16경)보다 상장일(09-11) − 10일이 이르다", N.history_start(yh, FB["XLPU"]) == "2026-09-01", N.history_start(yh, FB["XLPU"]))

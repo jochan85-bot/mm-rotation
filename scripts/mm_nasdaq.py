@@ -258,7 +258,7 @@ def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=
         log(f"[mm_nasdaq] SPY 폴백 건너뜀: {type(e).__name__}: {str(e)[:200]}")
     try:
         tickers = tickers or etn_tickers()
-        three = three_x or three_x_tickers()
+        three = three_x if three_x is not None else three_x_tickers()
         frames = {}
         for t in dict.fromkeys(list(tickers) + list(three)):
             p = fetched / f"{t}.csv"
@@ -267,19 +267,23 @@ def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=
                 if "src" in h.columns and (h["src"] == "nasdaq").any():          # 직전 실행이 나스닥으로 바꾼 파일 — 야후 값으로 판정하려면 새로 받은 야후여야 한다
                     continue
                 frames[t] = h
-        sel_low = select_low_volume(frames, tickers)
+        sel = select_low_volume({t: frames[t] for t in tickers if t in frames}, tickers)
+        log(f"[mm_nasdaq] 극저유동 ETN(야후 20일 평균 거래량 < {LOW_VOL_THRESHOLD}) {sel}")
         cal = calendar
         if cal is None:
             spy = pd.read_csv(fetched / "SPY.csv", index_col=0)
             cal = pd.to_datetime(spy.index, utc=True).tz_convert("America/New_York").tz_localize(None).normalize()
-        fb = first_bar_map if first_bar_map is not None else first_bars()
-        sel_short = select_short_history(frames, three, cal, pd.DatetimeIndex(cal).max(), fb)
-        sel = sorted(set(sel_low) | set(sel_short))
-        log(f"[mm_nasdaq] 극저유동 ETN(20일 평균 거래량 < {LOW_VOL_THRESHOLD}) {sel_low} · 이력 단축(상장일 대비 {SHORT_HIST_BARS}봉 이상) {sel_short}")
-        for t in sel:
+        fbs = first_bars() if first_bar_map is None else first_bar_map
+        short = []
+        try:                                                                       # 야후 이력이 상장일 대비 짧은 3배 상품 (MM-THIN-ETN-HIST §1)
+            short = select_short_history({t: frames[t] for t in three if t in frames}, three, cal, pd.DatetimeIndex(cal).max(), fbs)
+        except Exception as e:
+            log(f"[mm_nasdaq] 이력 길이 점검 건너뜀: {type(e).__name__}: {str(e)[:150]}")
+        log(f"[mm_nasdaq] 야후 이력 짧음(상장일 대비 ≥ {SHORT_HIST_BARS}봉) {short}")
+        for t in sorted(set(sel) | set(short)):
             yh = frames[t]
             try:
-                out, mode, summ = build_history(t, yh, fb.get(t), cal, opener=opener, force_replace=(t in sel_low))
+                out, mode, summ = build_history(t, yh, fbs.get(t), cal, opener=opener, force_replace=(t in sel))
                 if write: out.to_csv(fetched / f"{t}.csv")
                 res[t] = ("nasdaq " if mode == "replace" else "nasdaq-보충 ") + summ
             except Exception as e:
