@@ -225,6 +225,27 @@ def badges_for(listed_days, adtv, zero, beta, r2, nb, cfg, tailn=0):
     return out
 RULE_VER="V2.3"
 # ---------- 산출 ----------
+_FB=None
+def first_bar(t):
+    """3배 상품 상장일(data/product_info.csv first_bar, Timestamp) 또는 None(파일·값 없음). MM-DECOUPLE-20261021"""
+    global _FB
+    if _FB is None:
+        try:
+            p=pd.read_csv(DATA/"product_info.csv",usecols=["ticker","first_bar"]); _FB={a:pd.Timestamp(b) for a,b in zip(p.ticker,p.first_bar) if isinstance(b,str) and b[:2]=="20"}
+        except Exception: _FB={}
+    return _FB.get(t)
+def with_nobar(h3a, asof):
+    """MM-DECOUPLE-20261021: 3배 봉이 asof 에 없을 때 표시용 행(거래량 0·OHLC·Close = 직전 종가, 직전 봉이 없으면 Close NaN)을 asof 에 얹은 사본. 점수(1x)와 무관 — 거래대금(0 집계)·무거래 +1·3배 종가 표시용."""
+    last=float(h3a["Close"].iloc[-1]) if len(h3a) else np.nan
+    cols=list(h3a.columns) if len(h3a.columns) else ["Open","High","Low","Close","Adj Close","Volume","Dividends","Stock Splits"]
+    row={c:np.nan for c in cols}
+    for c in ("Open","High","Low","Close","Adj Close"):
+        if c in row: row[c]=last
+    for c in ("Volume","Dividends","Stock Splits","Capital Gains"):
+        if c in row: row[c]=0.0
+    if "src" in row: row["src"]="nobar"
+    add=pd.DataFrame([row],index=pd.DatetimeIndex([pd.Timestamp(asof)]))
+    return add if not len(h3a) else pd.concat([h3a,add])
 def compute(S,asof,T,cfg,status,uni,pq,remeasure=False):
     """asof(Timestamp) 기준 전 종목 표 + M-score. table: 순위(모집단) / 제외(E5) / ⚠(최신 봉 불일치·이상 봉·피처 불가).
     모집단 = E5 미해당·⚠ 없는 전 종목(E1~E4 는 배지만, 점수 보정 없음). pq: DataFrame(ticker→측정값) — remeasure 시 갱신 반환"""
@@ -243,8 +264,15 @@ def compute(S,asof,T,cfg,status,uni,pq,remeasure=False):
             rec.update(table="⚠",reason=f"데이터 없음({type(e).__name__})",badges=""); rows.append(rec); continue
         h3a=h3[h3.index<=asof]; h1a=h1[h1.index<=asof]
         d3=h3a.index.max() if len(h3a) else None; d1=h1a.index.max() if len(h1a) else None
-        rec.update(d3=str(d3.date()) if d3 is not None else "",d1=str(d1.date()) if d1 is not None else "",listed_days=len(h3a))
-        stale=(d3!=asof) or (d1!=asof)
+        # MM-DECOUPLE-20261021: 순위 자격은 1x(점수 입력) 신선도로만 판정한다 — 1x 최신 봉 == 기준일(꼬리 보정 ≤3일은 mm_tailetn 이 RAW 에서 이미 처리) ∧ Close 유효.
+        # 3배 봉의 유무·날짜는 자격과 무관: 상장 후 3배 봉이 기준일에 없으면 거래량 0·직전 종가의 표시용 행(src3=nobar)을 메모리에 얹는다(RAW 불변 → 다음 실행에 실제 봉이 오면 자연히 덮임).
+        fb=first_bar(t)                                                           # 3배 상품 상장일(product_info.first_bar) — 데이터가 그 이전 이력을 잃어도 상장 후 날짜는 '봉 부재'(무거래)로 본다
+        nobar=((d3 is not None) and (d3!=asof)) or ((d3 is None) and fb is not None and asof>=fb)
+        if nobar: h3a=with_nobar(h3a,asof)
+        c1_bad=(d1 is not None) and bool(pd.isna(h1a["Close"].iloc[-1]))
+        stale=(d1!=asof) or c1_bad
+        unlisted=(d3 is None) and not nobar                                       # 상장 전(상장일 이전·상장일 미상) — 거래할 수 없는 날이라 표시용 행을 만들지 않는다
+        rec.update(d3=str(d3.date()) if d3 is not None else "",d1=str(d1.date()) if d1 is not None else "",listed_days=len(h3a),src3="nobar" if nobar else "")
         # 이상 봉 가드 (V2.3 §2): 1x 는 최근 60봉 안, 3배는 기준일 봉
         an1=[x for x in daily_ret_anoms(h1a.tail(W+1),A["one_x"])] if len(h1a)>1 else []
         an3=[x for x in daily_ret_anoms(h3a.tail(2),A["three_x"]) if x[0]==asof] if len(h3a)>1 else []
@@ -278,7 +306,9 @@ def compute(S,asof,T,cfg,status,uni,pq,remeasure=False):
         rec["badges"]=" · ".join(bd)
         ex=status.get("excluded",{}).get(t)
         if stale:
-            tab="⚠"; reasons.append(f"최신 확정 봉이 기준일({asof.date()})과 다름: 3배 {rec['d3'] or '없음'} / 1x {rec['d1'] or '없음'}")
+            tab="⚠"; reasons.append(f"최신 확정 봉이 기준일({asof.date()})과 다름: 1x {rec['d1'] or '없음'}"+(" (종가 비어 있음)" if c1_bad else ""))
+        elif unlisted:
+            tab="⚠"; reasons.append("3배 상품 첫 거래 기록 이전(상장 전)")
         elif an1:
             tab="⚠"; reasons.append(f"1x 이상 봉 {an1[-1][0].date()} (일간 {an1[-1][1]*100:+.1f}%, 임계 ±{A['one_x']*100:.0f}%) — 60일 창 σ60 산출 보류")
         elif an3:

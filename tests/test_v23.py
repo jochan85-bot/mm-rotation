@@ -86,7 +86,7 @@ S,uni,pq=mk(); df,_=L.compute(S,asof,asof,cfg,{"excluded":{"EEE":{"type":"조기
 check("E5 제외 종목은 모집단 밖(순위 NaN)·나머지 4종 백분위 모집단 4",df[df.ticker=="EEE"].iloc[0].table=="제외" and pd.isna(df[df.ticker=="EEE"].iloc[0]["rank"]) and (df[df.table=="순위"].p_sig.max()==1.0) and len(df[df.table=="순위"])==4)
 # 최신 봉 불일치 → ⚠
 def inj_stale(d): d["AAA"]=d["AAA"].iloc[:-2]
-S,uni,pq=mk(inj_stale); df,_=L.compute(S,asof,asof,cfg,st,uni,pq); check("3배 최신 봉 불일치 → ⚠",df[df.ticker=="AAA"].iloc[0].table=="⚠")
+S,uni,pq=mk(inj_stale); df,_=L.compute(S,asof,asof,cfg,st,uni,pq); check("3배 최신 봉 불일치 → 순위 유지·무거래 표시용 행(MM-DECOUPLE-20261021: 순위 자격은 1x 신선도로만, 구 기대값 ⚠)",df[df.ticker=="AAA"].iloc[0].table=="순위" and df[df.ticker=="AAA"].iloc[0].src3=="nobar")
 # ---- 3. 기간 평균 순위 ----
 dates=list(idx[-60:]); T=dates[-1]
 def day(vals,table="순위"): return pd.DataFrame(dict(ticker=list(vals),table=table,M=list(vals.values())))
