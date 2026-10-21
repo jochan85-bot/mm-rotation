@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 """극저유동 ETN 3배 일봉 수신 — 나스닥 일별 기록 1차 · 야후 2차 (MM-WRAP-BT-20261011 §1).
+[MM-THIN-ETN-HIST-20261021 §1] 이력 복구: ① 나스닥 조회 시작일 = min(야후 첫 봉, 상장일 product_info.first_bar) − 10일(종전: 야후 첫 봉 − 10일 → 야후가 이력을 최근 며칠분만 주면 나스닥도 그만큼만 받아 상장 거래일수·거래대금·무거래가 실제와 다르게 표시됨)
+  ② 선정 기준 추가: 야후 이력이 상장일 대비 20봉 이상 짧은 3배 상품(기대 거래일 수 − 야후 봉 수 ≥ 20)도 나스닥 이력 수신 대상 — 극저유동(20일 평균 거래량 < 1,000주, 나스닥 이력 기준 재판정)이면 종전처럼 교체, 아니면 야후 값은 두고 그 앞 구간만 나스닥으로 보충
+  ③ 교체본의 마지막 나스닥 기록 뒤에 야후의 실거래 봉(거래량 > 0)이 있으면 보조로 잇는다(src=yahoo).
 
 배경: 거래가 거의 없는 ETN(XLCU·XLPU)의 야후 일봉은 거래 없는 날을 직전 가격 그대로 잇는 거래량 0 봉이라 실제 거래 기록과 날마다 다르고,
       일부 날짜는 봉 자체가 없어 '최신 확정 봉이 기준일과 다름'(⚠)으로 순위에서 빠졌다(2026-10-08). 나스닥 공식 시세(api.nasdaq.com)에는 일별 거래 기록이 있다.
@@ -17,7 +20,8 @@ from pathlib import Path
 import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"; LOCAL = ROOT / ".local"; FETCHED = LOCAL / "fetched"
-LOW_VOL_THRESHOLD = 1000          # 야후 수신분 20일 평균 거래량(주) 미만이면 나스닥 1차
+LOW_VOL_THRESHOLD = 1000          # 20일 평균 거래량(주) 미만이면 나스닥 1차 (eligibility.yaml E6 '거래량 극소 부적격' 과 같은 값)
+SHORT_HIST_BARS = 20              # 야후 이력이 상장일 대비 이만큼 이상 짧으면 나스닥 이력 수신 대상 (MM-THIN-ETN-HIST §1)
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 URL = "https://api.nasdaq.com/api/quote/{t}/historical?assetclass={ac}&fromdate={f}&limit=9999&todate={to}"
 COLS = ["Open", "High", "Low", "Close", "Adj Close", "Volume", "Dividends", "Stock Splits", "Capital Gains"]
@@ -40,6 +44,79 @@ def select_low_volume(frames, tickers, threshold=LOW_VOL_THRESHOLD):
         if h is None or len(h) == 0: continue
         if avg_volume20(h) < threshold: out.append(t)
     return sorted(out)
+
+
+def first_bars(path=None):
+    """{티커: 상장일 Timestamp} — data/product_info.csv first_bar (없으면 빈 dict)."""
+    try:
+        p = pd.read_csv(path or (DATA / "product_info.csv"), usecols=["ticker", "first_bar"])
+        return {a: pd.Timestamp(b) for a, b in zip(p.ticker, p.first_bar) if isinstance(b, str) and b[:2] == "20"}
+    except Exception:
+        return {}
+
+
+def select_short_history(frames, tickers, calendar, target, fbs, min_short=SHORT_HIST_BARS):
+    """야후 이력이 상장일 대비 min_short 봉 이상 짧은 티커 목록. 기대 거래일 수 = 달력(SPY) 중 [상장일, target], 야후 봉 수 = 상장일 이후 Close 유효 봉."""
+    cal = pd.DatetimeIndex(calendar); out = []
+    for t in tickers:
+        h = frames.get(t); fb = fbs.get(t)
+        if h is None or fb is None or len(h) == 0: continue
+        d = _et_dates(h.index); ok = h["Close"].notna().values
+        n_y = int(((d >= fb) & ok).sum())
+        exp = int(((cal >= fb) & (cal <= target)).sum())
+        if exp - n_y >= min_short: out.append(t)
+    return sorted(out)
+
+
+def history_start(yh, fb):
+    """나스닥 조회 시작일(포함 여유 10일): min(야후 첫 봉, 상장일) − 10일."""
+    first_y = _et_dates(yh.index).min()
+    first = min(first_y, fb) if fb is not None else first_y
+    return (first - pd.Timedelta(days=10)).date().isoformat()
+
+
+def yahoo_tail(yh, after):
+    """야후 봉 중 날짜 > after 이고 거래량 > 0(실거래)인 행 → DataFrame(naive 날짜 인덱스, COLS + src=yahoo). 거래량 0 봉은 거래 없는 날 직전가 연장일 수 있어 잇지 않는다."""
+    d = _et_dates(yh.index); v = pd.to_numeric(yh["Volume"], errors="coerce").values; c = yh["Close"].notna().values
+    m = (d > after) & (v > 0) & c
+    if not m.any(): return pd.DataFrame(columns=COLS + ["src"])
+    out = yh.loc[m, [x for x in COLS if x in yh.columns]].copy()
+    for x in COLS:
+        if x not in out.columns: out[x] = 0.0
+    out.index = d[m]; out["src"] = "yahoo"
+    return out[COLS + ["src"]]
+
+
+def build_history(t, yh, fb, calendar, opener=None, ac_list=("etf", "stocks"), force_replace=False):
+    """티커 1개의 나스닥 이력 수신·결합 → (DataFrame(fetched 형식, src 열), 모드 'replace'|'merge', 요약 문자열). 실패 시 예외.
+    replace(극저유동 — 20일 평균 거래량 < LOW_VOL_THRESHOLD, 나스닥 이력 기준 또는 force_replace): 나스닥(+사이 빈 거래일 filled) + 마지막 나스닥 기록 뒤 야후 실거래 봉.
+    merge: 야후 행은 그대로(src=yahoo), 야후 첫 봉 이전 구간만 나스닥(+filled)으로 보충."""
+    start = history_start(yh, fb); nd = None; err = None
+    for ac in ac_list:
+        try:
+            rows = fetch_nasdaq(t, start, opener=opener, ac=ac); nd = parse_rows(rows)
+            if len(nd) == 0: raise ValueError("파싱된 행 0")
+            if len(nd) < len(rows) * 0.9: raise ValueError(f"파싱 실패 다수 {len(rows) - len(nd)}/{len(rows)}")
+            break
+        except Exception as e:
+            err = e; nd = None
+    if nd is None: raise err or ValueError("나스닥 수신 실패")
+    nd = fill_gaps(nd, calendar)
+    vol20 = avg_volume20(nd)
+    mode = "replace" if (force_replace or vol20 < LOW_VOL_THRESHOLD) else "merge"
+    if mode == "replace":
+        out = pd.concat([nd, yahoo_tail(yh, nd.index.max())]).sort_index()
+    else:
+        ydates = _et_dates(yh.index); first_y = ydates.min()
+        y = yh.copy(); y.index = ydates
+        if "src" not in y.columns: y["src"] = "yahoo"
+        y = y[[x for x in COLS if x in y.columns] + ["src"]]
+        for x in COLS:
+            if x not in y.columns: y[x] = float("nan")
+        y = y[COLS + ["src"]]
+        out = pd.concat([nd[nd.index < first_y], y]).sort_index()
+    out = to_fetched_format(out)
+    return out, mode, f"{mode} {len(out)}봉 ({_et_dates(out.index).min().date()}~{_et_dates(out.index).max().date()}, 시작조회 {start}, 20일 평균 거래량 {vol20:.0f})"
 
 
 def parse_rows(rows):
@@ -171,7 +248,7 @@ def _to_cols(add, columns):
     return out[list(columns)]
 
 
-def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=None, calendar=None, three_x=None, expected=None):
+def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=None, calendar=None, three_x=None, expected=None, first_bar_map=None):
     """수신 직후 호출. 반환 {선정 티커: 상태 문자열}. 어떤 실패도 예외로 올리지 않는다(야후 값 유지 + src=yahoo)."""
     fetched = Path(fetched or FETCHED); res = {}
     try:                                                                           # SPY 기준일 폴백 (MM-FEED-LAG-FIX 후속 §1) — 3배 폴백이 SPY 마지막 날짜를 목표로 삼으므로 가장 먼저
@@ -181,31 +258,30 @@ def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=
         log(f"[mm_nasdaq] SPY 폴백 건너뜀: {type(e).__name__}: {str(e)[:200]}")
     try:
         tickers = tickers or etn_tickers()
+        three = three_x or three_x_tickers()
         frames = {}
-        for t in tickers:
+        for t in dict.fromkeys(list(tickers) + list(three)):
             p = fetched / f"{t}.csv"
             if p.exists():
                 h = pd.read_csv(p, index_col=0)
                 if "src" in h.columns and (h["src"] == "nasdaq").any():          # 직전 실행이 나스닥으로 바꾼 파일 — 야후 값으로 판정하려면 새로 받은 야후여야 한다
                     continue
                 frames[t] = h
-        sel = select_low_volume(frames, tickers)
-        log(f"[mm_nasdaq] 극저유동 ETN(야후 20일 평균 거래량 < {LOW_VOL_THRESHOLD}) {sel}")
+        sel_low = select_low_volume(frames, tickers)
         cal = calendar
         if cal is None:
             spy = pd.read_csv(fetched / "SPY.csv", index_col=0)
             cal = pd.to_datetime(spy.index, utc=True).tz_convert("America/New_York").tz_localize(None).normalize()
+        fb = first_bar_map if first_bar_map is not None else first_bars()
+        sel_short = select_short_history(frames, three, cal, pd.DatetimeIndex(cal).max(), fb)
+        sel = sorted(set(sel_low) | set(sel_short))
+        log(f"[mm_nasdaq] 극저유동 ETN(20일 평균 거래량 < {LOW_VOL_THRESHOLD}) {sel_low} · 이력 단축(상장일 대비 {SHORT_HIST_BARS}봉 이상) {sel_short}")
         for t in sel:
             yh = frames[t]
             try:
-                first = pd.to_datetime(yh.index, utc=True).tz_convert("America/New_York").tz_localize(None).min()
-                rows = fetch_nasdaq(t, (first - pd.Timedelta(days=10)).date().isoformat(), opener=opener)
-                nd = parse_rows(rows)
-                if len(nd) == 0: raise ValueError("파싱된 행 0")
-                if len(nd) < len(rows) * 0.9: raise ValueError(f"파싱 실패 다수 {len(rows) - len(nd)}/{len(rows)}")
-                nd = fill_gaps(nd, cal)
-                if write: to_fetched_format(nd).to_csv(fetched / f"{t}.csv")
-                res[t] = f"nasdaq {len(nd)}봉 ({nd.index.min().date()}~{nd.index.max().date()}, filled {int((nd.src == 'filled').sum())})"
+                out, mode, summ = build_history(t, yh, fb.get(t), cal, opener=opener, force_replace=(t in sel_low))
+                if write: out.to_csv(fetched / f"{t}.csv")
+                res[t] = ("nasdaq " if mode == "replace" else "nasdaq-보충 ") + summ
             except Exception as e:
                 res[t] = f"yahoo(2차) — 나스닥 실패: {type(e).__name__}: {str(e)[:150]}"
                 log(f"[mm_nasdaq] {t} 나스닥 수신 실패 → 야후 값 유지: {type(e).__name__}: {str(e)[:200]}")
@@ -215,7 +291,7 @@ def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=
                     sys.path.insert(0, str(Path(__file__).resolve().parent)); import mm_lib; mm_lib.log(f"[mm_nasdaq] {t} 나스닥 수신 실패 → 야후 사용: {type(e).__name__}: {str(e)[:200]}", "alerts")
                 except Exception: pass
             time.sleep(0.3)
-        for t, s in res.items(): log(f"[mm_nasdaq] {t}: {s}")
+        for t, s_ in res.items(): log(f"[mm_nasdaq] {t}: {s_}")
     except Exception as e:
         log(f"[mm_nasdaq] 건너뜀(야후 값 유지): {type(e).__name__}: {str(e)[:200]}")
     try:                                                                           # 전 종목 폴백 (MM-STALE-FIX-20261011 §2b)

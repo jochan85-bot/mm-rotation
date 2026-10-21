@@ -195,6 +195,11 @@ def main(push=True):
     lines.append("제외·조치: "+("; ".join(actions) if actions else "없음"))
     lines.append("대체 확인(EDGAR): "+("; ".join(subst_src) if subst_src else "없음"))
     lines.append("확인 실패 소스: "+("; ".join(fail_src) if fail_src else "없음"))
+    try:                                                                       # MM-THIN-ETN-HIST-20261021 §2: 피드 중단 의심(표시·알림 전용, 제외는 공시 규칙대로만) — 실패해도 주간 보고를 깨지 않는다
+        import mm_feedwatch
+        _fw=mm_feedwatch.line(mm_feedwatch.suspects())
+        if _fw: lines.append(_fw); L.log(_fw,"alerts")
+    except Exception as e: L.log(f"[feedwatch] 건너뜀: {type(e).__name__}: {str(e)[:150]}","weekly")
     L.log("주간 점검 완료: "+json.dumps(dict(ok=len(ok_src),fail=len(fail_src),issues=len(issues),actions=len(actions),new=len(added),subst=len(subst_src)),ensure_ascii=False),"weekly")
     if "--no-alert" not in sys.argv: L.tg_send("\n".join(lines))
     else: print("\n".join(lines))

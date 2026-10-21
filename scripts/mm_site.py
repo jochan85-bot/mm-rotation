@@ -166,7 +166,9 @@ LT_TABS = ((5, "1주"), (20, "1달"), (60, "3달"), (120, "6달"), (250, "1년")
 
 def _why_text(r):
     o = []
-    for b in str(r.get("badges") or "").split(" · "):
+    bs = str(r.get("badges") or "").split(" · ")
+    if "거래량극소" in bs: o.append("거래량 극소 부적격")          # MM-THIN-ETN-HIST-20261021 §5: 사유 맨 앞(순위·점수 불변)
+    for b in bs:
         if b == "신규": o.append(f"신규 {int(r['listed_days'])}일")
         elif b == "저유동": o.append(f"${r['adtv']:,.2f}M")
         elif b.startswith("무거래"): o.append(f"무거래 {b[3:]}일")

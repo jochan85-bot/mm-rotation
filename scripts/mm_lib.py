@@ -213,9 +213,12 @@ def scan_anomalies(S, uni, cfg):
                 rows.append(dict(series=ser,ticker=(r.ticker if ser=="3x" else key),used_by=(r.ticker if ser=="3x" else ",".join(uni[uni.proxy==key].ticker)),date=str(d.date()),ret=round(ret,4),prev_close=pc,close=c,thr=thr))
     return pd.DataFrame(rows).sort_values(["date","series","ticker"]) if rows else pd.DataFrame(columns=["series","ticker","used_by","date","ret","prev_close","close","thr"])
 # ---------- 거래 가능성 배지 ----------
-def badges_for(listed_days, adtv, zero, beta, r2, nb, cfg, tailn=0):
-    """V2.3 §1: 점수·순위에는 영향 없는 표시 배지(글자). 반환 list[str]"""
+def badges_for(listed_days, adtv, zero, beta, r2, nb, cfg, tailn=0, vol20=None):
+    """V2.3 §1: 점수·순위에는 영향 없는 표시 배지(글자). 반환 list[str]
+    MM-THIN-ETN-HIST-20261021 §5: vol20(3배 최근 20봉 평균 거래량, 표시용 nobar 행 포함) < E6.threshold(주) 이면 맨 앞에 '거래량극소'(! 사유 '거래량 극소 부적격'). 표시 전용 — 점수·순위 불변."""
     out=[]
+    e6=(cfg or {}).get("E6") or {}
+    if vol20 is not None and vol20==vol20 and e6.get("threshold") is not None and vol20<float(e6["threshold"]): out.append("거래량극소")
     if beta is None or nb<60: out.append("표본부족")
     elif not (cfg["E4"]["beta_min"]<=abs(beta)<=cfg["E4"]["beta_max"] and r2>=cfg["E4"]["r2_min"]): out.append("근사")
     if listed_days<cfg["E1"]["threshold"]: out.append("신규")
@@ -278,8 +281,8 @@ def compute(S,asof,T,cfg,status,uni,pq,remeasure=False):
         an3=[x for x in daily_ret_anoms(h3a.tail(2),A["three_x"]) if x[0]==asof] if len(h3a)>1 else []
         # 지표
         if len(h3a):
-            tail=h3a.tail(20); adtv=float((tail["Close"]*tail["Volume"]).mean()/1e6); zero=int((tail["Volume"]==0).sum()); close3=float(h3a["Close"].iloc[-1])
-        else: adtv=zero=close3=np.nan
+            tail=h3a.tail(20); adtv=float((tail["Close"]*tail["Volume"]).mean()/1e6); zero=int((tail["Volume"]==0).sum()); close3=float(h3a["Close"].iloc[-1]); vol20=float(tail["Volume"].mean())
+        else: adtv=zero=close3=vol20=np.nan
         rec.update(adtv=adtv,zero_vol=zero,close3=close3)
         feats_ok=False
         if d1 is not None and len(h1a)>=260 and not an1:
@@ -302,7 +305,7 @@ def compute(S,asof,T,cfg,status,uni,pq,remeasure=False):
                     beta,r2,nb=b2,q2,n2; ok4=e4_ok(beta,r2,cfg); mdate=str(asof.date())
                     pq_upd[t]=dict(ticker=t,proxy=px,beta=beta,r2=r2,n=nb,measured=mdate,ok=int(ok4),source="mm_daily 재측정(trailing 365d)")
         rec.update(beta=beta,r2=r2,n_beta=nb,proxy_measured=mdate)
-        bd=badges_for(rec["listed_days"],adtv if adtv==adtv else 0.0,zero if zero==zero else 0,beta,r2,nb,cfg,tailn=_tn)
+        bd=badges_for(rec["listed_days"],adtv if adtv==adtv else 0.0,zero if zero==zero else 0,beta,r2,nb,cfg,tailn=_tn,vol20=(vol20 if vol20==vol20 else None))
         rec["badges"]=" · ".join(bd)
         ex=status.get("excluded",{}).get(t)
         if stale:
