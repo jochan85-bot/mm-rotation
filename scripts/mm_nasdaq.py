@@ -254,7 +254,104 @@ def _to_cols(add, columns):
     return out[list(columns)]
 
 
-def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=None, calendar=None, three_x=None, expected=None, first_bar_map=None):
+# ---------- 중간 결손 보충 (MM-GAPFILL-20261024) ----------
+GAP_WINDOW = 260                  # 최근 NYSE 거래일 수 — 이 창 안에서 봉이 없거나 Close 가 NaN 인 날짜를 나스닥 일별 기록으로 채운다
+GAP_SRC = "nasdaq_gap"
+
+
+def gap_tickers():
+    """중간 결손 점검 대상 = 유니버스 3배 상품 + 1x ETF(실제 티커만, 합성 키 제외) + 스플라이스 후반 ETF + SPY + 거래량 극소 제외 종목(3배)."""
+    u = pd.read_csv(DATA / "universe.csv")
+    out = list(u.ticker) + [p for p in u.proxy.dropna() if not str(p).startswith("IDX_") and not str(p).endswith("_1X")]
+    try:
+        sp = json.load(open(DATA / "proxy_specs.json", encoding="utf-8"))["specs"]
+        out += [v["then"]["ticker"] for v in sp.values() if v.get("kind") == "splice"] + [v["ticker"] for v in sp.values() if v.get("kind") == "yahoo"]
+    except Exception:
+        pass
+    out += ["SPY"] + thin_excluded_tickers()
+    return list(dict.fromkeys(out))
+
+
+def nyse_sessions(target, n=GAP_WINDOW):
+    """target 이하 마지막 n 개 NYSE 거래일(naive Timestamp 인덱스, 오름차순)."""
+    import pandas_market_calendars as pmc
+    target = pd.Timestamp(target).normalize()
+    sch = pmc.get_calendar("NYSE").schedule(start_date=(target - pd.Timedelta(days=int(n * 1.6) + 30)).date(), end_date=target.date())
+    return pd.DatetimeIndex(sch.index).tz_localize(None).normalize()[-n:]
+
+
+def find_mid_gaps(h, sessions):
+    """h(fetched 프레임) 의 최근 창 중간 결손 날짜 — sessions 중 [첫 유효 봉, 마지막 유효 봉] 안에서 봉이 없거나 Close NaN 인 날. 마지막 유효 봉 뒤(꼬리)는 fallback_missing_bars 소관이라 제외."""
+    d = _et_dates(h.index); valid = h["Close"].notna().values
+    if not valid.any(): return []
+    vd = set(d[valid]); lo, hi = min(vd), max(vd)
+    return [x for x in pd.DatetimeIndex(sessions) if lo <= x <= hi and x not in vd]
+
+
+def fallback_mid_gaps(log=print, write=True, opener=None, fetched=None, tickers=None, sessions=None, target=None):
+    """야후 일봉의 '중간' 결손(최근 GAP_WINDOW 거래일 중 NYSE 거래일인데 봉이 없거나 Close NaN)을 나스닥 일별 기록으로 채운다(src=nasdaq_gap).
+    나스닥에도 없으면 비워 둔다. 반환 {티커: {'filled': [날짜], 'unfilled': [날짜]}} — 결손이 있었던 티커만. 점수 산식·피처 코드는 건드리지 않는다."""
+    fetched = Path(fetched or FETCHED); res = {}
+    tickers = tickers or gap_tickers()
+    if sessions is None:
+        if target is None:
+            spy = pd.read_csv(fetched / "SPY.csv", index_col=0); v = spy["Close"].notna().values
+            target = _et_dates(spy.index)[v].max()
+        sessions = nyse_sessions(target)
+    for t in tickers:
+        p = fetched / f"{t}.csv"
+        if not p.exists(): continue
+        try:
+            h = pd.read_csv(p, index_col=0)
+            gaps = find_mid_gaps(h, sessions)
+            if not gaps: continue
+            nd = None; err = None
+            for ac in ("etf", "stocks"):
+                try:
+                    nd = parse_rows(fetch_nasdaq(t, (min(gaps) - pd.Timedelta(days=7)).date().isoformat(), opener=opener, ac=ac))
+                    if len(nd) and nd.index.isin(gaps).any(): break
+                except Exception as e: err = e
+            add = nd[nd.index.isin(gaps)] if nd is not None and len(nd) else pd.DataFrame(columns=COLS + ["src"])
+            got = [x for x in gaps if x in add.index]; miss = [x for x in gaps if x not in add.index]
+            if len(add):
+                add = add.copy(); add["src"] = GAP_SRC
+                keep = h[~pd.Series(_et_dates(h.index)).isin(add.index).values].copy()          # 같은 날짜의 Close NaN 행은 나스닥 값으로 교체
+                if "src" not in keep.columns: keep["src"] = ""
+                keep.index = pd.to_datetime(keep.index, utc=True).tz_convert("America/New_York")
+                out = pd.concat([keep, _to_cols(add, keep.columns)]).sort_index(); out.index.name = "Date"
+                if write: out.to_csv(p)
+            res[t] = dict(filled=got, unfilled=miss)
+            if got: log(f"[mm_nasdaq] {t} 야후 중간 결손 {len(got)}봉 → 나스닥 보충({', '.join(str(x.date()) for x in got)})")
+            if miss: log(f"[mm_nasdaq] {t} 야후 중간 결손 {len(miss)}봉 — 나스닥에도 없음({', '.join(str(x.date()) for x in miss)}){'' if err is None else ' · ' + type(err).__name__}")
+        except Exception as e:
+            log(f"[mm_nasdaq] {t} 중간 결손 점검 실패(건너뜀): {type(e).__name__}: {str(e)[:150]}")
+        if t in res and res[t]["filled"]: time.sleep(0.3)
+    return res
+
+
+def alert_unfilled(res, state_path=None, send=True):
+    """나스닥에도 없는 중간 결손을 경보 1줄로(종목·날짜) — 같은 (종목, 날짜)는 한 번만(상태 파일). send=False 면 alerts.log 만. 반환 새로 알린 [(티커, 날짜)]."""
+    sp = Path(state_path or (LOCAL / "gap_alert_state.json"))
+    try: seen = set(json.load(open(sp, encoding="utf-8")))
+    except Exception: seen = set()
+    new = [(t, str(x.date())) for t, v in sorted(res.items()) for x in v.get("unfilled", []) if f"{t}:{x.date()}" not in seen]
+    if not new: return []
+    by = {}
+    for t, d in new: by.setdefault(t, []).append(d[5:])
+    msg = "[mm_rotation] 야후 중간 결손 봉 보충 불가(나스닥에도 없음): " + ", ".join(f"{t}({' '.join(ds)})" for t, ds in by.items())
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent)); import mm_lib
+        if send and "--no-alert" not in sys.argv: mm_lib.alert(msg)
+        else: mm_lib.log(msg, "alerts")
+    except Exception: pass
+    try:
+        sp.parent.mkdir(parents=True, exist_ok=True)
+        json.dump(sorted(seen | {f"{t}:{d}" for t, d in new}), open(sp, "w", encoding="utf-8"))
+    except Exception: pass
+    return new
+
+
+def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=None, calendar=None, three_x=None, expected=None, first_bar_map=None, gap_fill=None):
     """수신 직후 호출. 반환 {선정 티커: 상태 문자열}. 어떤 실패도 예외로 올리지 않는다(야후 값 유지 + src=yahoo)."""
     fetched = Path(fetched or FETCHED); res = {}
     try:                                                                           # SPY 기준일 폴백 (MM-FEED-LAG-FIX 후속 §1) — 3배 폴백이 SPY 마지막 날짜를 목표로 삼으므로 가장 먼저
@@ -308,6 +405,15 @@ def apply_after_fetch(log=print, write=True, opener=None, fetched=None, tickers=
         res.update({f"{k}(폴백)": v for k, v in fallback_missing_bars(log, write=write, opener=opener, fetched=fetched, tickers=three_x, calendar=calendar).items()})
     except Exception as e:
         log(f"[mm_nasdaq] 폴백 건너뜀: {type(e).__name__}: {str(e)[:200]}")
+    if gap_fill is None: gap_fill = (fetched == FETCHED)                           # 합성 환경(테스트)에서는 명시했을 때만
+    if gap_fill:
+        try:                                                                       # 중간 결손 보충 (MM-GAPFILL-20261024) — 1x ETF·3배·SPY 모두
+            g = fallback_mid_gaps(log, write=write, opener=opener, fetched=fetched)
+            for t, v in g.items():
+                res[f"{t}(중간결손)"] = f"나스닥 보충 {len(v['filled'])}봉" + (f" · 나스닥에도 없음 {len(v['unfilled'])}봉" if v["unfilled"] else "")
+            alert_unfilled(g)
+        except Exception as e:
+            log(f"[mm_nasdaq] 중간 결손 보충 건너뜀: {type(e).__name__}: {str(e)[:200]}")
     return res
 
 
