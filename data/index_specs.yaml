@@ -2722,14 +2722,14 @@ products:
       owner_working_name: matches. NOTE the reference asset is the ETF SMH (single constituent), not the MVIS index directly; page headlines emphasise the MVIS US Listed Semiconductor 25 Index (the ETF
         target index)
     onex:
-      path: a
-      path_label: 공식 지수 레벨
-      key: IDX_SEMIS
-      series_source: 'microsectors.com semis_index1.json (발행사 공시 지수 레벨); 연장: ~2026-07-10 SMH 총수익(Adj Close; SEMIS 의 정의)'
+      path: f
+      path_label: 펀드추종(펀드 가격 직접)
+      key: SMH
+      series_source: 'SMH(VanEck Semiconductor ETF) 가격(Close)을 1x 로 전 구간 직접 사용 (MM-FUNDTRACK-20261023) — 발행사 공식 지수 레벨 피드·관련 ETF 총수익 연장·ETN 꼬리 보정 경로 제외'
       onex_index_doc: VettaFi Semiconductor Fund-Tracking Index (SMH 100%, TR)
       exact: n.a.
-      extension: ~2026-07-10 SMH 총수익(Adj Close; SEMIS 의 정의)
-      note: null
+      extension: null
+      note: ' | MM-FUNDTRACK-20261023: 종전 공식 지수 레벨(SEMIS) 경로 → 펀드 가격 직접. validation·before 측정은 종전 경로 기준(재측정은 일일 E4 재측정이 갱신)'
       series_start: '2009-06-01'
       series_end: '2026-10-07'
       n_bars: 4366
@@ -2901,14 +2901,14 @@ products:
       owner_working_name: 'DIFFERS from expectation "Communication Services Select Sector Index": that is the TARGET index of the reference ETF XLC; the ETN-linked index is the VettaFi fund-tracking index
         with XLC as its sole constituent'
     onex:
-      path: a
-      path_label: 공식 지수 레벨
-      key: IDX_VXLCF
-      series_source: 'microsectors.com vxlcf_index1.json (발행사 공시 지수 레벨); 연장: ~2026-07-10 XLC 총수익(Adj Close; VXLCF 의 정의)'
+      path: f
+      path_label: 펀드추종(펀드 가격 직접)
+      key: XLC
+      series_source: 'XLC(Communication Services Select Sector SPDR Fund) 가격(Close)을 1x 로 전 구간 직접 사용 (MM-FUNDTRACK-20261023) — 발행사 공식 지수 레벨 피드·관련 ETF 총수익 연장·ETN 꼬리 보정 경로 제외'
       onex_index_doc: VettaFi US Communications Fund-Tracking Index (XLC 100%, TR)
       exact: n.a.
-      extension: ~2026-07-10 XLC 총수익(Adj Close; VXLCF 의 정의)
-      note: null
+      extension: null
+      note: ' | MM-FUNDTRACK-20261023: 종전 공식 지수 레벨(VXLCF) 경로 → 펀드 가격 직접. validation·before 측정은 종전 경로 기준(재측정은 일일 E4 재측정이 갱신)'
       series_start: '2018-06-19'
       series_end: '2026-10-07'
       n_bars: 2087
@@ -2982,14 +2982,14 @@ products:
       owner_working_name: 'DIFFERS from expectation "Consumer Staples Select Sector Index": that is the TARGET index of the reference ETF XLP; the ETN-linked index is the VettaFi fund-tracking index with
         XLP as its sole constituent'
     onex:
-      path: a
-      path_label: 공식 지수 레벨
-      key: IDX_VXLPF
-      series_source: 'microsectors.com vxlpf_index1.json (발행사 공시 지수 레벨); 연장: ~2026-07-10 XLP 총수익(Adj Close; VXLPF 의 정의)'
+      path: f
+      path_label: 펀드추종(펀드 가격 직접)
+      key: XLP
+      series_source: 'XLP(Consumer Staples Select Sector SPDR Fund) 가격(Close)을 1x 로 전 구간 직접 사용 (MM-FUNDTRACK-20261023) — 발행사 공식 지수 레벨 피드·관련 ETF 총수익 연장·ETN 꼬리 보정 경로 제외'
       onex_index_doc: VettaFi US Consumer Staples Fund-Tracking Index (XLP 100%, TR)
       exact: n.a.
-      extension: ~2026-07-10 XLP 총수익(Adj Close; VXLPF 의 정의)
-      note: null
+      extension: null
+      note: ' | MM-FUNDTRACK-20261023: 종전 공식 지수 레벨(VXLPF) 경로 → 펀드 가격 직접. validation·before 측정은 종전 경로 기준(재측정은 일일 E4 재측정이 갱신)'
       series_start: '2000-01-03'
       series_end: '2026-10-07'
       n_bars: 6731

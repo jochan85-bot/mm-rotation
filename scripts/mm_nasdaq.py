@@ -27,9 +27,15 @@ URL = "https://api.nasdaq.com/api/quote/{t}/historical?assetclass={ac}&fromdate=
 COLS = ["Open", "High", "Low", "Close", "Adj Close", "Volume", "Dividends", "Stock Splits", "Capital Gains"]
 
 
+def thin_excluded_tickers():
+    """data/thin_excluded.json — 거래량 극소로 유니버스에서 뺐지만 복귀 판정을 위해 3배 일봉 수신은 계속하는 ETN (MM-FUNDTRACK-20261023 §3)."""
+    try: return [x["ticker"] for x in json.load(open(DATA / "thin_excluded.json", encoding="utf-8")).get("items", []) if x.get("ticker")]
+    except Exception: return []
+
+
 def etn_tickers():
     u = pd.read_csv(DATA / "universe.csv")
-    return u[u["type"] == "ETN"].ticker.tolist()
+    return list(dict.fromkeys(u[u["type"] == "ETN"].ticker.tolist() + thin_excluded_tickers()))
 
 
 def avg_volume20(h):
@@ -175,7 +181,7 @@ def to_fetched_format(df):
 
 
 def three_x_tickers():
-    return pd.read_csv(DATA / "universe.csv").ticker.tolist()
+    return list(dict.fromkeys(pd.read_csv(DATA / "universe.csv").ticker.tolist() + thin_excluded_tickers()))
 
 
 def _et_dates(index):

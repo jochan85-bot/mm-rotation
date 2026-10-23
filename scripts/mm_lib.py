@@ -81,10 +81,21 @@ def need_tickers():
     OVR={"WTIU":"XLE","TPOR":"IYT"}
     s=set(b.ticker)|{OVR.get(t,p) for t,p in zip(b.ticker,b.proxy_1x)}|{"SPY"}
     uni=pd.read_csv(DATA/"universe.csv"); s|=set(uni.ticker)|set(uni.proxy.dropna())
+    s|=set(thin_tickers())                                         # MM-FUNDTRACK-20261023 §3: 거래량 극소 제외 종목은 복귀 판정용으로 3배 일봉만 계속 수신(1x 는 불필요)
     import mm_proxy
     s-=set(mm_proxy.synthetic_keys(DATA))                         # 합성 키는 yfinance 티커가 아님
     s|=set(mm_proxy.full_fetch_tickers(DATA))                     # Yahoo 지수·splice 후반 ETF
     return sorted(s)
+def thin_excluded():
+    """data/thin_excluded.json 의 items (거래량 극소로 유니버스에서 뺀 종목). 파일이 없거나 깨졌으면 빈 리스트."""
+    try: return json.load(open(DATA/"thin_excluded.json",encoding="utf-8")).get("items",[])
+    except Exception: return []
+def thin_tickers():
+    return [x["ticker"] for x in thin_excluded() if x.get("ticker")]
+def fund_track_proxies():
+    """펀드추종 1x(펀드 가격 직접) 로 쓰는 펀드 티커 집합 — data/fund_track.json. 지수 피드·ETN 꼬리 보정 경로에서 제외된다(MM-FUNDTRACK-20261023 §1)."""
+    try: return {v["fund"] for v in json.load(open(DATA/"fund_track.json",encoding="utf-8")).get("items",{}).values() if v.get("fund")}
+    except Exception: return set()
 def synthetic_keys():
     import mm_proxy; return mm_proxy.synthetic_keys(DATA)
 def build_synthetic(log=print):
@@ -114,7 +125,7 @@ def apply_tail_etn(T, log=print, write=True):
     """clean_all 직후·load_study 이전: RAW 의 1x 최신 봉이 T 보다 늦으면 3배÷3 으로 보정(MM-FEED-LAG-FIX-20261018 §2). 반환 {proxy: 정보}"""
     import mm_tailetn
     uni=pd.read_csv(DATA/"universe.csv")
-    info=mm_tailetn.fill(T,uni,RAW/"data",log=log,write=write,info_path=(LOCAL/"tail_etn_info.json") if write else None)
+    info=mm_tailetn.fill(T,uni,RAW/"data",log=log,write=write,info_path=(LOCAL/"tail_etn_info.json") if write else None,skip_proxies=fund_track_proxies())
     global _TN; _TN=info                                  # 이번 실행의 결과가 곧 정본(파일은 같은 내용을 기록)
     return info
 def fetch_all(tickers):
@@ -224,8 +235,9 @@ def badges_for(listed_days, adtv, zero, beta, r2, nb, cfg, tailn=0, vol20=None):
     if listed_days<cfg["E1"]["threshold"]: out.append("신규")
     if not (adtv>=cfg["E2"]["threshold"]): out.append("저유동")
     if zero>=1: out.append(f"무거래{zero}")
-    if tailn>=1: out.append(f"지수보정{int(tailn)}")        # MM-FEED-LAG-FIX-20261018: 1x 최신 봉 N일을 3배÷3 으로 보정(점수·순위 불변, 표시 전용)
+    if tailn>=TAIL_BADGE_MIN: out.append(f"지수보정{int(tailn)}")   # MM-FEED-LAG-FIX-20261018: 1x 최신 봉 N일을 3배÷3 으로 보정(점수·순위 불변, 표시 전용). MM-FUNDTRACK-20261023 §2: 1일 보정은 src 기록(RAW src='tail_etn'·proxy_tail)만 — 사유·배지는 N≥2 일 때만
     return out
+TAIL_BADGE_MIN=2          # 지수 N일 보정 사유(! )를 표시하는 최소 일수 (MM-FUNDTRACK-20261023 §2). 4일 이상은 보정 자체를 안 하고 ⚠ (mm_tailetn.MAX_GAP=3)
 RULE_VER="V2.3"
 # ---------- 산출 ----------
 _FB=None

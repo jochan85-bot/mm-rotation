@@ -162,45 +162,6 @@
    "products": [
     "MNGU"
    ]
-  },
-  "IDX_SEMIS": {
-   "kind": "official",
-   "symbol": "semis",
-   "official_start": "2026-07-13",
-   "pre": "data/ext/IDX_SEMIS.csv",
-   "tail": {
-    "kind": "etf_tr",
-    "ticker": "SMH"
-   },
-   "products": [
-    "SMHU"
-   ]
-  },
-  "IDX_VXLCF": {
-   "kind": "official",
-   "symbol": "vxlcf",
-   "official_start": "2026-07-13",
-   "pre": "data/ext/IDX_VXLCF.csv",
-   "tail": {
-    "kind": "etf_tr",
-    "ticker": "XLC"
-   },
-   "products": [
-    "XLCU"
-   ]
-  },
-  "IDX_VXLPF": {
-   "kind": "official",
-   "symbol": "vxlpf",
-   "official_start": "2026-07-13",
-   "pre": "data/ext/IDX_VXLPF.csv",
-   "tail": {
-    "kind": "etf_tr",
-    "ticker": "XLP"
-   },
-   "products": [
-    "XLPU"
-   ]
   }
  },
  "replicas": {

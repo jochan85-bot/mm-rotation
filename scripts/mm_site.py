@@ -72,8 +72,18 @@ def exclusion_rows(df, st):
         e = st.get("excluded", {}).get(r.ticker, {})
         fmt = tx["excluded"].get(e.get("type", ""), tx["default_excluded"])
         rows.append((r.ticker, fmt.format(date=e.get("date", "날짜 미상")), e.get("url", "")))
+    rows += thin_exclusion_rows(tx)                       # MM-FUNDTRACK-20261023 §3: 거래량 극소(발행사 공시 아님) 제외 — 유니버스 밖이라 df 에는 없다
     held = [r.ticker for r in df[df.table == "⚠"].itertuples()]
     return rows, held
+
+
+def thin_exclusion_rows(tx=None):
+    """[(티커, 사유 문장, '')] — data/thin_excluded.json. 파일이 없거나 깨졌으면 빈 리스트."""
+    tx = tx or load_exclusion_text()
+    try: items = json.load(open(DATA / "thin_excluded.json", encoding="utf-8")).get("items", [])
+    except Exception: return []
+    fmt = tx.get("thin_volume") or "거래량 극소(발행사 공시 아님), {date}부터"
+    return [(x["ticker"], fmt.format(date=x.get("since", "날짜 미상"), threshold=int(x.get("threshold", 1000))), "") for x in items if x.get("ticker")]
 
 
 # ---------- 메인 ----------
@@ -414,6 +424,14 @@ def write_tickers_json(uni, p0):
     json.dump(out, open(DOCS / "data" / "tickers.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 
 
+def prune_product_pages(uni):
+    """유니버스에서 빠진 종목(거래량 극소 제외 등)의 묵은 종목 페이지 삭제 — 종목 목록에서 사라진 종목에 페이지만 남지 않게 한다(MM-FUNDTRACK-20261023 §3). 삭제한 티커 리스트 반환."""
+    want = set(uni.ticker); gone = []
+    for f in sorted((DOCS / "products").glob("*.html")):
+        if f.stem not in want: f.unlink(); gone.append(f.stem)
+    return gone
+
+
 def rebuild_products_only():
     """종목 페이지(products/*.html)만 현재 data/products_page.json·holdings.json 으로 다시 그린다 — 점수·docs/data 무접촉(표시층 수정용)."""
     import pandas as pd
@@ -421,6 +439,7 @@ def rebuild_products_only():
     pd_ = DOCS / "products"; pd_.mkdir(exist_ok=True)
     for u in uni.itertuples():
         (pd_ / f"{u.ticker}.html").write_text(build_product(u.ticker, u, items.get(u.ticker, {}), hold.get(u.ticker)), encoding="utf-8")
+    prune_product_pages(uni)
     return len(uni)
 
 
@@ -462,6 +481,7 @@ def build_all(latest_df, uni, meta, p0, score_files):
     pd_ = DOCS / "products"; pd_.mkdir(exist_ok=True)
     for u in uni.itertuples():
         (pd_ / f"{u.ticker}.html").write_text(build_product(u.ticker, u, items.get(u.ticker, {}), hold.get(u.ticker)), encoding="utf-8")
+    prune_product_pages(uni)
     write_series(uni)
     write_tickers_json(uni, p0)
     h = DOCS / "history.html"

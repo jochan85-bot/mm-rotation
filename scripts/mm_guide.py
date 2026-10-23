@@ -26,11 +26,12 @@ def _elig():
 
 
 def _path_counts():
-    """(exact 1x ETF, 공식 지수 레벨, 복합) — product_info.csv 의 onex_path 에서 센다"""
+    """(exact 1x ETF, 공식 지수 레벨, 복합, 펀드추종) — product_info.csv 의 onex_path 중 현재 유니버스 종목만 센다"""
     try:
-        p = pd.read_csv(DATA / "product_info.csv")["onex_path"].astype(str)
-        comp = p.str.contains("+", regex=False)
-        return int((p.str.contains("exact") & ~comp).sum()), int((p.str.contains("지수 레벨") & ~p.str.contains("exact") & ~comp).sum()), int(comp.sum())
+        pi = pd.read_csv(DATA / "product_info.csv"); want = set(pd.read_csv(DATA / "universe.csv").ticker)
+        p = pi[pi.ticker.isin(want)]["onex_path"].astype(str)
+        comp = p.str.contains("+", regex=False); fund = p.str.contains("펀드추종")
+        return int((p.str.contains("exact") & ~comp & ~fund).sum()), int((p.str.contains("지수 레벨") & ~p.str.contains("exact") & ~comp & ~fund).sum()), int(comp.sum()), int(fund.sum())
     except Exception:
         return None
 
@@ -73,10 +74,10 @@ def idxhist_html(asof):
 
 def guide_body(df, meta, uni, st):
     el = _elig()
-    E1 = el.get("E1", {}).get("threshold", 252); E2 = el.get("E2", {}).get("threshold", 0.3); E3 = el.get("E3", {}).get("threshold", 1); E6 = el.get("E6", {}).get("threshold", 1000)
+    E1 = el.get("E1", {}).get("threshold", 252); E2 = el.get("E2", {}).get("threshold", 0.3); E3 = el.get("E3", {}).get("threshold", 1); E6 = el.get("E6", {}).get("threshold", 1000); E7 = el.get("E7", {}).get("threshold", 1000); E7R = el.get("E7", {}).get("return_days", 20)
     b0 = el.get("E4", {}); bmin, bmax, r2min = b0.get("beta_min", 2.7), b0.get("beta_max", 3.3), b0.get("r2_min", 0.85)
     an = el.get("anomaly", {}); a1, a3 = float(an.get("one_x", 0.25)) * 100, float(an.get("three_x", 0.75)) * 100
-    pc = _path_counts(); pcs = f"exact 1x ETF {pc[0]} · 공식 지수 레벨 {pc[1]} · 복합 {pc[2]}" if pc else "exact 1x ETF 18 · 공식 지수 레벨 18 · 복합 1"
+    pc = _path_counts(); pcs = f"exact 1x ETF {pc[0]} · 공식 지수 레벨 {pc[1]} · 복합 {pc[2]} · 펀드추종 {pc[3]}" if pc else "exact 1x ETF 18 · 공식 지수 레벨 15 · 복합 1 · 펀드추종 1"
     N = len(uni)
     chk = st.get("check_incomplete", {})
     chk_html = (f'<li>이번 점검에서 확인하지 못한 항목: {E(", ".join(f"{k}({v})" for k, v in chk.items()))}</li>' if chk else "")
@@ -144,7 +145,7 @@ def guide_body(df, meta, uni, st):
 <tr><td>$x.xxM</td><td>최근 20일 평균 거래대금 ${E2}M 미만</td><td>거래가 얕아 원하는 가격에 사고팔기 어려울 수 있음</td></tr>
 <tr><td>무거래 N일</td><td>최근 20거래일 중 거래량 0 인 날 {E3}일 이상. 3배 상품의 기준일 봉이 아직 없으면 그날도 거래량 0 인 날로 세고, 표의 3배 종가는 직전 종가, 20일 거래대금에는 0 으로 넣음</td><td>체결이 전혀 없던 날이 있음. 3배 봉이 없다는 이유만으로는 순위에서 빠지지 않으며, 다음 실행에서 실제 봉이 들어오면 교체됨</td></tr>
 <tr><td>표본 N</td><td>3배↔1배 비교에 쓸 일봉 60개 미만</td><td>3배 상품이 지수의 3배로 움직이는지 확인이 덜 쌓임</td></tr>
-<tr><td>지수 N일 보정</td><td>1배 지수의 최신 N거래일(최대 3일)이 아직 수신되지 않아 같은 지수를 쓰는 3배 상품의 일간 수익률 ÷ 3 으로 이은 경우</td><td>지수 공시가 늦어 임시로 잇는 값. 다음 실행에서 실제 지수 값이 들어오면 교체됨. 3일을 넘거나 3배 봉도 없으면 보정하지 않고 "데이터 확인 중"으로 순위에서 뺌</td></tr>
+<tr><td>지수 N일 보정</td><td>1배 지수의 최신 N거래일(N이 2~3일일 때만 표시 — 1일 보정은 내부 기록만 남기고 표시하지 않음)이 아직 수신되지 않아 같은 지수를 쓰는 3배 상품의 일간 수익률 ÷ 3 으로 이은 경우. 펀드추종 상품(SMHU)은 보정 대상이 아님</td><td>지수 공시가 늦어 임시로 잇는 값. 다음 실행에서 실제 지수 값이 들어오면 교체됨. 3일을 넘거나 3배 봉도 없으면 보정하지 않고 "데이터 확인 중"으로 순위에서 뺌</td></tr>
 <tr><td>재구성 N%</td><td>1Y 종목(점수 창 안에 "구성종목 복제" 연장 구간 포함)에만 — N = 창 중 그 구간 비율</td><td>1Y 의 되계산 비중을 ! 사유에서도 보여 줌. 관련 ETF 총수익·관련 지수·SG 인증서 연장은 실존 가격이라 사유에 올리지 않음</td></tr>
 <tr><td><span class="rc">1Y</span> (티커 옆, ! 뒤)</td><td>점수 창(최근 252거래일) 안에 지수 공식 이력 시작 전 "구성종목 복제" 연장 구간이 1일 이상. 해제 = 공식 이력이 252거래일을 채우는 날(탭하면 "되계산 비중 N% · 공식 지수 YYYY-MM-DD부터 · 해제 예정 YYYY-MM-DD")</td><td>점수 계산 기간의 일부가 실제 지수 가격이 아니라 현재 구성종목으로 되계산한 값 — 되계산 구간은 실제보다 유리하게 나올 수 있어(실측: 12개월 수익률이 실제 운용 지수보다 43~51%p 높음) 상대강도·추세 점수는 할인해서 볼 것. 순위에는 포함되고 점수·순위는 그대로</td></tr>
 <p><b>제외 목록</b>은 발행사 공지로 생깁니다. 매주 토요일 공시를 점검해 아래 네 종류가 나오면 그 상품은 순위에서 빠지고, 메인 화면 "제외 목록"에 사유와 공지 링크가 올라옵니다.</p>
@@ -155,6 +156,7 @@ def guide_body(df, meta, uni, st):
 <li>추종 지수 변경 — 지수가 다시 확인될 때까지 제외</li>
 </ul>
 <p>주식 분할·역분할, 수수료(금융비용) 변경, 발행사 신용등급 공지는 제외하지 않고 종목 페이지의 구조 리스크에만 적습니다.</p>
+<p><b>거래량 극소 제외</b>(발행사 공시가 아닌 운영 판단): 3배 상품의 최근 20일 평균 거래량이 {E7:,}주 미만인 상태가 상장 후 계속돼 무한매수 주문이 사실상 체결되지 않는 상품은 유니버스에서 빼고 "제외 목록"에 "거래량 극소(발행사 공시 아님)"로 올립니다(현재 XLCU·XLPU). 순위·장기순위·종목 목록에는 나오지 않습니다. 복귀 조건은 20일 평균 거래량이 {E7:,}주 이상인 날이 {E7R}거래일 연속인 것이며, 주간 점검이 조건 충족을 보고만 하고 자동으로 되돌리지는 않습니다.</p>
 
 <h2 id="s6">6. 갱신 시각 · 기준일 · 잠정 표시 · 데이터 출처 · 사용법</h2>
 <ul>
@@ -191,6 +193,7 @@ def guide_body(df, meta, uni, st):
 
 <h2 id="s9">9. 변경 이력</h2>
 <table><thead><tr><th>날짜</th><th>변경</th></tr></thead><tbody>
+<tr><td>2026-10-23</td><td>발행사 지수가 특정 펀드 하나를 100% 추종하는 상품(SMHU)은 공식 지수 수치·관련 ETF 총수익 연장 대신 그 펀드(SMH)의 가격을 전 구간 1배로 직접 사용(경로 "펀드추종: 펀드 가격 직접", 점수 산식 불변). "지수 N일 보정" 사유는 2일 이상일 때만 표시(1일 보정은 기록만). 거래량 극소 상품(XLCU·XLPU, 20일 평균 거래량 1,000주 미만)을 유니버스에서 제외하고 제외 목록에 "거래량 극소(발행사 공시 아님)"로 표시.</td></tr>
 <tr><td>2026-10-21</td><td>거래량이 극히 적은 3배 상품(최근 20일 평균 거래량 1,000주 미만)에 ! 사유 "거래량 극소 부적격"을 맨 앞에 추가(순위·점수 불변). 상장 직후 이력이 짧게 수신되던 극저유동 ETN(XLCU·XLPU)의 3배 일봉을 나스닥 일별 기록으로 상장일부터 다시 받아 상장 거래일수·20일 거래대금·무거래 표시를 바로잡음.</td></tr>
 <tr><td>2026-10-21</td><td>순위 대상 판정을 지수(1배) 데이터로만 하도록 변경: 3배 상품의 기준일 봉이 없다는 이유로는 순위에서 빼지 않고, 거래량 0·직전 종가로 표시하며 "무거래"에 1일을 더함(점수 산식 불변). 3배 봉이 없어 빠졌던 날짜의 순위를 같은 규칙으로 다시 계산.</td></tr>
 <tr><td>2026-10-18</td><td>1배 지수 최신 봉이 늦을 때 "순위 제외(데이터 확인 중)" 대신 3배 상품 일간 수익률 ÷ 3 으로 최대 3거래일을 이어 순위에 남기고 ! 사유에 "지수 N일 보정"을 표시(점수 산식 불변).</td></tr>
@@ -218,7 +221,7 @@ def guide_body(df, meta, uni, st):
 <h3 id="appxA">A. 1배 공식 지수 경로와 검증 기준</h3>
 <ul>
 <li><b>원칙: 1배 = 발행사가 공시한 공식 지수 하나.</b> 같은 지수를 따른다고 발행사 문서에 명시된 1배 ETF 에 한해 그 ETF 가격을 쓰고, 그렇지 않으면 지수 수치 자체를 씁니다.</li>
-<li>경로 집계: {E(pcs)} = {N}종. <b>exact 1x ETF</b> 는 같은 지수를 따르는 1배 ETF 가격, <b>공식 지수 레벨</b>은 발행사가 공시한 지수 수치, <b>복합</b>(TPOR)은 지수가 바뀐 시점 전후를 서로 다른 계열로 이은 것입니다.</li>
+<li>경로 집계: {E(pcs)} = {N}종. <b>exact 1x ETF</b> 는 같은 지수를 따르는 1배 ETF 가격, <b>공식 지수 레벨</b>은 발행사가 공시한 지수 수치, <b>복합</b>(TPOR)은 지수가 바뀐 시점 전후를 서로 다른 계열로 이은 것입니다. <b>펀드추종</b>(SMHU)은 발행사 지수가 "특정 펀드 하나(SMH)를 100% 추종"하는 구조라 그 펀드 가격을 전 구간 직접 씁니다(지수 수치 피드·관련 ETF 총수익 연장·꼬리 보정 경로를 거치지 않음 — 펀드 가격이 늦으면 보정하지 않고 "데이터 확인 중"으로 순위에서 뺌).</li>
 <li>공식 수치가 시작되기 전 구간은 같은 지수 계열(인증서·구성종목 복제·ETF 총수익)로 이어 붙인 <b>연장</b>이며, 연장 구간의 생존편향과 정확도는 검증되지 않았습니다.</li>
 <li><b>검증 기준</b>: 최근 365일 일간수익률에 3배 상품을 1배에 회귀해 β 가 {bmin}~{bmax}, R² 가 {r2min} 이상인지 봅니다. 기준 밖이면 내부 표시 '근사', 표본(n)이 60 미만이면 '표본부족'(경로는 공식 지수이나 검증 미완)입니다. 측정은 연 1회 다시 하고, 표본이 부족했던 종목은 60봉이 쌓이면 바로 다시 잽니다. '근사'는 페이지 표에는 나타내지 않고 데이터 파일(<code>badges</code>)에만 기록합니다.</li>
 <li>운영값(백테스트 근거 아님, 변경은 <code>data/eligibility.yaml</code> 한 곳): 신규 {E1}거래일 · 저유동 ${E2}M · 거래량 극소 {E6:,}주 · 무거래 {E3}일 · 표본 60 · 이상 봉 1배 ±{a1:g}% / 3배 ±{a3:g}%.</li>

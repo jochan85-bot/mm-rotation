@@ -193,26 +193,6 @@
     "official_last": "2026-10-07"
    }
   },
-  "SMHU": {
-   "key": "IDX_SEMIS",
-   "first_bar": "2026-08-04",
-   "listed": "2026-08-03",
-   "index_name": "VettaFi Semiconductor Fund-Tracking Index",
-   "level_kind": "official_level",
-   "official_first": "2026-07-13",
-   "ext": {
-    "has": true,
-    "method": "관련 ETF 총수익",
-    "detail": "SMH 총수익(Adj Close; SEMIS 의 정의)",
-    "start": "2009-06-01",
-    "end": "2026-07-10"
-   },
-   "tail": {
-    "days": 1,
-    "src": "SMH",
-    "official_last": "2026-10-07"
-   }
-  },
   "TNA": {
    "key": "IDX_RUT",
    "first_bar": "2008-11-19",
@@ -266,46 +246,6 @@
    "official_first": "1987-09-10",
    "ext": {
     "has": false
-   }
-  },
-  "XLCU": {
-   "key": "IDX_VXLCF",
-   "first_bar": "2026-09-11",
-   "listed": "2026-09-09",
-   "index_name": "VettaFi US Communications Fund-Tracking Index",
-   "level_kind": "official_level",
-   "official_first": "2026-07-13",
-   "ext": {
-    "has": true,
-    "method": "관련 ETF 총수익",
-    "detail": "XLC 총수익(Adj Close; VXLCF 의 정의)",
-    "start": "2018-06-19",
-    "end": "2026-07-10"
-   },
-   "tail": {
-    "days": 1,
-    "src": "XLC",
-    "official_last": "2026-10-07"
-   }
-  },
-  "XLPU": {
-   "key": "IDX_VXLPF",
-   "first_bar": "2026-09-11",
-   "listed": "2026-09-09",
-   "index_name": "VettaFi US Consumer Staples Fund-Tracking Index",
-   "level_kind": "official_level",
-   "official_first": "2026-07-13",
-   "ext": {
-    "has": true,
-    "method": "관련 ETF 총수익",
-    "detail": "XLP 총수익(Adj Close; VXLPF 의 정의)",
-    "start": "1998-12-22",
-    "end": "2026-07-10"
-   },
-   "tail": {
-    "days": 1,
-    "src": "XLP",
-    "official_last": "2026-10-07"
    }
   }
  }

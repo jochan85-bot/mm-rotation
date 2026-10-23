@@ -79,7 +79,7 @@ def tail_case(lag):
     return run(only, tn=info)
 for lag in (1, 2, 3):
     S, df = tail_case(lag); r = row(df, "AAA")
-    check(f"1x {lag}일 지연: 3배÷3 보정 후 순위 포함·배지 지수보정{lag}", r.table == "순위" and f"지수보정{lag}" in r.badges and r.src3 == "", (r.table, r.reason, r.badges))
+    check(f"1x {lag}일 지연: 3배÷3 보정 후 순위 포함·" + ("배지 지수보정1 없음(1일 보정은 src 기록만, MM-FUNDTRACK-20261023 §2)" if lag == 1 else f"배지 지수보정{lag}"), r.table == "순위" and (("지수보정" not in r.badges) if lag == 1 else (f"지수보정{lag}" in r.badges)) and r.src3 == "", (r.table, r.reason, r.badges))
 S, df = tail_case(4); r = row(df, "AAA")
 check("1x 4일 지연: 보정 안 됨 → ⚠ (사유는 1x)", r.table == "⚠" and "1x" in r.reason and "최신 확정 봉이 기준일" in r.reason, r.reason)
 def lag1(d): d["XAAA"] = d["XAAA"].iloc[:-1]

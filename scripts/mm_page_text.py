@@ -394,13 +394,16 @@ def ensure(use_llm=True, only=None, force=False, force_fields=False, today=None,
     prods = load_products()
     cur = json.load(open(OUT, encoding="utf-8")) if OUT.exists() else {"meta": {}, "items": {}}
     items = cur.get("items", {})
+    active = None
     if issuers is None:
         import pandas as pd
         issuers = dict(pd.read_csv(DATA / "universe.csv")[["ticker", "issuer"]].values)
+        active = set(issuers)      # MM-FUNDTRACK-20261023: 유니버스 밖(거래량 극소 제외 등) 종목은 재생성·갱신 대상이 아니다 — 발행사 폴백 값이 달라 해시가 어긋나 LLM 이 불필요하게 돌지 않도록
     stats = {"changed": [], "kept": 0, "failed": [], "errors": 0, "invalid": 0}
     todo = []
     for t, p in prods.items():
         if only and t not in only: continue
+        if active is not None and t not in active: continue
         iu = issuers.get(t, p["issuer"].split()[0])
         old = items.get(t) or {}
         h, ih = input_hash(p, iu), intro_hash(p, iu)
@@ -440,6 +443,7 @@ def ensure(use_llm=True, only=None, force=False, force_fields=False, today=None,
     # 코드가 직접 뽑는 값(상위 구성·기본 정보·섹터)은 매번 현재 products.yaml 로 갱신 — 입력 해시에 포함돼 있어 바뀌면 위에서 재생성됨
     for t, p in prods.items():
         if t in items:
+            if active is not None and t not in active: continue
             iu = issuers.get(t, p["issuer"].split()[0])
             items[t]["sector"] = sector_line(p); items[t]["top5"] = top5(p); items[t]["basic"] = basic_info(p, iu)
     meta = {"prompt_version": PROMPT_VERSION, "model": _gen().MODEL, "count": len(items), "generated": today}

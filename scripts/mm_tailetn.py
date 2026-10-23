@@ -12,6 +12,7 @@
   · 보정 행은 RAW 파일의 src 열에 'tail_etn' 으로 기록한다(나머지 행은 빈 문자열). RAW 는 매 실행 clean_all 이 새로 쓰므로, 다음 실행에서 공식 레벨·꼬리 소스가
     그 날짜를 채우면 자동으로 보정 행이 사라진다(덮어씀).
   · 같은 proxy 를 쓰는 3배가 여럿이면(SPXL/UPRO, TNA/URTY, MIDU/UMDD) 필요한 날짜를 모두 가진 상품 중 20일 평균 거래대금이 큰 쪽 하나를 쓴다.
+  · skip_proxies(펀드추종 1x, data/fund_track.json)는 보정 대상에서 뺀다 — 펀드 가격이 늦으면 보정 없이 ⚠(MM-FUNDTRACK-20261023).
 점수 산식·피처 코드는 건드리지 않는다. 호출 위치: mm_daily.run — clean_all 직후, load_study 이전.
 """
 import json
@@ -46,7 +47,7 @@ def _adtv20(h):
     except Exception: return 0.0
 
 
-def fill(T, uni, raw_dir, log=print, write=True, max_gap=MAX_GAP, info_path=None):
+def fill(T, uni, raw_dir, log=print, write=True, max_gap=MAX_GAP, info_path=None, skip_proxies=()):
     """RAW(raw_dir/*.csv)의 1x 시계열을 T 까지 보정한다. 반환 {proxy: {status, ...}} — 보정이 필요했던 proxy 만 담긴다.
     status: filled(보정함) / over_max(빠진 거래일 > max_gap, ⚠ 유지) / no_3x(빠진 날짜를 덮는 3배 봉 없음, ⚠ 유지) / no_calendar"""
     T = pd.Timestamp(T).normalize(); raw_dir = Path(raw_dir); info = {}
@@ -55,7 +56,9 @@ def fill(T, uni, raw_dir, log=print, write=True, max_gap=MAX_GAP, info_path=None
     except Exception as e:
         log(f"[mm_tailetn] SPY 달력을 읽지 못해 건너뜀: {type(e).__name__}: {e}")
         return info
+    skip = set(skip_proxies or ())                                      # 펀드추종(펀드 가격 직접) 1x — 꼬리 보정 대상 아님(MM-FUNDTRACK-20261023 §1): 펀드 봉이 늦으면 보정 없이 ⚠
     for px, grp in uni.groupby("proxy", sort=False):
+        if px in skip: continue
         p = raw_dir / f"{px}.csv"
         if not p.exists(): continue
         h1 = _rd(p); c1 = _close_by_day(h1)

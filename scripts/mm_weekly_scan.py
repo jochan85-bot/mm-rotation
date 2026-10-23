@@ -74,6 +74,10 @@ def main(push=True):
     known_names={n for names,_ in al.values() for n in names}
     u0=pd.read_csv("%s/p0/universe_v2.csv"%L.STUDY); known_tick=set(u0.ticker)|set(uni.ticker)|{c.get("ticker") for c in newp["candidates"]}|{x.get("ticker") for x in mm_newprod.load_json(L.DATA/"excluded_candidates.json",{"items":[]})["items"] if x.get("ticker")}
     known_names|={str(x).replace("™","") for x in u0.yf_longName.dropna()}
+    known_tick|=set(L.thin_tickers())                                          # MM-FUNDTRACK-20261023 §3: 거래량 극소로 유니버스 밖에 있는 종목을 신상품으로 재발견하지 않게
+    for _t in L.thin_tickers():
+        _ln=info.loc[info.ticker==_t,"yf_longName"]
+        if len(_ln) and isinstance(_ln.iloc[0],str): known_names.add(_ln.iloc[0].replace("™","").strip())
     issuer_fail={}
     # ---- EDGAR ----
     for iss,ciks in CIKS.items():
@@ -200,6 +204,13 @@ def main(push=True):
         _fw=mm_feedwatch.line(mm_feedwatch.suspects())
         if _fw: lines.append(_fw); L.log(_fw,"alerts")
     except Exception as e: L.log(f"[feedwatch] 건너뜀: {type(e).__name__}: {str(e)[:150]}","weekly")
+    try:                                                                       # MM-FUNDTRACK-20261023 §3: 거래량 극소 제외 종목 복귀 조건 점검(보고 전용, 자동 복귀 없음) — 실패해도 주간 보고를 깨지 않는다
+        import mm_thinwatch
+        _tw=mm_thinwatch.line(mm_thinwatch.check())
+        if _tw:
+            lines.append(_tw); L.log(_tw,"weekly")
+            if "복귀 후보: 없음" not in _tw: L.log(_tw,"alerts")
+    except Exception as e: L.log(f"[thinwatch] 건너뜀: {type(e).__name__}: {str(e)[:150]}","weekly")
     L.log("주간 점검 완료: "+json.dumps(dict(ok=len(ok_src),fail=len(fail_src),issues=len(issues),actions=len(actions),new=len(added),subst=len(subst_src)),ensure_ascii=False),"weekly")
     if "--no-alert" not in sys.argv: L.tg_send("\n".join(lines))
     else: print("\n".join(lines))

@@ -3424,11 +3424,11 @@ products:
         form: BMO 가격보충서 SMHU_PS
         doc_date: PS 2026-08-03
     onex:
-      label: 공식 지수 레벨
-      key: IDX_SEMIS
+      label: 펀드추종(펀드 가격 직접)
+      key: SMH
       exact: n.a.
-      series_source: 'microsectors.com semis_index1.json (발행사 공시 지수 레벨); 연장: ~2026-07-10 SMH 총수익(Adj Close; SEMIS 의 정의)'
-      extension: ~2026-07-10 SMH 총수익(Adj Close; SEMIS 의 정의)
+      series_source: 'SMH(VanEck Semiconductor ETF) 가격(Close)을 1x 로 전 구간 직접 사용 (MM-FUNDTRACK-20261023)'
+      extension: null
       beta_252: 2.9589
       r2_252: 0.9938
       n_252: 45
@@ -3627,11 +3627,11 @@ products:
         form: BMO 가격보충서 XLCU_PS
         doc_date: PS 2026-09-09
     onex:
-      label: 공식 지수 레벨
-      key: IDX_VXLCF
+      label: 펀드추종(펀드 가격 직접)
+      key: XLC
       exact: n.a.
-      series_source: 'microsectors.com vxlcf_index1.json (발행사 공시 지수 레벨); 연장: ~2026-07-10 XLC 총수익(Adj Close; VXLCF 의 정의)'
-      extension: ~2026-07-10 XLC 총수익(Adj Close; VXLCF 의 정의)
+      series_source: 'XLC(Communication Services Select Sector SPDR Fund) 가격(Close)을 1x 로 전 구간 직접 사용 (MM-FUNDTRACK-20261023)'
+      extension: null
       beta_252: 2.5863
       r2_252: 0.5549
       n_252: 18
@@ -3732,11 +3732,11 @@ products:
         form: BMO 가격보충서 XLPU_PS
         doc_date: PS 2026-09-09
     onex:
-      label: 공식 지수 레벨
-      key: IDX_VXLPF
+      label: 펀드추종(펀드 가격 직접)
+      key: XLP
       exact: n.a.
-      series_source: 'microsectors.com vxlpf_index1.json (발행사 공시 지수 레벨); 연장: ~2026-07-10 XLP 총수익(Adj Close; VXLPF 의 정의)'
-      extension: ~2026-07-10 XLP 총수익(Adj Close; VXLPF 의 정의)
+      series_source: 'XLP(Consumer Staples Select Sector SPDR Fund) 가격(Close)을 1x 로 전 구간 직접 사용 (MM-FUNDTRACK-20261023)'
+      extension: null
       beta_252: 1.2518
       r2_252: 0.3004
       n_252: 18

@@ -1,0 +1,23 @@
+{
+ "_note": "펀드추종 지수(발행사 지수가 '관련 ETF 총수익'으로 연장돼 있던 3종, MM-FUNDTRACK-20261023): 1x = 추종 대상 펀드 가격(Close)을 전 구간 직접 사용. 지수 피드·ETN 꼬리 보정(mm_tailetn) 경로에서 제외 — 펀드 봉이 늦으면 ⚠(순위 제외). XLCU·XLPU 는 거래량 극소로 유니버스 밖(data/thin_excluded.json) — 복귀하면 이 경로를 그대로 쓴다.",
+ "items": {
+  "SMHU": {
+   "fund": "SMH",
+   "fund_name": "VanEck Semiconductor ETF",
+   "index": "VettaFi Semiconductor Fund-Tracking Index",
+   "in_universe": true
+  },
+  "XLCU": {
+   "fund": "XLC",
+   "fund_name": "Communication Services Select Sector SPDR Fund",
+   "index": "VettaFi US Communications Fund-Tracking Index",
+   "in_universe": false
+  },
+  "XLPU": {
+   "fund": "XLP",
+   "fund_name": "Consumer Staples Select Sector SPDR Fund",
+   "index": "VettaFi US Consumer Staples Fund-Tracking Index",
+   "in_universe": false
+  }
+ }
+}

@@ -7,6 +7,8 @@ excluded:
   배수 변경: "배수 변경 공지, {date} — 3배 상품인지 재확인할 때까지 제외"
   지수 변경: "추종 지수 변경 공지, {date} — 지수 재확인할 때까지 제외"
 default_excluded: "발행사 공지로 제외, {date}"
+# 거래량 극소 제외(발행사 공시 아님) — data/thin_excluded.json 의 항목. {date}=제외 시작일, {threshold}=20일 평균 거래량 문턱(주). MM-FUNDTRACK-20261023 §3.
+thin_volume: "거래량 극소(발행사 공시 아님), {date}부터 — 3배 상품 20일 평균 거래량 {threshold}주 미만이라 무한매수 주문 체결이 어려워 순위에서 제외"
 # 순위 계산에서 일시 제외된 종목(데이터 확인 중) — 상태 파일의 reason 문자열이 match 로 시작하면 text 를 쓴다.
 held:
   - match: "최신 확정 봉이 기준일"

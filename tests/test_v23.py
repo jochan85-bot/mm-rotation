@@ -121,6 +121,7 @@ with tempfile.TemporaryDirectory() as td:
 S,uni,pq=mk(); df,_=L.compute(S,asof,asof,cfg,st,uni,pq)
 df["d_rank"]=""; df=L.period_ranks(df,dates,lambda d:None)
 import mm_site as ms
+ms.thin_exclusion_rows=lambda tx=None: []      # 라이브 data/thin_excluded.json 과 분리(MM-FUNDTRACK-20261023) — 해당 행은 test_fundtrack.py 에서 검증
 pinfo=pd.DataFrame([dict(ticker=t,index_name=f"Idx {t}",onex_path="공식 지수 레벨") for t in uni.ticker])
 orig=ms.pd.read_csv; ms.pd.read_csv=lambda p,*a,**k: pinfo if str(p).endswith("product_info.csv") else orig(p,*a,**k)
 h=ms.build_index(df,dict(asof="2026-10-08",generated="t",provisional=dict(raw_last="2026-10-09",reason="Close NaN"),manual=True,new_products=[],pipeline=[]))
