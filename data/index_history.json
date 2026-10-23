@@ -122,17 +122,6 @@
     "official_last": "2026-10-07"
    }
   },
-  "MIDU": {
-   "key": "IDX_MID",
-   "first_bar": "2009-01-08",
-   "listed": "2009-01-08",
-   "index_name": "S&P MidCap 400® Index",
-   "level_kind": "yahoo_index",
-   "official_first": "1981-01-02",
-   "ext": {
-    "has": false
-   }
-  },
   "MNGU": {
    "key": "IDX_MANGOSN",
    "first_bar": "2026-08-27",
@@ -191,61 +180,6 @@
     "days": 1,
     "src": "DE000SL0EDX2.SG",
     "official_last": "2026-10-07"
-   }
-  },
-  "TNA": {
-   "key": "IDX_RUT",
-   "first_bar": "2008-11-19",
-   "listed": "2008-11-05",
-   "index_name": "Russell 2000® Index",
-   "level_kind": "yahoo_index",
-   "official_first": "1987-09-10",
-   "ext": {
-    "has": false
-   }
-  },
-  "TQQQ": {
-   "key": "IDX_NDX",
-   "first_bar": "2010-02-11",
-   "listed": "2010-02-09",
-   "index_name": "Nasdaq-100® Index",
-   "level_kind": "yahoo_index",
-   "official_first": "1985-10-01",
-   "ext": {
-    "has": false
-   }
-  },
-  "UDOW": {
-   "key": "IDX_DJI",
-   "first_bar": "2010-02-11",
-   "listed": "2010-02-09",
-   "index_name": "Dow Jones Industrial Average SM",
-   "level_kind": "yahoo_index",
-   "official_first": "1992-01-02",
-   "ext": {
-    "has": false
-   }
-  },
-  "UMDD": {
-   "key": "IDX_MID",
-   "first_bar": "2010-02-11",
-   "listed": "2010-02-09",
-   "index_name": "S&P MidCap 400® Index",
-   "level_kind": "yahoo_index",
-   "official_first": "1981-01-02",
-   "ext": {
-    "has": false
-   }
-  },
-  "URTY": {
-   "key": "IDX_RUT",
-   "first_bar": "2010-02-11",
-   "listed": "2010-02-09",
-   "index_name": "Russell 2000® Index",
-   "level_kind": "yahoo_index",
-   "official_first": "1987-09-10",
-   "ext": {
-    "has": false
    }
   }
  }

@@ -1,12 +1,12 @@
 ticker,group,type,issuer,proxy,approx,leverage,added,source,proxy_disp,proxy_tip,vstate
 SPXL,A,ETF,Direxion,SPY,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),SPY (exact ETF),"S&P 500® Index | 경로 exact 1x ETF: SPY (동일 지수 1x ETF) — (a) IDX_GSPC 은 R² 0.9925 < SPY 0.9981, 최근 252일 중 지수-ETF 일간 괴리>0.4% 2일(Yahoo 지수 봉 불량 의심)로 (b) 대체",
 UPRO,A,ETF,ProShares,SPY,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),SPY (exact ETF),"S&P 500® Index | 경로 exact 1x ETF: SPY (동일 지수 1x ETF) — (a) IDX_GSPC 은 R² 0.9940 < SPY 0.9979, 최근 252일 중 지수-ETF 일간 괴리>0.4% 2일(Yahoo 지수 봉 불량 의심)로 (b) 대체",
-TQQQ,A,ETF,ProShares,IDX_NDX,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),^NDX 지수 레벨,Nasdaq-100® Index | 경로 공식 지수 레벨: Yahoo ^NDX (가격수익 지수 레벨),
-UDOW,A,ETF,ProShares,IDX_DJI,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),^DJI 지수 레벨,Dow Jones Industrial Average SM | 경로 공식 지수 레벨: Yahoo ^DJI (가격수익 지수 레벨),
-TNA,A,ETF,Direxion,IDX_RUT,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),^RUT 지수 레벨,Russell 2000® Index | 경로 공식 지수 레벨: Yahoo ^RUT (가격수익 지수 레벨),
-URTY,A,ETF,ProShares,IDX_RUT,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),^RUT 지수 레벨,Russell 2000® Index | 경로 공식 지수 레벨: Yahoo ^RUT (가격수익 지수 레벨),
-MIDU,A,ETF,Direxion,IDX_MID,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),^MID 지수 레벨,S&P MidCap 400® Index | 경로 공식 지수 레벨: Yahoo ^MID (가격수익 지수 레벨),
-UMDD,A,ETF,ProShares,IDX_MID,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),^MID 지수 레벨,S&P MidCap 400® Index | 경로 공식 지수 레벨: Yahoo ^MID (가격수익 지수 레벨),
+TQQQ,A,ETF,ProShares,QQQ,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),QQQ (exact ETF),Nasdaq-100® Index | 경로 exact 1x ETF: QQQ (동일 지수 1x ETF) — 야후 지수 심볼 ^NDX 결손 회피로 exact ETF 사용,
+UDOW,A,ETF,ProShares,DIA,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),DIA (exact ETF),Dow Jones Industrial Average SM | 경로 exact 1x ETF: DIA (동일 지수 1x ETF) — 야후 지수 심볼 ^DJI 결손 회피로 exact ETF 사용,
+TNA,A,ETF,Direxion,IWM,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),IWM (exact ETF),Russell 2000® Index | 경로 exact 1x ETF: IWM (동일 지수 1x ETF) — 야후 지수 심볼 ^RUT 결손 회피로 exact ETF 사용,
+URTY,A,ETF,ProShares,IWM,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),IWM (exact ETF),Russell 2000® Index | 경로 exact 1x ETF: IWM (동일 지수 1x ETF) — 야후 지수 심볼 ^RUT 결손 회피로 exact ETF 사용,
+MIDU,A,ETF,Direxion,IJH,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),IJH (exact ETF),S&P MidCap 400® Index | 경로 exact 1x ETF: IJH (동일 지수 1x ETF) — 야후 지수 심볼 ^MID 결손 회피로 exact ETF 사용,
+UMDD,A,ETF,ProShares,IJH,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),IJH (exact ETF),S&P MidCap 400® Index | 경로 exact 1x ETF: IJH (동일 지수 1x ETF) — 야후 지수 심볼 ^MID 결손 회피로 exact ETF 사용,
 HIBL,A,ETF,Direxion,SPHB,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),SPHB (exact ETF),S&P 500® High Beta Index | 경로 exact 1x ETF: SPHB (동일 지수 1x ETF),
 SOXL,B,ETF,Direxion,SOXX,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),SOXX (exact ETF),NYSE Semiconductor Index | 경로 exact 1x ETF: SOXX (동일 지수 1x ETF),
 TECL,B,ETF,Direxion,XLK,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),XLK (exact ETF),Technology Select Sector Index | 경로 exact 1x ETF: XLK (동일 지수 1x ETF),
@@ -31,6 +31,6 @@ NRGU,C,ETN,BMO MicroSectors,IDX_SOLUSBOT,0,3x,2026-10-09,universe_v4 (MM-PROXY-F
 OILU,C,ETN,BMO MicroSectors,IDX_SOLOILT,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),SOLOILT 지수 레벨(발행사 공시),Solactive MicroSectors(TM) Oil & Gas Exploration & Production Index | 경로 공식 지수 레벨: microsectors.com soloilt_index1.json (발행사 공시 지수 레벨); 연장: ~2021-10-19 SG 인증서 DE000SL0EDX2 | 연장 ~2021-10-19 SG 인증서 DE000SL0EDX2,
 GDXU,C,ETN,BMO MicroSectors,IDX_MINERS,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),MINERS 지수 레벨(발행사 공시),S-Network MicroSectors(TM) Gold Miners Index | 경로 공식 지수 레벨: microsectors.com miners_index1.json (발행사 공시 지수 레벨); 연장: ~2020-08-19 GDX/GDXJ 구성 복제(Adj Close) | 연장 ~2020-08-19 GDX/GDXJ 구성 복제(Adj Close),
 AIQU,C,ETN,BMO MicroSectors,IDX_BAILSN,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),BAILSN 지수 레벨(발행사 공시),BITA AI Leaders Select NTR US Index | 경로 공식 지수 레벨: microsectors.com bailsn_index1.json (발행사 공시 지수 레벨); 연장: ~2026-05-14 25종 복제 | 연장 ~2026-05-14 25종 복제,
-SMHU,C,ETN,BMO MicroSectors,SMH,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),SMH 펀드 가격(직접),"VettaFi Semiconductor Fund-Tracking Index | 경로 펀드추종: 추종 대상 펀드 SMH(VanEck Semiconductor ETF) 가격을 1x 로 직접 사용(전 구간, 지수 피드·꼬리 보정 경로 제외)",검증 미완(표본 n=45<60)
+SMHU,C,ETN,BMO MicroSectors,SMH,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),SMH 펀드 가격(직접),"VettaFi Semiconductor Fund-Tracking Index | 경로 펀드추종: 추종 대상 펀드 SMH(VanEck Semiconductor ETF) 가격을 1x 로 직접 사용(전 구간, exact ETF 와 같은 꼬리 보정 허용)",검증 미완(표본 n=45<60)
 MNGU,C,ETN,BMO MicroSectors,IDX_MANGOSN,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),MANGOSN 지수 레벨(발행사 공시),NYSE(R) MaNGoS+ Index - net total return version | 경로 공식 지수 레벨: microsectors.com mangosn_index1.json (발행사 공시 지수 레벨); 연장: ~2026-08-18 10종 복제 | 연장 ~2026-08-18 10종 복제,검증 미완(표본 n=28<60)
 FLYU,C,ETN,BMO MicroSectors,IDX_MQUSTRAV,0,3x,2026-10-09,universe_v4 (MM-PROXY-FIX-20261014),MQUSTRAV 지수 레벨(발행사 공시),MerQube MicroSectors(TM) U.S. Travel Index | 경로 공식 지수 레벨: microsectors.com mqustrav_index1.json (발행사 공시 지수 레벨); 연장: ~2021-10-29 34종 복제 | 연장 ~2021-10-29 34종 복제,

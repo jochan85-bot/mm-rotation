@@ -12,7 +12,7 @@
   · 보정 행은 RAW 파일의 src 열에 'tail_etn' 으로 기록한다(나머지 행은 빈 문자열). RAW 는 매 실행 clean_all 이 새로 쓰므로, 다음 실행에서 공식 레벨·꼬리 소스가
     그 날짜를 채우면 자동으로 보정 행이 사라진다(덮어씀).
   · 같은 proxy 를 쓰는 3배가 여럿이면(SPXL/UPRO, TNA/URTY, MIDU/UMDD) 필요한 날짜를 모두 가진 상품 중 20일 평균 거래대금이 큰 쪽 하나를 쓴다.
-  · skip_proxies(펀드추종 1x, data/fund_track.json)는 보정 대상에서 뺀다 — 펀드 가격이 늦으면 보정 없이 ⚠(MM-FUNDTRACK-20261023).
+  · skip_proxies(data/fund_track.json 의 펀드)는 보정 대상에서 뺀다 — MM-FUNDTRACK-20261023 에서 도입했으나 같은 날 후속 블록에서 목록을 비워 현재는 아무 proxy 도 건너뛰지 않는다(SMH 도 일반 exact ETF 와 같이 보정).
 점수 산식·피처 코드는 건드리지 않는다. 호출 위치: mm_daily.run — clean_all 직후, load_study 이전.
 """
 import json

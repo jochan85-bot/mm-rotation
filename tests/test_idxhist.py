@@ -26,9 +26,9 @@ check("문구('재구성 N%') — 1Y 대상(구성종목 복제) 종목에만", 
 check("과거 날짜는 창이 달라 비율이 다름", H.window_pct(it, dates, "2026-07-31") != H.window_pct(it, dates, asof))
 # 실제 정적 파일
 items = H.load_history()
-check("정적 기록 15종 (MM-FUNDTRACK-20261023: SMHU·XLCU·XLPU 는 펀드추종 경로라 제외)", len(items) == 15 and not ({"SMHU", "XLCU", "XLPU"} & set(items)), len(items))
+check("정적 기록 9종 (MM-FUNDTRACK: SMHU·XLCU·XLPU 펀드추종, 후속: TQQQ·UDOW·TNA·URTY·MIDU·UMDD exact ETF 로 이동)", len(items) == 9 and not ({"SMHU", "XLCU", "XLPU", "TQQQ", "UDOW", "TNA", "URTY", "MIDU", "UMDD"} & set(items)), len(items))
 rows = H.table_rows(asof, dates, items)
-check("공식 지수 레벨 경로 종목만(야후 지수 6 + 공시 레벨 9)", sum(r["kind"] == "yahoo_index" for r in rows) == 6 and sum(r["kind"] == "official_level" for r in rows) == 9)
+check("공식 지수 레벨 경로 종목만(야후 지수 0 + 공시 레벨 9)", sum(r["kind"] == "yahoo_index" for r in rows) == 0 and sum(r["kind"] == "official_level" for r in rows) == 9)
 check("모든 종목에 공식 첫 날짜·상장일", all(r["official_first"] and r["listed"] for r in rows))
 check("연장 있는 종목은 방법·시작~끝 기록", all(r["ext_method"] != "—" and r["ext_start"] and r["ext_end"] and r["ext_end"] < r["official_first"] for r in rows if r["has_ext"]))
 print(f"{ok} PASS, {len(bad)} FAIL"); sys.exit(1 if bad else 0)

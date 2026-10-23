@@ -261,10 +261,10 @@ products:
         form: 497K (Summary Prospectus)
         doc_date: '2026-09-28'
     onex:
-      label: 공식 지수 레벨
-      key: IDX_NDX
-      exact: n.a.
-      series_source: Yahoo ^NDX (가격수익 지수 레벨)
+      label: exact 1x ETF
+      key: QQQ
+      exact: exact
+      series_source: 'QQQ (동일 지수 1x ETF) — 야후 지수 심볼 ^NDX 결손 회피로 exact ETF 사용 (MM-FUNDTRACK 후속 20261023)'
       extension: null
       beta_252: 2.9752
       r2_252: 0.9986
@@ -361,10 +361,10 @@ products:
         form: 497K (Summary Prospectus)
         doc_date: '2026-09-28'
     onex:
-      label: 공식 지수 레벨
-      key: IDX_DJI
-      exact: n.a.
-      series_source: Yahoo ^DJI (가격수익 지수 레벨)
+      label: exact 1x ETF
+      key: DIA
+      exact: exact
+      series_source: 'DIA (동일 지수 1x ETF) — 야후 지수 심볼 ^DJI 결손 회피로 exact ETF 사용 (MM-FUNDTRACK 후속 20261023)'
       extension: null
       beta_252: 2.9612
       r2_252: 0.9973
@@ -459,10 +459,10 @@ products:
         form: 497K (Summary Prospectus)
         doc_date: '2026-02-27'
     onex:
-      label: 공식 지수 레벨
-      key: IDX_RUT
-      exact: n.a.
-      series_source: Yahoo ^RUT (가격수익 지수 레벨)
+      label: exact 1x ETF
+      key: IWM
+      exact: exact
+      series_source: 'IWM (동일 지수 1x ETF) — 야후 지수 심볼 ^RUT 결손 회피로 exact ETF 사용 (MM-FUNDTRACK 후속 20261023)'
       extension: null
       beta_252: 2.9708
       r2_252: 0.9967
@@ -565,10 +565,10 @@ products:
         form: 497K (Summary Prospectus)
         doc_date: '2026-09-28'
     onex:
-      label: 공식 지수 레벨
-      key: IDX_RUT
-      exact: n.a.
-      series_source: Yahoo ^RUT (가격수익 지수 레벨)
+      label: exact 1x ETF
+      key: IWM
+      exact: exact
+      series_source: 'IWM (동일 지수 1x ETF) — 야후 지수 심볼 ^RUT 결손 회피로 exact ETF 사용 (MM-FUNDTRACK 후속 20261023)'
       extension: null
       beta_252: 2.9778
       r2_252: 0.9958
@@ -664,10 +664,10 @@ products:
         form: 497K (Summary Prospectus)
         doc_date: '2026-02-27'
     onex:
-      label: 공식 지수 레벨
-      key: IDX_MID
-      exact: n.a.
-      series_source: Yahoo ^MID (가격수익 지수 레벨)
+      label: exact 1x ETF
+      key: IJH
+      exact: exact
+      series_source: 'IJH (동일 지수 1x ETF) — 야후 지수 심볼 ^MID 결손 회피로 exact ETF 사용 (MM-FUNDTRACK 후속 20261023)'
       extension: null
       beta_252: 2.9959
       r2_252: 0.9976
@@ -766,10 +766,10 @@ products:
         form: 497K (Summary Prospectus)
         doc_date: '2026-09-28'
     onex:
-      label: 공식 지수 레벨
-      key: IDX_MID
-      exact: n.a.
-      series_source: Yahoo ^MID (가격수익 지수 레벨)
+      label: exact 1x ETF
+      key: IJH
+      exact: exact
+      series_source: 'IJH (동일 지수 1x ETF) — 야후 지수 심볼 ^MID 결손 회피로 exact ETF 사용 (MM-FUNDTRACK 후속 20261023)'
       extension: null
       beta_252: 3.0167
       r2_252: 0.9947

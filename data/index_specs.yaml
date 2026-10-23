@@ -200,14 +200,14 @@ products:
       owner_guide_name: n.a. (owner supplied claims only for Direxion funds)
       matches_owner_guide: n.a.
     onex:
-      path: a
-      path_label: 공식 지수 레벨
-      key: IDX_NDX
-      series_source: Yahoo ^NDX (가격수익 지수 레벨)
+      path: b
+      path_label: exact 1x ETF
+      key: QQQ
+      series_source: 'QQQ (동일 지수 1x ETF) — 야후 지수 심볼 ^NDX 결손 회피로 exact ETF 사용 (MM-FUNDTRACK 후속 20261023)'
       onex_index_doc: 'QQQ: Nasdaq-100 Index'
-      exact: n.a.
+      exact: exact
       extension: null
-      note: null
+      note: ' | ^NDX 대체: 야후 지수 심볼 결손(exact ETF, 야후 지수 심볼 결손 회피)'
       series_start: '2000-01-03'
       series_end: '2026-10-08'
       n_bars: 6732
@@ -254,14 +254,14 @@ products:
       owner_guide_name: n.a. (owner supplied claims only for Direxion funds)
       matches_owner_guide: n.a.
     onex:
-      path: a
-      path_label: 공식 지수 레벨
-      key: IDX_DJI
-      series_source: Yahoo ^DJI (가격수익 지수 레벨)
+      path: b
+      path_label: exact 1x ETF
+      key: DIA
+      series_source: 'DIA (동일 지수 1x ETF) — 야후 지수 심볼 ^DJI 결손 회피로 exact ETF 사용 (MM-FUNDTRACK 후속 20261023)'
       onex_index_doc: 'DIA: Dow Jones Industrial Average'
-      exact: n.a.
+      exact: exact
       extension: null
-      note: null
+      note: ' | ^DJI 대체: 야후 지수 심볼 결손(exact ETF, 야후 지수 심볼 결손 회피)'
       series_start: '2000-01-03'
       series_end: '2026-10-08'
       n_bars: 6732
@@ -309,14 +309,14 @@ products:
       owner_guide_name: Russell 2000
       matches_owner_guide: 'True'
     onex:
-      path: a
-      path_label: 공식 지수 레벨
-      key: IDX_RUT
-      series_source: Yahoo ^RUT (가격수익 지수 레벨)
+      path: b
+      path_label: exact 1x ETF
+      key: IWM
+      series_source: 'IWM (동일 지수 1x ETF) — 야후 지수 심볼 ^RUT 결손 회피로 exact ETF 사용 (MM-FUNDTRACK 후속 20261023)'
       onex_index_doc: 'IWM: Russell 2000 Index'
-      exact: n.a.
+      exact: exact
       extension: null
-      note: null
+      note: ' | ^RUT 대체: 야후 지수 심볼 결손(exact ETF, 야후 지수 심볼 결손 회피)'
       series_start: '2000-01-03'
       series_end: '2026-10-08'
       n_bars: 6732
@@ -363,14 +363,14 @@ products:
       owner_guide_name: n.a. (owner supplied claims only for Direxion funds)
       matches_owner_guide: n.a.
     onex:
-      path: a
-      path_label: 공식 지수 레벨
-      key: IDX_RUT
-      series_source: Yahoo ^RUT (가격수익 지수 레벨)
+      path: b
+      path_label: exact 1x ETF
+      key: IWM
+      series_source: 'IWM (동일 지수 1x ETF) — 야후 지수 심볼 ^RUT 결손 회피로 exact ETF 사용 (MM-FUNDTRACK 후속 20261023)'
       onex_index_doc: 'IWM: Russell 2000 Index'
-      exact: n.a.
+      exact: exact
       extension: null
-      note: null
+      note: ' | ^RUT 대체: 야후 지수 심볼 결손(exact ETF, 야후 지수 심볼 결손 회피)'
       series_start: '2000-01-03'
       series_end: '2026-10-08'
       n_bars: 6732
@@ -416,14 +416,14 @@ products:
       owner_guide_name: S&P MidCap 400
       matches_owner_guide: 'True'
     onex:
-      path: a
-      path_label: 공식 지수 레벨
-      key: IDX_MID
-      series_source: Yahoo ^MID (가격수익 지수 레벨)
+      path: b
+      path_label: exact 1x ETF
+      key: IJH
+      series_source: 'IJH (동일 지수 1x ETF) — 야후 지수 심볼 ^MID 결손 회피로 exact ETF 사용 (MM-FUNDTRACK 후속 20261023)'
       onex_index_doc: 'IJH: S&P MidCap 400 Index'
-      exact: n.a.
+      exact: exact
       extension: null
-      note: null
+      note: ' | ^MID 대체: 야후 지수 심볼 결손(exact ETF, 야후 지수 심볼 결손 회피)'
       series_start: '2000-01-03'
       series_end: '2026-10-08'
       n_bars: 6732
@@ -470,14 +470,14 @@ products:
       owner_guide_name: n.a. (owner supplied claims only for Direxion funds)
       matches_owner_guide: n.a.
     onex:
-      path: a
-      path_label: 공식 지수 레벨
-      key: IDX_MID
-      series_source: Yahoo ^MID (가격수익 지수 레벨)
+      path: b
+      path_label: exact 1x ETF
+      key: IJH
+      series_source: 'IJH (동일 지수 1x ETF) — 야후 지수 심볼 ^MID 결손 회피로 exact ETF 사용 (MM-FUNDTRACK 후속 20261023)'
       onex_index_doc: 'IJH: S&P MidCap 400 Index'
-      exact: n.a.
+      exact: exact
       extension: null
-      note: null
+      note: ' | ^MID 대체: 야후 지수 심볼 결손(exact ETF, 야후 지수 심볼 결손 회피)'
       series_start: '2000-01-03'
       series_end: '2026-10-08'
       n_bars: 6732
@@ -2725,7 +2725,7 @@ products:
       path: f
       path_label: 펀드추종(펀드 가격 직접)
       key: SMH
-      series_source: 'SMH(VanEck Semiconductor ETF) 가격(Close)을 1x 로 전 구간 직접 사용 (MM-FUNDTRACK-20261023) — 발행사 공식 지수 레벨 피드·관련 ETF 총수익 연장·ETN 꼬리 보정 경로 제외'
+      series_source: 'SMH(VanEck Semiconductor ETF) 가격(Close)을 1x 로 전 구간 직접 사용 (MM-FUNDTRACK-20261023) — 공식 지수 레벨 피드·관련 ETF 총수익 연장 경로 제외, 펀드 봉이 늦으면 exact ETF 와 같이 3배÷3 꼬리 보정 허용'
       onex_index_doc: VettaFi Semiconductor Fund-Tracking Index (SMH 100%, TR)
       exact: n.a.
       extension: null
@@ -2904,7 +2904,7 @@ products:
       path: f
       path_label: 펀드추종(펀드 가격 직접)
       key: XLC
-      series_source: 'XLC(Communication Services Select Sector SPDR Fund) 가격(Close)을 1x 로 전 구간 직접 사용 (MM-FUNDTRACK-20261023) — 발행사 공식 지수 레벨 피드·관련 ETF 총수익 연장·ETN 꼬리 보정 경로 제외'
+      series_source: 'XLC(Communication Services Select Sector SPDR Fund) 가격(Close)을 1x 로 전 구간 직접 사용 (MM-FUNDTRACK-20261023) — 공식 지수 레벨 피드·관련 ETF 총수익 연장 경로 제외, 펀드 봉이 늦으면 exact ETF 와 같이 3배÷3 꼬리 보정 허용'
       onex_index_doc: VettaFi US Communications Fund-Tracking Index (XLC 100%, TR)
       exact: n.a.
       extension: null
@@ -2985,7 +2985,7 @@ products:
       path: f
       path_label: 펀드추종(펀드 가격 직접)
       key: XLP
-      series_source: 'XLP(Consumer Staples Select Sector SPDR Fund) 가격(Close)을 1x 로 전 구간 직접 사용 (MM-FUNDTRACK-20261023) — 발행사 공식 지수 레벨 피드·관련 ETF 총수익 연장·ETN 꼬리 보정 경로 제외'
+      series_source: 'XLP(Consumer Staples Select Sector SPDR Fund) 가격(Close)을 1x 로 전 구간 직접 사용 (MM-FUNDTRACK-20261023) — 공식 지수 레벨 피드·관련 ETF 총수익 연장 경로 제외, 펀드 봉이 늦으면 exact ETF 와 같이 3배÷3 꼬리 보정 허용'
       onex_index_doc: VettaFi US Consumer Staples Fund-Tracking Index (XLP 100%, TR)
       exact: n.a.
       extension: null

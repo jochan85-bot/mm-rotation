@@ -22,8 +22,8 @@ check("지수 피드(proxy_specs)에서 IDX_SEMIS·IDX_VXLCF·IDX_VXLPF 제거",
 check("합성 키(mm_proxy.synthetic_keys)에 3종 없음", not ({"IDX_SEMIS", "IDX_VXLCF", "IDX_VXLPF"} & set(mm_proxy.synthetic_keys(D))))
 check("꼬리 소스 수신 목록(etf_tr SMH/XLC/XLP) 없음", not ({"SMH", "XLC", "XLP"} & set(mm_proxy.tail_fetch_tickers(D))))
 ft = json.load(open(D / "fund_track.json", encoding="utf-8"))["items"]
-check("fund_track.json: SMHU→SMH·XLCU→XLC·XLPU→XLP", {k: v["fund"] for k, v in ft.items()} == {"SMHU": "SMH", "XLCU": "XLC", "XLPU": "XLP"})
-check("fund_track_proxies() = {SMH, XLC, XLP}", L.fund_track_proxies() == {"SMH", "XLC", "XLP"})
+check("fund_track.json 비움(후속 블록: SMHU 는 일반 exact ETF 꼬리 보정 경로)", ft == {})
+check("fund_track_proxies() = 빈 집합", L.fund_track_proxies() == set())
 need = set(L.need_tickers())
 check("수신 대상에 SMH(전 이력) 포함·IDX_SEMIS 없음", "SMH" in need and "IDX_SEMIS" not in need)
 ih = mm_idxhist.load_history()
@@ -46,10 +46,27 @@ with tempfile.TemporaryDirectory() as td:
     u = pd.DataFrame({"ticker": ["ETN3"], "proxy": ["FUND"]})
     before = (raw / "FUND.csv").read_bytes()
     i0 = TE.fill(idx[-1], u, raw, log=lambda m: None, write=True, skip_proxies={"FUND"})
-    check("펀드추종 proxy 는 꼬리 보정 제외: info 비어 있음·RAW 바이트 불변(보정 행 0)", i0 == {} and (raw / "FUND.csv").read_bytes() == before)
-    i1 = TE.fill(idx[-1], u, raw, log=lambda m: None, write=False)
-    check("대조군: skip 없으면 같은 입력이 3배÷3 으로 1일 보정됨", i1.get("FUND", {}).get("status") == "filled" and i1["FUND"]["days"] == 1)
-check("apply_tail_etn 이 fund_track_proxies 를 skip 으로 넘김(소스 배선)", "skip_proxies=fund_track_proxies()" in (ROOT / "scripts" / "mm_lib.py").read_text(encoding="utf-8"))
+    check("skip_proxies 인자는 여전히 동작(목록이 비어 있으면 아무 것도 건너뛰지 않을 뿐): info 비어 있음·RAW 바이트 불변", i0 == {} and (raw / "FUND.csv").read_bytes() == before)
+    i1 = TE.fill(idx[-1], u, raw, log=lambda m: None, write=False, skip_proxies=L.fund_track_proxies())
+    check("펀드추종 꼬리 보정 복원: SMH 처럼 펀드 봉이 하루 늦으면 현행 fund_track(빈 목록)에서 3배÷3 으로 1일 보정됨", i1.get("FUND", {}).get("status") == "filled" and i1["FUND"]["days"] == 1 and i1["FUND"]["via"] == "ETN3")
+    uni_smh = pd.DataFrame({"ticker": ["SMHU"], "proxy": ["SMH"]})
+    write(raw, "SMH", mkdf(N - 1, 4)); write(raw, "SMHU", mkdf(N, 5, 0.03))
+    i2 = TE.fill(idx[-1], uni_smh, raw, log=lambda m: None, write=False, skip_proxies=L.fund_track_proxies())
+    check("실제 SMHU/SMH 구성으로 보정: SMH 1일 지연 → SMHU÷3 보정 허용", i2.get("SMH", {}).get("status") == "filled" and i2["SMH"]["members"] == ["SMHU"])
+check("apply_tail_etn 은 fund_track_proxies 를 skip 으로 넘김(소스 배선, 빈 목록이면 무영향)", "skip_proxies=fund_track_proxies()" in (ROOT / "scripts" / "mm_lib.py").read_text(encoding="utf-8"))
+# ── 후속: 야후 지수 심볼 → exact ETF
+ETF6 = {"TQQQ": "QQQ", "UDOW": "DIA", "TNA": "IWM", "URTY": "IWM", "MIDU": "IJH", "UMDD": "IJH"}
+check("TQQQ→QQQ·UDOW→DIA·TNA/URTY→IWM·MIDU/UMDD→IJH (universe proxy)", all(uni[uni.ticker == t].iloc[0].proxy == f and "exact ETF" in uni[uni.ticker == t].iloc[0].proxy_disp for t, f in ETF6.items()))
+check("proxy_specs 에서 야후 지수 4종(IDX_NDX·IDX_DJI·IDX_RUT·IDX_MID) 삭제 — ^NDX·^DJI·^RUT·^MID 수신 중단", not any(k in specs for k in ("IDX_NDX", "IDX_DJI", "IDX_RUT", "IDX_MID")) and not ({"^NDX", "^DJI", "^RUT", "^MID"} & need) and {"QQQ", "DIA", "IWM", "IJH"} <= need)
+check("지수 이력 표(index_history)에서 6종 삭제", not (set(ETF6) & set(ih)))
+check("product_info: 6종 exact 1x ETF·exact", all(pi.loc[t, "onex_path"] == "exact 1x ETF" and pi.loc[t, "onex_exact"] == "exact" and "결손" in str(pi.loc[t, "onex_series"]) for t in ETF6))
+check("index_specs: 6종 path_label exact 1x ETF·key=ETF·사유 '야후 지수 심볼 결손 회피' 기록", all(isp[t]["onex"]["path_label"] == "exact 1x ETF" and isp[t]["onex"]["key"] == f and "야후 지수 심볼" in isp[t]["onex"]["series_source"] and "결손 회피" in isp[t]["onex"]["note"] for t, f in ETF6.items()))
+pqd = pd.read_csv(D / "proxy_quality.csv").set_index("ticker")
+check("proxy_quality 의 proxy 열도 ETF", all(pqd.loc[t, "proxy"] == f for t, f in ETF6.items()))
+sl = pd.read_csv(D / "scores_latest.csv").set_index("ticker")
+check("재산출 결과: 6종 proxy = ETF·순위 포함(⚠ 0)", all(sl.loc[t, "proxy"] == f and sl.loc[t, "table"] == "순위" for t, f in ETF6.items()) and (sl.table == "⚠").sum() == 0)
+idxj = json.load(open(ROOT / "docs" / "data" / "index.json", encoding="utf-8"))["dates"]
+check("10-13~10-22 날짜 파일 N=35 (10-21 포함)", all(x["n"] == 35 for x in idxj if "2026-10-13" <= x["d"] <= "2026-10-22"), [x for x in idxj if x["d"] >= "2026-10-12"])
 
 # ── §2 지수 N일 보정 표시 문턱 — 1일은 기록만, 2일 이상 표시
 cfg = {"E1": {"threshold": 252}, "E2": {"threshold": 0.3}, "E4": {"beta_min": 2.7, "beta_max": 3.3, "r2_min": 0.85}, "E6": {"threshold": 1000}}

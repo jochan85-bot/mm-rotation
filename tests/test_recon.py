@@ -12,7 +12,7 @@ def check(name, cond, detail=""):
 
 IT = H.load_history(); D = H.trading_dates()
 check("1Y 대상 방법 = 구성종목 복제만", H.BLOCK_METHODS == ("구성종목 복제",))
-check("AIQU·MNGU·FLYU·GDXU 는 1Y 대상 방법, BULZ·FNGU 등은 아님 (SMHU·XLCU·XLPU 는 펀드추종으로 지수 이력 표에서 빠짐)", all(H.is_blocked_method(IT[t]) for t in ("AIQU", "MNGU", "FLYU", "GDXU")) and not any(H.is_blocked_method(IT[t]) for t in ("BULZ", "BNKU", "NRGU", "OILU", "FNGU", "TQQQ")) and not any(t in IT for t in ("SMHU", "XLCU", "XLPU")))
+check("AIQU·MNGU·FLYU·GDXU 는 1Y 대상 방법, BULZ·FNGU 등은 아님 (SMHU·XLCU·XLPU 펀드추종, TQQQ 등 6종 exact ETF 로 지수 이력 표에서 빠짐)", all(H.is_blocked_method(IT[t]) for t in ("AIQU", "MNGU", "FLYU", "GDXU")) and not any(H.is_blocked_method(IT[t]) for t in ("BULZ", "BNKU", "NRGU", "OILU", "FNGU")) and not any(t in IT for t in ("SMHU", "XLCU", "XLPU", "TQQQ", "UDOW", "TNA", "URTY", "MIDU", "UMDD")))
 ic = H.recon_icon(IT["AIQU"], D, "2026-10-08")
 check("AIQU 1Y 60% · 공식 2026-05-15 · 해제 2027-05-17", ic and ic["pct"] == 60 and ic["of"] == "2026-05-15" and ic["rel"] == "2027-05-17", ic)
 ic = H.recon_icon(IT["MNGU"], D, "2026-10-08")
