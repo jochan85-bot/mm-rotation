@@ -288,6 +288,16 @@ def find_mid_gaps(h, sessions):
     return [x for x in pd.DatetimeIndex(sessions) if lo <= x <= hi and x not in vd]
 
 
+def is_quiet(t, h):
+    """경보 제외 대상(MM-GAPFILL-20261024 보완): E7 제외 종목(thin_excluded.json) 또는 최근 20봉 평균 거래량 < LOW_VOL_THRESHOLD(1,000주) — 거래 없는 날이 야후·나스닥 어디에도 없는 게 정상이다. 보충 시도는 그대로 하고 미보충은 경보 없이 기록(gap_quiet.json)만."""
+    if t in thin_excluded_tickers(): return True
+    try:
+        v = h["Volume"].astype(float).tail(20)
+        return bool(len(v) and v.mean() < LOW_VOL_THRESHOLD)
+    except Exception:
+        return False
+
+
 def fallback_mid_gaps(log=print, write=True, opener=None, fetched=None, tickers=None, sessions=None, target=None):
     """야후 일봉의 '중간' 결손(최근 GAP_WINDOW 거래일 중 NYSE 거래일인데 봉이 없거나 Close NaN)을 나스닥 일별 기록으로 채운다(src=nasdaq_gap).
     나스닥에도 없으면 비워 둔다. 반환 {티커: {'filled': [날짜], 'unfilled': [날짜]}} — 결손이 있었던 티커만. 점수 산식·피처 코드는 건드리지 않는다."""
@@ -320,7 +330,7 @@ def fallback_mid_gaps(log=print, write=True, opener=None, fetched=None, tickers=
                 keep.index = pd.to_datetime(keep.index, utc=True).tz_convert("America/New_York")
                 out = pd.concat([keep, _to_cols(add, keep.columns)]).sort_index(); out.index.name = "Date"
                 if write: out.to_csv(p)
-            res[t] = dict(filled=got, unfilled=miss)
+            res[t] = dict(filled=got, unfilled=miss, quiet=is_quiet(t, h))
             if got: log(f"[mm_nasdaq] {t} 야후 중간 결손 {len(got)}봉 → 나스닥 보충({', '.join(str(x.date()) for x in got)})")
             if miss: log(f"[mm_nasdaq] {t} 야후 중간 결손 {len(miss)}봉 — 나스닥에도 없음({', '.join(str(x.date()) for x in miss)}){'' if err is None else ' · ' + type(err).__name__}")
         except Exception as e:
@@ -334,7 +344,18 @@ def alert_unfilled(res, state_path=None, send=True):
     sp = Path(state_path or (LOCAL / "gap_alert_state.json"))
     try: seen = set(json.load(open(sp, encoding="utf-8")))
     except Exception: seen = set()
-    new = [(t, str(x.date())) for t, v in sorted(res.items()) for x in v.get("unfilled", []) if f"{t}:{x.date()}" not in seen]
+    quiet = {t: [str(x.date()) for x in v.get("unfilled", [])] for t, v in sorted(res.items()) if v.get("quiet") and v.get("unfilled")}
+    if quiet:                                                                       # 극소거래 종목의 미보충은 경보 없이 기록만 (src 기록 대신 별도 파일 — 없는 봉을 만들어 넣지 않는다)
+        try:
+            qp = sp.parent / "gap_quiet.json"; cur = json.load(open(qp, encoding="utf-8")) if qp.exists() else {}
+            for t, ds in quiet.items(): cur[t] = sorted(set(cur.get(t, [])) | set(ds))
+            sp.parent.mkdir(parents=True, exist_ok=True); json.dump(cur, open(qp, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        except Exception: pass
+        try:
+            sys.path.insert(0, str(Path(__file__).resolve().parent)); import mm_lib
+            mm_lib.log("[mm_nasdaq] 극소거래 종목 중간 결손 미보충(경보 제외): " + ", ".join(f"{t}({' '.join(d[5:] for d in ds)})" for t, ds in quiet.items()), "daily")
+        except Exception: pass
+    new = [(t, str(x.date())) for t, v in sorted(res.items()) if not v.get("quiet") for x in v.get("unfilled", []) if f"{t}:{x.date()}" not in seen]
     if not new: return []
     by = {}
     for t, d in new: by.setdefault(t, []).append(d[5:])

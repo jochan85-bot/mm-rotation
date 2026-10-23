@@ -10,6 +10,7 @@ def check(name, cond, detail=""):
     if cond: ok += 1; print("PASS", name)
     else: bad.append(name); print("FAIL", name, detail)
 L.log = lambda m, name="daily": None
+import time; time.sleep = lambda s: None                                       # fetch_nasdaq 재시도 대기 제거(나스닥 부재 케이스가 재시도마다 2·4·6초)
 SES = pd.DatetimeIndex(pd.bdate_range("2026-06-01", "2026-10-08"))          # 합성 거래일(휴장 없음 가정) — sessions 를 직접 주입
 def frame(drop=(), nan=(), last=None, first=None):
     ix = [d for d in SES if (first is None or d >= pd.Timestamp(first)) and (last is None or d <= pd.Timestamp(last))]
@@ -77,6 +78,22 @@ with tempfile.TemporaryDirectory() as td:
     sent2 = []; mm_lib.alert = lambda m, **k: sent2.append(m) or True; sys.argv = ["x", "--no-alert"]
     N.alert_unfilled(res, state_path=Path(td) / "state2.json"); mm_lib.alert = orig; sys.argv = argv
     check("--no-alert: 텔레그램(alert) 호출 0", sent2 == [])
+# ── 극소거래 종목(E7 제외·20일 평균 거래량 < 1,000주)은 보충은 시도하되 미보충 경보 제외 (MM-GAPFILL-20261024 보완)
+with tempfile.TemporaryDirectory() as td:
+    low = frame(drop=["2026-09-10"]); low["Volume"] = 200.0                       # 20일 평균 200주
+    setup(td, THIN=frame(drop=["2026-07-03"]), LOWV=low, NORM=frame(drop=["2026-09-10"]))
+    orig_thin = N.thin_excluded_tickers; N.thin_excluded_tickers = lambda: ["THIN"]
+    op = Opener([]); res = run(td, ["THIN", "LOWV", "NORM"], op)
+    check("극소거래 종목도 보충은 시도(나스닥 호출 3회)·quiet 표시: THIN(E7)·LOWV(<1,000주)=True, NORM=False", len(op.calls) >= 3 and res["THIN"]["quiet"] and res["LOWV"]["quiet"] and not res["NORM"]["quiet"], (len(op.calls), {k: v["quiet"] for k, v in res.items()}))
+    sent = []; mm_lib.alert = lambda m, **k: sent.append(m) or True; argv = sys.argv; sys.argv = ["x"]
+    st = Path(td) / "state.json"; new = N.alert_unfilled(res, state_path=st); mm_lib.alert = orig; sys.argv = argv; N.thin_excluded_tickers = orig_thin
+    check("경보는 NORM 만(THIN·LOWV 미포함), 극소거래는 gap_quiet.json 에 기록만", len(sent) == 1 and "NORM(09-10)" in sent[0] and "THIN" not in sent[0] and "LOWV" not in sent[0] and new == [("NORM", "2026-09-10")]
+          and set(json.load(open(Path(td) / "gap_quiet.json", encoding="utf-8"))) == {"THIN", "LOWV"}, (sent, new))
+    # 극소거래 종목만 미보충이면 경보 0건
+    sent = []; mm_lib.alert = lambda m, **k: sent.append(m) or True; sys.argv = ["x"]
+    q = {"THIN": dict(filled=[], unfilled=[pd.Timestamp("2026-07-03")], quiet=True)}
+    new2 = N.alert_unfilled(q, state_path=Path(td) / "state_q.json"); mm_lib.alert = orig; sys.argv = argv
+    check("극소거래 종목만 미보충이면 경보 0건·상태 파일 무기록", sent == [] and new2 == [] and not (Path(td) / "state_q.json").exists())
 # ── 나스닥 호출 실패 → 예외 없이 unfilled
 with tempfile.TemporaryDirectory() as td:
     setup(td, AAA=frame(drop=["2026-09-10"]))
