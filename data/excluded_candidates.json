@@ -1221,6 +1221,84 @@
    "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001093/f46384d1.htm",
    "filed": "2026-10-13",
    "owner_override": false
+  },
+  {
+   "key": "proshares ultra lyte",
+   "ticker": "",
+   "name": "ProShares Ultra LYTE",
+   "issuer": "ProShares",
+   "leverage": "2x",
+   "rule": "a",
+   "reason": "2배 — +3배 아님",
+   "found": "2026-10-24",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001191/f46449d1.htm",
+   "filed": "2026-10-22",
+   "owner_override": false
+  },
+  {
+   "key": "proshares ultra ncld this",
+   "ticker": "",
+   "name": "ProShares Ultra NCLD This",
+   "issuer": "ProShares",
+   "leverage": "2x",
+   "rule": "a",
+   "reason": "2배 — +3배 아님",
+   "found": "2026-10-24",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001191/f46449d1.htm",
+   "filed": "2026-10-22",
+   "owner_override": false
+  },
+  {
+   "key": "proshares ultra samsung electronics",
+   "ticker": "",
+   "name": "ProShares Ultra Samsung Electronics",
+   "issuer": "ProShares",
+   "leverage": "2x",
+   "rule": "a",
+   "reason": "2배 — +3배 아님",
+   "found": "2026-10-24",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001190/f46448d1.htm",
+   "filed": "2026-10-22",
+   "owner_override": false
+  },
+  {
+   "key": "proshares ultrashort sb energy",
+   "ticker": "",
+   "name": "ProShares UltraShort SB Energy",
+   "issuer": "ProShares",
+   "leverage": "-2x",
+   "rule": "a",
+   "reason": "인버스(-2배) — 롱 +3배 아님",
+   "found": "2026-10-24",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001191/f46449d1.htm",
+   "filed": "2026-10-22",
+   "owner_override": false
+  },
+  {
+   "key": "proshares ultrashort samsung electronics",
+   "ticker": "",
+   "name": "ProShares UltraShort Samsung Electronics",
+   "issuer": "ProShares",
+   "leverage": "-2x",
+   "rule": "a",
+   "reason": "인버스(-2배) — 롱 +3배 아님",
+   "found": "2026-10-24",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001190/f46448d1.htm",
+   "filed": "2026-10-22",
+   "owner_override": false
+  },
+  {
+   "key": "proshares ultrashort vast data",
+   "ticker": "",
+   "name": "ProShares UltraShort VAST Data",
+   "issuer": "ProShares",
+   "leverage": "-2x",
+   "rule": "a",
+   "reason": "인버스(-2배) — 롱 +3배 아님",
+   "found": "2026-10-24",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001190/f46448d1.htm",
+   "filed": "2026-10-22",
+   "owner_override": false
   }
  ]
 }
