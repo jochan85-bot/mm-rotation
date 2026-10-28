@@ -3,8 +3,11 @@
 import sys, re, json, html, time, signal, traceback, datetime as dt, urllib.request
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-import numpy as np, pandas as pd
-import mm_lib as L
+try:
+    import numpy as np, pandas as pd
+    import mm_lib as L
+except BaseException as _e:      # MM-RESTORE-20261028 §4-2: import 단계 실패도 침묵 금지(mm_lib 비의존 경보)
+    import mm_bootalert; mm_bootalert.fail('주간 점검', _e); raise
 UA="mm-rotation research (jjoychan85@gmail.com)"
 CIKS={"Direxion":["0001424958"],"ProShares":["0001415311","0001174610"],"BMO":["0000927971"]}
 FORMS={"497","497K","497J","497AD","485APOS","485BPOS","485BXT","8-A12B","FWP","424B2","424B3","424B5","8-K"}

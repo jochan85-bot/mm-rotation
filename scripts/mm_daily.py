@@ -4,8 +4,11 @@ import os, sys, signal, subprocess, traceback
 import datetime as dt_mod
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-import numpy as np, pandas as pd
-import mm_lib as L, mm_site
+try:
+    import numpy as np, pandas as pd
+    import mm_lib as L, mm_site
+except BaseException as _e:      # MM-RESTORE-20261028 §4-2: import 단계 실패도 침묵 금지(mm_lib 비의존 경보)
+    import mm_bootalert; mm_bootalert.fail('일일 산출', _e); raise
 def _timeout(sig,frm): raise TimeoutError("상한 5분 초과")
 def is_manual():
     return os.environ.get("XPC_SERVICE_NAME","") not in ("com.mm.rotation_daily","com.mm.rotation_weekly") and os.environ.get("MM_AUTO")!="1"
