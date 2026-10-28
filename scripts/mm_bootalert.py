@@ -14,15 +14,5 @@ def fail(kind, exc):
         pass
     if os.environ.get("MM_BOOTALERT_SUPPRESS") == "1":
         print("[bootalert] 발송 억제(시험):", msg); return False
-    for k in range(2):
-        try:
-            chat = json.load(open(ROOT / ".local" / "config.json"))["chat_id"]
-            tok = subprocess.run(["/usr/bin/security", "find-generic-password", "-s", "mactrader-telegram-bot-token", "-a", "mactrader", "-w"],
-                                 capture_output=True, text=True, timeout=20).stdout.strip()
-            if not tok: return False
-            body = urllib.parse.urlencode({"chat_id": chat, "text": msg[:3900], "disable_web_page_preview": "true"}).encode()
-            if urllib.request.urlopen(urllib.request.Request(f"https://api.telegram.org/bot{tok}/sendMessage", data=body), timeout=30).status == 200:
-                return True
-        except Exception:
-            time.sleep(10)
-    return False
+    import mm_tg                                         # MM-ALERT-PATH-20261028: 모든 경보가 같은 발송 함수(mm_tg.send)를 탄다
+    return mm_tg.send(msg, "mm_bootalert", retries=2, wait=10)["ok"]

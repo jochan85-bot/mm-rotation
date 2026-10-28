@@ -24,25 +24,10 @@ def check_formula():
 # ---------- 알림 ----------
 def tg_send(text, retries=3, wait=30):
     """텔레그램 1건 (토큰=키체인, chat_id=.local/config.json). 실패는 예외 대신 False.
-    실패 시 wait 초 간격으로 최대 retries 회 시도하고, 시도마다 예외 전문(종류·메시지·코드·원인·트레이스백)을 alerts 로그에 남긴다(MM-WRAP-BT-20261011 §1)."""
-    import traceback
-    for k in range(1, retries + 1):
-        try:
-            cfg=json.load(open(LOCAL/"config.json")); chat=cfg["chat_id"]
-            tok=subprocess.run(["/usr/bin/security","find-generic-password","-s","mactrader-telegram-bot-token","-a","mactrader","-w"],capture_output=True,text=True,timeout=20).stdout.strip()
-            if not tok: log(f"tg_send 시도 {k}/{retries} 실패: 키체인 토큰 비어 있음","alerts"); return False      # 재시도해도 같은 결과 — 바로 종료
-            body=urllib.parse.urlencode({"chat_id":chat,"text":text[:3900],"disable_web_page_preview":"true"}).encode()
-            r=urllib.request.urlopen(urllib.request.Request(f"https://api.telegram.org/bot{tok}/sendMessage",data=body),timeout=30)
-            if r.status==200:
-                if k>1: log(f"tg_send 시도 {k}/{retries} 에서 성공","alerts")
-                return True
-            log(f"tg_send 시도 {k}/{retries} 실패: HTTP {r.status}","alerts")
-        except Exception as e:
-            extra=f" code={getattr(e,'code',None)} reason={getattr(e,'reason',None)!r}" if isinstance(e,(urllib.error.URLError,)) else ""
-            tb=traceback.format_exc().replace(tok,"<token>") if "tok" in locals() and tok else traceback.format_exc()
-            log(f"tg_send 시도 {k}/{retries} 실패: {type(e).__name__}: {str(e).replace(tok,'<token>') if 'tok' in locals() and tok else str(e)}{extra}\n{tb}","alerts")
-        if k<retries: time.sleep(wait)
-    return False
+    MM-ALERT-PATH-20261028: 실제 발송은 mm_tg.send 하나 — 성공·실패 모두 .local/logs/tg_sent.log 에 HTTP 상태·message_id 를 남긴다.
+    실패 시 wait 초 간격으로 최대 retries 회 시도하고, 시도마다 예외 전문을 alerts 로그에 남긴다(MM-WRAP-BT-20261011 §1)."""
+    import mm_tg
+    return mm_tg.send(text,"mm_lib.tg_send",retries=retries,wait=wait,on_fail=lambda m: log(m,"alerts"))["ok"]
 def alert(msg, retries=3, wait=30):
     """경보 1건 — alerts.log 에 먼저 남기고(텔레그램 실패와 무관) 텔레그램 1건. 종료 코드와 무관하게 쓴다(MM-FEED-LAG-FIX-20261018 §3). 반환 = 텔레그램 성공 여부."""
     log(msg,"alerts")

@@ -22,18 +22,8 @@ def alert(msg):
     except Exception: pass
     if os.environ.get("MM_OUTPUTWATCH_SUPPRESS") == "1":
         print("[outputwatch] 발송 억제(시험):", msg); return False
-    for k in range(3):
-        try:
-            chat = json.load(open(ROOT / ".local" / "config.json"))["chat_id"]
-            tok = subprocess.run(["/usr/bin/security", "find-generic-password", "-s", "mactrader-telegram-bot-token", "-a", "mactrader", "-w"],
-                                 capture_output=True, text=True, timeout=20).stdout.strip()
-            if not tok: log("tg 토큰 비어 있음"); return False
-            body = urllib.parse.urlencode({"chat_id": chat, "text": msg[:3900], "disable_web_page_preview": "true"}).encode()
-            if urllib.request.urlopen(urllib.request.Request(f"https://api.telegram.org/bot{tok}/sendMessage", data=body), timeout=30).status == 200:
-                return True
-        except Exception as e:
-            log(f"tg 시도 {k+1}/3 실패: {type(e).__name__}"); time.sleep(10)
-    return False
+    import mm_tg                                         # MM-ALERT-PATH-20261028: 모든 경보가 같은 발송 함수(mm_tg.send)를 탄다
+    return mm_tg.send(msg, "mm_outputwatch", retries=3, wait=10, on_fail=log)["ok"]
 def arg(name, default=None):
     return sys.argv[sys.argv.index(name) + 1] if name in sys.argv else default
 def main():
