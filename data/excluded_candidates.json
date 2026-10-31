@@ -1299,6 +1299,71 @@
    "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001190/f46448d1.htm",
    "filed": "2026-10-22",
    "owner_override": false
+  },
+  {
+   "key": "proshares ultra nasdaq cybersecurity",
+   "ticker": "",
+   "name": "ProShares Ultra Nasdaq Cybersecurity",
+   "issuer": "ProShares",
+   "leverage": "2x",
+   "rule": "a",
+   "reason": "2배 — +3배 아님",
+   "found": "2026-10-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001202/f46532d1.htm",
+   "filed": "2026-10-30",
+   "owner_override": false
+  },
+  {
+   "key": "proshares ultra solidigm",
+   "ticker": "",
+   "name": "ProShares Ultra Solidigm",
+   "issuer": "ProShares",
+   "leverage": "2x",
+   "rule": "a",
+   "reason": "2배 — +3배 아님",
+   "found": "2026-10-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001201/f46531d1.htm",
+   "filed": "2026-10-30",
+   "owner_override": false
+  },
+  {
+   "key": "proshares ultra vantage data centers",
+   "ticker": "",
+   "name": "ProShares Ultra Vantage Data Centers",
+   "issuer": "ProShares",
+   "leverage": "2x",
+   "rule": "a",
+   "reason": "2배 — +3배 아님",
+   "found": "2026-10-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001201/f46531d1.htm",
+   "filed": "2026-10-30",
+   "owner_override": false
+  },
+  {
+   "key": "proshares ultrashort solidigm",
+   "ticker": "",
+   "name": "ProShares UltraShort Solidigm",
+   "issuer": "ProShares",
+   "leverage": "-2x",
+   "rule": "a",
+   "reason": "인버스(-2배) — 롱 +3배 아님",
+   "found": "2026-10-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001201/f46531d1.htm",
+   "filed": "2026-10-30",
+   "owner_override": false
+  },
+  {
+   "key": "proshares ultrashort vantage data centers",
+   "ticker": "",
+   "name": "ProShares UltraShort Vantage Data Centers",
+   "issuer": "ProShares",
+   "leverage": "-2x",
+   "rule": "a",
+   "reason": "인버스(-2배) — 롱 +3배 아님",
+   "found": "2026-10-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001201/f46531d1.htm",
+   "filed": "2026-10-30",
+   "owner_override": false
   }
  ]
 }
