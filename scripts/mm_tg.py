@@ -15,6 +15,15 @@ def _rec(d):
             f.write(json.dumps(d, ensure_ascii=False) + "\n")
     except Exception:
         pass
+MM_ALERT_PREFIX = True   # [RECON-2-B6] 실패 경보 본문 앞에 🚨 접두 — 되돌림 False
+MM_ALERT_PIN = True      # [RECON-2-B6] 발송 성공 시 pinChatMessage(알림 없이 고정) — 되돌림 False. 권한 없으면 조용히 실패(tg_sent.log 의 pin 필드에만 기록)
+def _pin(tok, chat, message_id):
+    try:
+        body = urllib.parse.urlencode({"chat_id": chat, "message_id": message_id, "disable_notification": "true"}).encode()
+        r = urllib.request.urlopen(urllib.request.Request(f"https://api.telegram.org/bot{tok}/pinChatMessage", data=body), timeout=15)
+        return r.status
+    except Exception as e:
+        return f"{type(e).__name__}"
 def send(text, source, retries=3, wait=30, on_fail=None):
     """텔레그램 1건. 반환 dict(ok, status, message_id, chat_id, attempts, error). 예외를 올리지 않는다.
     on_fail(msg): 시도 실패 줄을 호출측 로그(alerts.log)에 남기는 콜백."""
@@ -24,6 +33,8 @@ def send(text, source, retries=3, wait=30, on_fail=None):
         if on_fail:
             try: on_fail(msg)
             except Exception: pass
+    if MM_ALERT_PREFIX and not str(text).lstrip().startswith("🚨"):
+        text = "🚨 " + str(text)
     if os.environ.get("MM_TG_SUPPRESS") == "1":
         res["error"] = "suppressed"; _rec(res); return res
     tok = ""
@@ -44,6 +55,7 @@ def send(text, source, retries=3, wait=30, on_fail=None):
                 pass
             if r.status == 200:
                 res["ok"] = True; res["error"] = None
+                if MM_ALERT_PIN and res["message_id"]: res["pin"] = _pin(tok, chat, res["message_id"])
                 if k > 1: fail(f"tg_send 시도 {k}/{retries} 에서 성공")
                 break
             res["error"] = f"HTTP {r.status}"; fail(f"tg_send 시도 {k}/{retries} 실패: HTTP {r.status}")

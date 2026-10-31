@@ -1,27 +1,4 @@
 {
- "_note": "거래량 극소로 유니버스에서 제외한 3배 상품 (eligibility.yaml E7, MM-FUNDTRACK-20261023 §3). 순위·장기순위·종목 목록에서 빠지고 메인 '제외 목록'에만 사유와 함께 표시. 수신(야후·나스닥)은 계속하며 주간 점검이 복귀 조건을 보고만 한다 — 자동 복귀 없음(복귀는 universe.csv 에 행을 되돌리는 오너 결정).",
- "items": [
-  {
-   "ticker": "XLCU",
-   "proxy": "XLC",
-   "since": "2026-10-23",
-   "rule": "E7",
-   "reason": "거래량 극소",
-   "vol20_at_exclusion": 171.8,
-   "vol20_asof": "2026-10-21",
-   "threshold": 1000,
-   "return_days": 20
-  },
-  {
-   "ticker": "XLPU",
-   "proxy": "XLP",
-   "since": "2026-10-23",
-   "rule": "E7",
-   "reason": "거래량 극소",
-   "vol20_at_exclusion": 695.2,
-   "vol20_asof": "2026-10-22",
-   "threshold": 1000,
-   "return_days": 20
-  }
- ]
+ "_note": "거래량 극소로 유니버스에서 제외한 3배 상품 (eligibility.yaml E7, MM-FUNDTRACK-20261023 §3). 순위·장기순위·종목 목록에서 빠지고 메인 '제외 목록'에만 사유와 함께 표시. 수신(야후·나스닥)은 계속하며 주간 점검이 복귀 조건을 보고만 한다 — 자동 복귀 없음(복귀는 universe.csv 에 행을 되돌리는 오너 결정). [RECON-2-B6 초안] items 비움 = 10-14 결정 복귀(목록 복귀 + ! 배지); 거래량 극소는 E6 배지로만 표시.",
+ "items": []
 }

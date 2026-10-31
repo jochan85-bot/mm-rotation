@@ -3,7 +3,7 @@
 <div class="guide">
 
 <h2 id="s1">1. 이 페이지가 하는 일과 하지 않는 일</h2>
-<p><b>하는 일.</b> 미국에 상장된 3배 레버리지 ETF·ETN 35종을, 각 상품이 따르는 지수의 최근 흐름(변동성·1년 수익률·추세)으로 서로 비교해 순위표로 보여 줍니다. 3배 상품을 무한매수 방식으로 운용할 때 어떤 상품이 지금 앞쪽에 있는지 참고하라고 만든 표입니다. 거래일마다 갱신되고, 2020-01-02 부터의 날짜별 순위를 달력으로 되돌려 볼 수 있습니다.</p>
+<p><b>하는 일.</b> 미국에 상장된 3배 레버리지 ETF·ETN 37종을, 각 상품이 따르는 지수의 최근 흐름(변동성·1년 수익률·추세)으로 서로 비교해 순위표로 보여 줍니다. 3배 상품을 무한매수 방식으로 운용할 때 어떤 상품이 지금 앞쪽에 있는지 참고하라고 만든 표입니다. 거래일마다 갱신되고, 2020-01-02 부터의 날짜별 순위를 달력으로 되돌려 볼 수 있습니다.</p>
 <p><b>하지 않는 일.</b></p>
 <ul>
 <li>어떤 상품이 오를지 내릴지 예측하지 않습니다. 점수는 "지금까지의 흐름을 서로 비교한 위치"일 뿐입니다.</li>
@@ -36,8 +36,8 @@
 </ul>
 
 <h2 id="s4">4. 대상 상품</h2>
-<table><thead><tr><th>분류</th><th>종목 수</th><th>티커</th></tr></thead><tbody><tr><td>A · 광역 지수</td><td>9</td><td>SPXL UPRO TQQQ UDOW TNA URTY MIDU UMDD HIBL</td></tr><tr><td>B · 섹터·산업</td><td>16</td><td>SOXL TECL WEBL CURE PILL LABU FAS DPST DFEN DUSL TPOR RETL WANT NAIL DRN UTSL</td></tr><tr><td>C · 테마 ETN</td><td>10</td><td>FNGU BULZ BNKU NRGU OILU GDXU AIQU SMHU MNGU FLYU</td></tr></tbody></table>
-<p>합계 35종. 분류 A 는 미국 광역 지수, B 는 미국 섹터·산업 ETF, C 는 섹터·테마 ETN 입니다. 상품별 정보는 상단 메뉴 "종목"에 있습니다.</p>
+<table><thead><tr><th>분류</th><th>종목 수</th><th>티커</th></tr></thead><tbody><tr><td>A · 광역 지수</td><td>9</td><td>SPXL UPRO TQQQ UDOW TNA URTY MIDU UMDD HIBL</td></tr><tr><td>B · 섹터·산업</td><td>16</td><td>SOXL TECL WEBL CURE PILL LABU FAS DPST DFEN DUSL TPOR RETL WANT NAIL DRN UTSL</td></tr><tr><td>C · 테마 ETN</td><td>12</td><td>FNGU BULZ BNKU NRGU OILU GDXU AIQU SMHU MNGU FLYU XLCU XLPU</td></tr></tbody></table>
+<p>합계 37종. 분류 A 는 미국 광역 지수, B 는 미국 섹터·산업 ETF, C 는 섹터·테마 ETN 입니다. 상품별 정보는 상단 메뉴 "종목"에 있습니다.</p>
 <p><b>포함 기준</b>: 미국에 상장된 3배 롱(+3배) 상품 중 주식 지수·섹터·테마를 따르는 것.</p>
 <p><b>제외 기준과 근거</b></p>
 <table><thead><tr><th>제외 대상</th><th>근거</th></tr></thead><tbody>
@@ -131,7 +131,7 @@
 <h3 id="appxA">A. 1배 공식 지수 경로와 검증 기준</h3>
 <ul>
 <li><b>원칙: 1배 = 발행사가 공시한 공식 지수 하나.</b> 같은 지수를 따른다고 발행사 문서에 명시된 1배 ETF 에 한해 그 ETF 가격을 쓰고, 그렇지 않으면 지수 수치 자체를 씁니다.</li>
-<li>경로 집계: exact 1x ETF 24 · 공식 지수 레벨 9 · 복합 1 · 펀드추종 1 = 35종. <b>exact 1x ETF</b> 는 같은 지수를 따르는 1배 ETF 가격(야후가 지수 심볼의 봉을 빠뜨리는 일이 있어 QQQ·DIA·IWM·IJH 처럼 ETF 로 쓰는 경우 포함), <b>공식 지수 레벨</b>은 발행사가 공시한 지수 수치, <b>복합</b>(TPOR)은 지수가 바뀐 시점 전후를 서로 다른 계열로 이은 것입니다. <b>펀드추종</b>(SMHU)은 발행사 지수가 "특정 펀드 하나(SMH)를 100% 추종"하는 구조라 그 펀드 가격을 전 구간 직접 씁니다(공식 지수 수치 피드·관련 ETF 총수익 연장 경로를 거치지 않음). 펀드 봉이 늦으면 다른 exact 1x ETF 와 똑같이 3배 상품 일간 수익률 ÷ 3 으로 최대 3일 잇습니다.</li>
+<li>경로 집계: exact 1x ETF 24 · 공식 지수 레벨 9 · 복합 1 · 펀드추종 3 = 37종. <b>exact 1x ETF</b> 는 같은 지수를 따르는 1배 ETF 가격(야후가 지수 심볼의 봉을 빠뜨리는 일이 있어 QQQ·DIA·IWM·IJH 처럼 ETF 로 쓰는 경우 포함), <b>공식 지수 레벨</b>은 발행사가 공시한 지수 수치, <b>복합</b>(TPOR)은 지수가 바뀐 시점 전후를 서로 다른 계열로 이은 것입니다. <b>펀드추종</b>(SMHU)은 발행사 지수가 "특정 펀드 하나(SMH)를 100% 추종"하는 구조라 그 펀드 가격을 전 구간 직접 씁니다(공식 지수 수치 피드·관련 ETF 총수익 연장 경로를 거치지 않음). 펀드 봉이 늦으면 다른 exact 1x ETF 와 똑같이 3배 상품 일간 수익률 ÷ 3 으로 최대 3일 잇습니다.</li>
 <li>공식 수치가 시작되기 전 구간은 같은 지수 계열(인증서·구성종목 복제·ETF 총수익)로 이어 붙인 <b>연장</b>이며, 연장 구간의 생존편향과 정확도는 검증되지 않았습니다.</li>
 <li><b>검증 기준</b>: 최근 365일 일간수익률에 3배 상품을 1배에 회귀해 β 가 2.7~3.3, R² 가 0.85 이상인지 봅니다. 기준 밖이면 내부 표시 '근사', 표본(n)이 60 미만이면 '표본부족'(경로는 공식 지수이나 검증 미완)입니다. 측정은 연 1회 다시 하고, 표본이 부족했던 종목은 60봉이 쌓이면 바로 다시 잽니다. '근사'는 페이지 표에는 나타내지 않고 데이터 파일(<code>badges</code>)에만 기록합니다.</li>
 <li>운영값(백테스트 근거 아님, 변경은 <code>data/eligibility.yaml</code> 한 곳): 신규 252거래일 · 저유동 $0.3M · 거래량 극소 1,000주 · 무거래 1일 · 표본 60 · 이상 봉 1배 ±25% / 3배 ±75%.</li>
@@ -171,5 +171,5 @@
 <ul>
 <li>구성 박스는 네이버 증권 해외종목 <b>기업개요 탭</b>(<code>/worldstock/stock/{코드}/overview</code>)으로 연결합니다. 네이버 코드 접미는 실측 규칙입니다 — 나스닥 <code>.O</code>, NYSE 는 종목마다 접미 없음 또는 <code>.K</code> 중 하나, AMEX·Arca ETF 는 접미 없음, 점 티커(BRK.B)는 <code>BRKb</code>. 코드가 없거나 실존·기업개요가 확인되지 않으면 종합 페이지 또는 네이버 검색으로 대체합니다(규칙·실측일 <code>data/link_rules.yaml</code>).</li>
 </ul>
-<p class="meta">산출 2026-10-31 12:03 KST · 규칙 V2.3 · 이 페이지는 참고용이며 개인 정보를 사용하지 않습니다.</p>
+<p class="meta">산출 2026-10-31 21:59 KST · 규칙 V2.3 · 이 페이지는 참고용이며 개인 정보를 사용하지 않습니다.</p>
 </div></body></html>
