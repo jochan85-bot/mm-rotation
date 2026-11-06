@@ -219,7 +219,11 @@ def main(push=True):
     else: print("\n".join(lines))
 if __name__=="__main__":
     signal.signal(signal.SIGALRM,lambda *a:(_ for _ in ()).throw(TimeoutError("상한 25분 초과"))); signal.alarm(1500)
-    try: main(push="--no-push" not in sys.argv)
+    try:
+        main(push="--no-push" not in sys.argv)
+        try:                                                           # MM-SPLIT-GUARD-20261106: 주 1회 분할 캘린더(향후 30일) 알림 — 실패해도 주간 점검 결과에 영향 없음
+            import mm_splitwatch; mm_splitwatch.run(alert="--no-alert" not in sys.argv)
+        except BaseException as _e: L.log(f"[mm_splitwatch] 실패(무시): {type(_e).__name__}: {str(_e)[:200]}","alerts")
     except BaseException as e:
         msg=f"[mm_rotation] 주간 점검 실패: {type(e).__name__}: {str(e)[:300]}"
         L.log(msg+"\n"+traceback.format_exc()[-1500:],"alerts")

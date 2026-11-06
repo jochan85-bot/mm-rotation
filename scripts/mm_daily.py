@@ -67,6 +67,13 @@ def run(push=True, fetch=True, manual=None, alert=None):
         L.log(msg,"alerts")
         if alert: L.tg_send(msg)
         return None
+    split_info={}
+    try:                                                                    # MM-SPLIT-GUARD-20261106: 1x 대용 분할 반영 시차 — 아티팩트 봉부터 제외 → 아래 apply_tail_etn 이 3배÷3 로 보충
+        import mm_splits
+        _ev={}
+        for e in mm_splits.nasdaq_calendar(pd.Timestamp(T)-pd.Timedelta(days=mm_splits.LOOKBACK),timeout=10): _ev.setdefault(e["symbol"],[]).append(e)
+        split_info=mm_splits.guard(T,uni,L.RAW/"data",log=L.log,write=True,cal_events=_ev,info_path=L.LOCAL/"split_pending.json")
+    except Exception as e: split_info={}; L.log(f"[mm_splits] 가드 단계 실패(가드 없이 계속): {type(e).__name__}: {str(e)[:200]}","alerts")
     try: tail=L.apply_tail_etn(T,log=L.log)                                   # 1x 최신 봉 < 기준일 → 3배 일간수익률÷3 으로 보정(최대 3일, MM-FEED-LAG-FIX-20261018 §2)
     except Exception as e: tail={}; L.log(f"[mm_tailetn] 보정 단계 실패(보정 없이 계속): {type(e).__name__}: {str(e)[:200]}","alerts")
     S=L.load_study(T)
@@ -78,6 +85,8 @@ def run(push=True, fetch=True, manual=None, alert=None):
         for t,v in upd.items(): pq=pq[pq.ticker!=t]; pq=pd.concat([pq,pd.DataFrame([v])],ignore_index=True)
         pq.to_csv(L.DATA/"proxy_quality.csv",index=False); L.log(f"E4 재측정 갱신: {list(upd)}")
         df,_=L.compute(S,T,T,cfg,status,uni,pq,remeasure=False)           # 갱신된 품질 값으로 배지 재계산
+    if split_info:
+        import mm_splits; df=mm_splits.annotate(df,split_info)               # 점수·순위 불변, reason 표시만
     spy=S.loadp("SPY"); cal=[d for d in spy.index if d<=T]; pos={d:i for i,d in enumerate(cal)}
     # 소급·이력 보충: 2020-01-02 ~ T 중 파일이 없거나 규칙 버전이 다른 날짜(T 제외)를 산출 — 윈도우 선행분(약 64거래일)은 기록 없이 메모리로만
     first=L.RETRO_START
