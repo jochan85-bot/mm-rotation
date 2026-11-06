@@ -38,6 +38,9 @@ def stale_T_guard(prev_pub, T, regen):
 def shrink_guard(n_old, n_new, regen):
     """이미 저장된 날짜 파일(N=n_old)보다 종목 수가 줄어드는(n_new<n_old) 덮어쓰기를 막는다(True=차단). --regen-from 명시만 예외."""
     return bool(n_old is not None and n_new<n_old and not regen)
+def pass_msg(T, prev_pub, n):
+    """발행 가드 통과 1줄 — 차단·예외 때만 남던 로그에 통과 사실을 남긴다(MM-PASSLOG-20261106, 표시 전용)."""
+    return f"[발행 가드] 통과: T={pd.Timestamp(T).date()}, 직전 발행 T={pd.Timestamp(prev_pub).date() if prev_pub is not None else '없음'}, N={n}"
 def _opt(name):
     """sys.argv 에서 '--name=값' 또는 '--name 값'."""
     for i,a in enumerate(sys.argv):
@@ -108,6 +111,7 @@ def run(push=True, fetch=True, manual=None, alert=None):
         L.log(msg,"alerts")
         if alert: L.tg_send(msg)
         return None
+    L.log(pass_msg(T,prev_pub,n_new))                                       # MM-PASSLOG-20261106: 차단 2종(stale_T·shrink)을 모두 통과한 시점
     L.write_day(T,df); df.to_csv(L.DATA/"scores_latest.csv",index=False)
     idx=L.rebuild_index(); L.log(f"index.json {idx['count']}일 ({idx['first']}~{idx['last']})")
     an=L.scan_anomalies(S,uni,cfg); an.to_csv(L.DATA/"anomalies.csv",index=False)

@@ -27,4 +27,6 @@ with tempfile.TemporaryDirectory() as td:
     L.day_path = lambda d: Path(td) / f"{pd.Timestamp(d).date()}.csv"
     check("existing_day_n: 헤더 N 읽기·없는 날짜 None", L.existing_day_n(P("2026-11-04")) == 37 and L.existing_day_n(P("2026-11-03")) is None)
 
+check("통과 로그 1줄 형식: 통과: T=…, 직전 발행 T=…, N=…", D.pass_msg(P("2026-11-06"), P("2026-11-05"), 37) == "[발행 가드] 통과: T=2026-11-06, 직전 발행 T=2026-11-05, N=37")
+check("직전 발행 없음이면 '없음'", D.pass_msg(P("2026-11-06"), None, 37).endswith("직전 발행 T=없음, N=37"))
 print(f"\n{ok} PASS / {len(bad)} FAIL"); sys.exit(0 if not bad else 1)
