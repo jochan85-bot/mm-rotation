@@ -169,6 +169,7 @@ def needs_retry(now=None):
 def build_parser():
     p=argparse.ArgumentParser(prog="mm_daily.py",allow_abbrev=False,
         description="mm_rotation 일일 산출 — 수신 → 정제 → 분할 가드 → 보정 → 적격 판정 → M-score → 저장 → 페이지 → push. 정상 시 텔레그램 0건, 실패 시 1건. 인자 없이 실행하면 곧바로 일일 실행(launchd).")
+    p.add_argument("--run",action="store_true",help="일일 산출을 명시적으로 실행(터미널 등 수동 실행에서는 필수 — 인자 없는 수동 실행은 사용법만 출력하고 종료. launchd/MM_AUTO=1 은 인자 없이도 실행)")
     p.add_argument("--no-push",action="store_true",help="산출만 하고 git push 하지 않는다(작업트리는 갱신됨)")
     p.add_argument("--no-fetch",action="store_true",help="수신 생략 — 저장된 이력으로 재산출")
     p.add_argument("--no-alert",action="store_true",help="텔레그램 경보 생략(alerts.log 에는 남김)")
@@ -202,6 +203,8 @@ def main(argv=None):
     args=build_parser().parse_args(argv)           # -h/--help → 사용법만 출력하고 exit 0 · 모르는 인자 → exit 2 — 어느 경우에도 산출·push 는 시작하지 않는다
     if args.regen_from and not (args.regen_reason or "").strip():   # 오너 결정 2026-11-06 14:49: --regen-reason 필수 — 사유 미기재(공백 포함)는 산출 전에 거부
         build_parser().error("--regen-from 에는 --regen-reason \"사유\" 가 필요합니다(사유 미기재 시 거부 — 발행 가드 예외의 감사 기록)")
+    if not argv and is_manual():                  # 실행 경로는 명시 플래그만(수동): 인자 없는 수동 실행은 산출·push 를 시작하지 않는다
+        build_parser().print_usage(sys.stderr); print("mm_daily.py: 수동 실행은 --run (또는 다른 명시 플래그)이 필요합니다. launchd·MM_AUTO=1 은 인자 없이 실행됩니다. 자세한 사용법: mm_daily.py --help",file=sys.stderr); return 2
     # run() 이 sys.argv 를 직접 보므로 '--regen-from DATE' 형태도 '--regen-from=DATE' 로 정규화
     canon=[]; skip=False
     for i,a in enumerate(argv):
