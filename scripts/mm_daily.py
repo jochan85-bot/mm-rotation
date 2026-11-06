@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """mm_rotation 일일 산출 — 수신 → 정제 → 적격 판정 → M-score → 저장 → 페이지 → push. 정상 시 텔레그램 0건, 실패 시 1건."""
-import os, sys, signal, subprocess, traceback
+import os, sys, signal, subprocess, traceback, argparse, shutil, tempfile
 import datetime as dt_mod
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -91,6 +91,8 @@ def check_and_alert(T, prov, dropped, df, tail, alert=True, now=None):
         else: L.log(msg,"alerts")
     return msg
 def git_push(T):
+    if os.environ.get("MM_DRY_RUN_CHILD")=="1":                            # --dry-run 자식 프로세스: 어떤 경로로도 push 하지 않는다(부모는 origin 도 제거한 복사본에서 실행)
+        L.log("push 건너뜀 (dry-run)"); return
     def g(*a): return subprocess.run(["git","-C",str(L.ROOT),*a],capture_output=True,text=True,timeout=120)
     g("add","-A")
     if g("status","--porcelain").stdout.strip():
@@ -123,23 +125,69 @@ def needs_retry(now=None):
             if got!=exp: return True,f"기준일 {got.date()} ≠ 직전 US 거래일 {exp.date()}"
         except Exception as e: L.log(f"[재실행 가드] 기준일 확인 실패(무시): {type(e).__name__}: {str(e)[:100]}","alerts")
     return False,"⚠ 0 · 확정 기준일 · 오늘 산출 있음"
-if __name__=="__main__":
-    # MM-FEED-LAG-FIX-20261018 §3: 가드·산출·push 전부 한 try 안 — 예외·타임아웃·push 실패는 종료 코드와 무관하게 alerts.log + 텔레그램(L.alert)
-    push="--no-push" not in sys.argv; fetch="--no-fetch" not in sys.argv
+def build_parser():
+    p=argparse.ArgumentParser(prog="mm_daily.py",allow_abbrev=False,
+        description="mm_rotation 일일 산출 — 수신 → 정제 → 분할 가드 → 보정 → 적격 판정 → M-score → 저장 → 페이지 → push. 정상 시 텔레그램 0건, 실패 시 1건. 인자 없이 실행하면 곧바로 일일 실행(launchd).")
+    p.add_argument("--no-push",action="store_true",help="산출만 하고 git push 하지 않는다(작업트리는 갱신됨)")
+    p.add_argument("--no-fetch",action="store_true",help="수신 생략 — 저장된 이력으로 재산출")
+    p.add_argument("--no-alert",action="store_true",help="텔레그램 경보 생략(alerts.log 에는 남김)")
+    p.add_argument("--only-if-warn",action="store_true",help="10:15 재실행 가드: ⚠·잠정·기준일 불일치·오늘 산출 없음일 때만 실행")
+    p.add_argument("--rebuild-history",action="store_true",help="이력 재구축(5분 알람 해제)")
+    p.add_argument("--regen-from",metavar="YYYY-MM-DD",help="이 날짜부터 날짜 파일 강제 재산출 — 발행 가드(과거 T·종목 수 축소 덮어쓰기 금지)의 유일한 예외")
+    p.add_argument("--regen-reason",metavar="TEXT",help="--regen-from 사유(로그에 남음)")
+    p.add_argument("--dry-run",action="store_true",help="산출만 — 저장소를 임시 복사본(origin 제거)에서 실행하므로 작업트리·발행·push·텔레그램 0. 결과 요약만 출력")
+    return p
+def dry_run(argv, keep=False):
+    """MM-SPLIT-GUARD-20261106: live 트리를 건드리지 않는 산출. ROOT 를 임시 폴더로 복사(.git 포함) → origin 제거 → 복사본의 mm_daily.py 를 --no-push --no-alert + MM_TG_SUPPRESS=1 로 실행 → 요약. 발행 경로 없음."""
+    tmp=Path(tempfile.mkdtemp(prefix="mm_dryrun_")); work=tmp/"mm_rotation"
+    try:
+        shutil.copytree(L.ROOT,work,ignore=shutil.ignore_patterns("__pycache__"),symlinks=True)
+        subprocess.run(["git","-C",str(work),"remote","remove","origin"],capture_output=True,text=True,timeout=60)
+        cmd=[sys.executable,str(work/"scripts"/"mm_daily.py")]+[a for a in argv if a!="--dry-run"]+["--no-push","--no-alert"]
+        env=dict(os.environ,MM_DRY_RUN_CHILD="1",MM_TG_SUPPRESS="1")
+        r=subprocess.run(cmd,env=env,capture_output=True,text=True,timeout=290)
+        print("[dry-run] 자식 종료 코드",r.returncode,"· 복사본",work)
+        print("\n".join((r.stdout or "").strip().splitlines()[-12:]))
+        if r.returncode!=0: print((r.stderr or "")[-600:])
+        try:
+            sl=pd.read_csv(work/"data"/"scores_latest.csv"); print(f"[dry-run] 기준일 {sl['date'].iloc[0]} · 순위 {int((sl.table=='순위').sum())}/{len(sl)} · ⚠ {int((sl.table=='⚠').sum())}")
+        except Exception as e: print("[dry-run] 결과 요약 실패",type(e).__name__)
+        print("[dry-run] live 작업트리·저장소·텔레그램 무변경(발행 경로 없음)")
+        return r.returncode
+    finally:
+        if not keep and os.environ.get("MM_DRY_RUN_KEEP")!="1": shutil.rmtree(tmp,ignore_errors=True)
+def main(argv=None):
+    argv=list(sys.argv[1:] if argv is None else argv)
+    args=build_parser().parse_args(argv)           # -h/--help → 사용법만 출력하고 exit 0 · 모르는 인자 → exit 2 — 어느 경우에도 산출·push 는 시작하지 않는다
+    if args.regen_from and not (args.regen_reason or "").strip():   # 오너 결정 2026-11-06 14:49: --regen-reason 필수 — 사유 미기재(공백 포함)는 산출 전에 거부
+        build_parser().error("--regen-from 에는 --regen-reason \"사유\" 가 필요합니다(사유 미기재 시 거부 — 발행 가드 예외의 감사 기록)")
+    # run() 이 sys.argv 를 직접 보므로 '--regen-from DATE' 형태도 '--regen-from=DATE' 로 정규화
+    canon=[]; skip=False
+    for i,a in enumerate(argv):
+        if skip: skip=False; continue
+        if a in ("--regen-from","--regen-reason") and i+1<len(argv): canon.append(f"{a}={argv[i+1]}"); skip=True
+        else: canon.append(a)
+    sys.argv=[sys.argv[0]]+canon
+    if args.dry_run: return dry_run(canon)
+    child=os.environ.get("MM_DRY_RUN_CHILD")=="1"
+    push=(not args.no_push) and not child; fetch=not args.no_fetch
     manual=is_manual()
-    if "--rebuild-history" not in sys.argv:
+    if not args.rebuild_history:
         signal.signal(signal.SIGALRM,_timeout); signal.alarm(300)
     try:
-        if "--only-if-warn" in sys.argv:
+        if args.only_if_warn:
             need,why=needs_retry(); L.log(f"[재실행 가드] {'재실행' if need else '불필요 — 종료'}: {why}")
-            if not need: sys.exit(0)
-        df_=run(push,fetch,manual)
-        if "--only-if-warn" in sys.argv:
+            if not need: return 0
+        df_=run(push,fetch,manual,alert=(not args.no_alert) and not child)
+        if args.only_if_warn and df_ is not None:
             w=df_[df_.table=="⚠"]
             if len(w): L.log(f"[재실행 후에도 ⚠ {len(w)}종] "+"; ".join(f"{r.ticker}: {r.reason}" for r in w.itertuples()),"alerts")
+        return 0
     except SystemExit: raise
     except BaseException as e:
         msg=f"[mm_rotation] 일일 산출 실패: {type(e).__name__}: {str(e)[:300]}"
         L.log(msg+"\n"+traceback.format_exc()[-1500:],"alerts")
-        if "--no-alert" not in sys.argv: L.tg_send(msg)
-        sys.exit(1)
+        if not args.no_alert and not child: L.tg_send(msg)
+        return 1
+if __name__=="__main__":
+    sys.exit(main())
