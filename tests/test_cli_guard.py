@@ -34,24 +34,8 @@ calls.update(run=0, push=0, dry=0); rc, out, err = call_main(["--no-pus"])      
 check("--no-pus(약어 오타): 종료 2·산출 0", rc == 2 and calls["run"] == 0, (rc, calls))
 calls.update(run=0, push=0, dry=0); rc, out, err = call_main(["--dry-run", "--no-fetch"])
 check("--dry-run: dry_run() 만 호출 — run()/git_push() 직접 호출 0", rc == 0 and calls["dry"] == 1 and calls["run"] == 0 and calls["push"] == 0, (rc, calls))
-def with_env(env, argv):
-    saved = {k: os.environ.get(k) for k in env}
-    for k, v in env.items():
-        if v is None: os.environ.pop(k, None)
-        else: os.environ[k] = v
-    try: return call_main(argv)
-    finally:
-        for k, v in saved.items():
-            if v is None: os.environ.pop(k, None)
-            else: os.environ[k] = v
-calls.update(run=0, push=0, dry=0); rc, out, err = with_env({"XPC_SERVICE_NAME": None, "MM_AUTO": None}, [])
-check("수동 실행(터미널)에서 인자 없음: 사용법 + 종료 2 · 산출/push 0 (실행 경로는 명시 플래그만)", rc == 2 and calls["run"] == 0 and calls["push"] == 0 and "--run" in err, (rc, calls, err[-120:]))
-calls.update(run=0, push=0, dry=0); rc, out, err = with_env({"XPC_SERVICE_NAME": None, "MM_AUTO": None}, ["--run"])
-check("수동 실행 + --run: run() 1회", rc == 0 and calls["run"] == 1, (rc, calls))
-calls.update(run=0, push=0, dry=0); rc, out, err = with_env({"XPC_SERVICE_NAME": "com.mm.rotation_daily", "MM_AUTO": None}, [])
-check("launchd(com.mm.rotation_daily) 인자 없음: 종전대로 run() 1회", rc == 0 and calls["run"] == 1, (rc, calls))
-calls.update(run=0, push=0, dry=0); rc, out, err = with_env({"XPC_SERVICE_NAME": None, "MM_AUTO": "1"}, [])
-check("MM_AUTO=1 인자 없음(자동 호출): run() 1회", rc == 0 and calls["run"] == 1, (rc, calls))
+calls.update(run=0, push=0, dry=0); rc, out, err = call_main([])
+check("인자 없음(launchd): 종전대로 run() 1회", rc == 0 and calls["run"] == 1 and calls["dry"] == 0, (rc, calls))
 # --regen-from DATE (공백형) → '=' 형 정규화
 calls.update(run=0, push=0, dry=0); seen = {}
 D.run = lambda *a, **k: (seen.__setitem__("argv", list(sys.argv)), calls.__setitem__("run", calls["run"] + 1), None)[2]
@@ -103,7 +87,7 @@ check("MM_DRY_RUN_CHILD=1 이면 git_push() 는 어떤 subprocess 도 부르지 
 got = {}
 D.run = lambda push=True, fetch=True, manual=None, alert=None: (got.update(push=push, alert=alert), None)[1]
 os.environ["MM_DRY_RUN_CHILD"] = "1"
-try: call_main(["--no-fetch"])
+try: call_main([])
 finally: os.environ.pop("MM_DRY_RUN_CHILD", None)
 check("자식 모드: 인자에 --no-push/--no-alert 가 없어도 push=False·alert=False", got == {"push": False, "alert": False}, got)
 
