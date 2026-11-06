@@ -27,10 +27,28 @@ def feed_check(T, prov, dropped, df, tail, now=None):
     except Exception: pass
     if not why: why.append("SPY 최신 봉이 기대 거래일보다 오래됨(수신 지연 추정)")
     return f"[mm_rotation] 미산출: 기준일 {pd.Timestamp(T).date()} ≠ 직전 US 거래일 {exp.date()} — "+"; ".join(why)
+def published_T():
+    """이번 실행 전 마지막으로 발행(저장)된 산출 기준일 — scores_latest.csv 의 date. 없으면 None."""
+    p=L.DATA/"scores_latest.csv"
+    try: return pd.Timestamp(str(pd.read_csv(p,usecols=["date"])["date"].iloc[0])).normalize()
+    except Exception: return None
+def stale_T_guard(prev_pub, T, regen):
+    """직전 발행 기준일보다 오래된 T 의 자동 발행을 막는다(True=차단). --regen-from 명시(regen=True)만 예외."""
+    return bool(prev_pub is not None and pd.Timestamp(T).normalize()<pd.Timestamp(prev_pub).normalize() and not regen)
+def shrink_guard(n_old, n_new, regen):
+    """이미 저장된 날짜 파일(N=n_old)보다 종목 수가 줄어드는(n_new<n_old) 덮어쓰기를 막는다(True=차단). --regen-from 명시만 예외."""
+    return bool(n_old is not None and n_new<n_old and not regen)
+def _opt(name):
+    """sys.argv 에서 '--name=값' 또는 '--name 값'."""
+    for i,a in enumerate(sys.argv):
+        if a.startswith(name+"="): return a.split("=",1)[1]
+        if a==name and i+1<len(sys.argv): return sys.argv[i+1]
+    return None
 def run(push=True, fetch=True, manual=None, alert=None):
     if manual is None: manual=is_manual()
     if alert is None: alert="--no-alert" not in sys.argv
     L.check_formula()
+    prev_pub=published_T()                                                  # MM-SPLIT-GUARD-20261106 §발행 가드: 이번 실행 전 마지막 발행 기준일
     cfg=L.load_yaml_simple(L.DATA/"eligibility.yaml"); uni=pd.read_csv(L.DATA/"universe.csv"); status=L.load_status()
     need=L.need_tickers(); fails=[]
     if fetch:
@@ -41,6 +59,14 @@ def run(push=True, fetch=True, manual=None, alert=None):
         binfo=L.build_synthetic(L.log); L.log(f"합성 1x 생성 {sum('error' not in v for v in binfo.values())}/{len(binfo)}")
         fails=fails+[k for k,v in binfo.items() if "error" in v]
     T,prov,dropped=L.clean_all(need+L.synthetic_keys()); L.log(f"기준일 T={T.date()} 잠정={prov} 미확정 행 제거={len(dropped)}종")
+    regen_flag=any(a.startswith("--regen-from=") for a in sys.argv)
+    if regen_flag:                                                          # 발행 가드의 유일한 예외 — 명시 사실과 사유를 로그에 남긴다
+        L.log(f"[발행 가드 예외] --regen-from 명시: 인자={sys.argv[1:]} 사유={_opt('--regen-reason') or '(미기재)'}"); L.log(f"[발행 가드 예외] --regen-from 명시 사유={_opt('--regen-reason') or '(미기재)'}","alerts")
+    if stale_T_guard(prev_pub,T,regen_flag):
+        msg=f"[mm_rotation] 발행 가드: 산출 기준일 T={pd.Timestamp(T).date()} < 직전 발행 기준일 {prev_pub.date()} — 자동 발행 금지(점수 파일·페이지·push 무변경)" + (f"; 잠정 사유 {prov}" if prov else "")
+        L.log(msg,"alerts")
+        if alert: L.tg_send(msg)
+        return None
     try: tail=L.apply_tail_etn(T,log=L.log)                                   # 1x 최신 봉 < 기준일 → 3배 일간수익률÷3 으로 보정(최대 3일, MM-FEED-LAG-FIX-20261018 §2)
     except Exception as e: tail={}; L.log(f"[mm_tailetn] 보정 단계 실패(보정 없이 계속): {type(e).__name__}: {str(e)[:200]}","alerts")
     S=L.load_study(T)
@@ -67,6 +93,12 @@ def run(push=True, fetch=True, manual=None, alert=None):
         return L.read_day(d)
     df=L.finish_day(df,T,cal,pos,_load)
     df["provisional"]=int(prov is not None); df["backfill"]=0
+    n_new=int(((df.table=="순위")&df.M.notna()).sum()); n_old=L.existing_day_n(T)
+    if shrink_guard(n_old,n_new,regen_flag):                                # MM-SPLIT-GUARD-20261106: 이미 발행된 날짜 파일보다 종목 수가 줄어드는 덮어쓰기 금지
+        msg=f"[mm_rotation] 발행 가드: {pd.Timestamp(T).date()} 점수 파일을 N={n_old}→{n_new} 로 줄여 덮어쓰려 함 — 중단(파일·페이지·push 무변경, 제외 종목 {sorted(set(df[df.table!='순위'].ticker))[:8]})"
+        L.log(msg,"alerts")
+        if alert: L.tg_send(msg)
+        return None
     L.write_day(T,df); df.to_csv(L.DATA/"scores_latest.csv",index=False)
     idx=L.rebuild_index(); L.log(f"index.json {idx['count']}일 ({idx['first']}~{idx['last']})")
     an=L.scan_anomalies(S,uni,cfg); an.to_csv(L.DATA/"anomalies.csv",index=False)

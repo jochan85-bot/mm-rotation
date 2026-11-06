@@ -390,6 +390,9 @@ def day_header(path):
         h=open(path,encoding="utf-8").readline(); import re as _re
         m=_re.match(r"# date=(\S+) N=(\d+) rule=(\S+)",h); return (m.group(1),int(m.group(2)),m.group(3)) if m else None
     except Exception: return None
+def existing_day_n(d):
+    """이미 저장된 날짜 파일의 종목 수 N(헤더) 또는 None. MM-SPLIT-GUARD-20261106 — 줄어드는 덮어쓰기 감지용."""
+    h=day_header(day_path(d)); return h[1] if h else None
 def read_day(d):
     p=day_path(d)
     if not p.exists() or day_header(p) is None: return None
