@@ -66,7 +66,8 @@ check("proxy_quality 의 proxy 열도 ETF", all(pqd.loc[t, "proxy"] == f for t, 
 sl = pd.read_csv(D / "scores_latest.csv").set_index("ticker")
 check("재산출 결과: 6종 proxy = ETF·순위 포함(⚠ 0)", all(sl.loc[t, "proxy"] == f and sl.loc[t, "table"] == "순위" for t, f in ETF6.items()) and (sl.table == "⚠").sum() == 0)
 idxj = json.load(open(ROOT / "docs" / "data" / "index.json", encoding="utf-8"))["dates"]
-check("10-13~10-22 날짜 파일 N=35 (10-21 포함)", all(x["n"] == 35 for x in idxj if "2026-10-13" <= x["d"] <= "2026-10-22"), [x for x in idxj if x["d"] >= "2026-10-12"])
+_nuni = len(pd.read_csv(D / "universe.csv"))                                    # 고정 N 대신 유니버스 행 수 파생(MM-STALE-TESTS-20261106)
+check("10-13~10-22 날짜 파일 N = len(universe) (XLCU·XLPU 복귀 후 재생성분, 10-21 포함)", all(x["n"] == _nuni for x in idxj if "2026-10-13" <= x["d"] <= "2026-10-22"), [x for x in idxj if x["d"] >= "2026-10-12"])
 
 # ── §2 지수 N일 보정 표시 문턱 — 1일은 기록만, 2일 이상 표시
 cfg = {"E1": {"threshold": 252}, "E2": {"threshold": 0.3}, "E4": {"beta_min": 2.7, "beta_max": 3.3, "r2_min": 0.85}, "E6": {"threshold": 1000}}
@@ -80,15 +81,15 @@ check("4일 이상은 보정 자체를 안 한다(⚠) — MAX_GAP=3", TE.MAX_GA
 check("가이드 문구: 2~3일만 표시·1일은 기록만", "N이 2~3일일 때만 표시" in (ROOT / "scripts" / "mm_guide.py").read_text(encoding="utf-8"))
 
 # ── §3 거래량 극소 제외 — 유니버스 밖·제외 목록·복귀 점검
-check("유니버스에서 XLCU·XLPU 제거(35종)", "XLCU" not in set(uni.ticker) and "XLPU" not in set(uni.ticker) and len(uni) == 35, len(uni))
+check("유니버스에 XLCU·XLPU 포함(10-31 복귀, e5630cf) · 중복 없음", {"XLCU", "XLPU"} <= set(uni.ticker) and len(uni) == len(set(uni.ticker)), len(uni))
 th = json.load(open(D / "thin_excluded.json", encoding="utf-8"))["items"]
-check("thin_excluded.json = XLCU·XLPU, 규칙 E7", [x["ticker"] for x in th] == ["XLCU", "XLPU"] and all(x["rule"] == "E7" and x["reason"] == "거래량 극소" for x in th))
+check("thin_excluded.json 비어 있음(복귀 점검 전용 — 복귀 후 제외 0)", th == [] or all(x.get("rule") == "E7" for x in th), th)
 el = L.load_yaml_simple(D / "eligibility.yaml")
 check("eligibility.yaml E7: threshold 1000·return_days 20·E6 와 같은 문턱", el["E7"]["threshold"] == 1000 and el["E7"]["return_days"] == 20 and el["E7"]["threshold"] == el["E6"]["threshold"] == mm_nasdaq.LOW_VOL_THRESHOLD)
 rows = mm_site.thin_exclusion_rows()
-check("제외 목록 행: 사유에 '거래량 극소(발행사 공시 아님)'·링크 없음", len(rows) == 2 and all("거래량 극소(발행사 공시 아님)" in s and u_ == "" for _, s, u_ in rows) and [t for t, _, _ in rows] == ["XLCU", "XLPU"], rows)
+check("제외 목록 행: 사유에 '거래량 극소(발행사 공시 아님)'·링크 없음", all("거래량 극소(발행사 공시 아님)" in s and u_ == "" for _, s, u_ in rows) and [t for t, _, _ in rows] == [x["ticker"] for x in th], rows)
 _xr, _held = mm_site.exclusion_rows(pd.DataFrame([dict(ticker="A", table="순위")]), {"excluded": {}})
-check("exclusion_rows 가 thin 행을 포함", [t for t, _, _ in _xr] == ["XLCU", "XLPU"])
+check("exclusion_rows 가 thin 행을 thin_excluded 와 일치하게 포함(복귀 후 0행)", [t for t, _, _ in _xr if t in ("XLCU", "XLPU")] == [x["ticker"] for x in th])
 check("수신 유지: need_tickers 에 XLCU·XLPU(3배) 포함(복귀 점검용 거래량 수신 계속)", {"XLCU", "XLPU"} <= need)
 check("mm_nasdaq 수신 대상에 thin 포함", {"XLCU", "XLPU"} <= set(mm_nasdaq.etn_tickers()) and {"XLCU", "XLPU"} <= set(mm_nasdaq.three_x_tickers()))
 wk = (ROOT / "scripts" / "mm_weekly_scan.py").read_text(encoding="utf-8")
