@@ -9,7 +9,9 @@
   · 새 봉이 분할 이벤트 ±10일 안에서 분할 배율로 설명되는 점프(조정 전 이력 + 분할 후 봉) → 그 종목 갱신 보류(기존 파일 유지) + alerts 1줄 = 침묵 오염 금지
   · 그 밖의 대조 불일치·날짜 삽입/삭제 → 원천으로 전체 재생성(로그 1줄)
 실패는 종목 단위로 격리하고, 훅 전체 실패도 일일 발행을 막지 않는다(mm_daily 쪽 try/except).
-사용: python3 scripts/mm_charts.py --build | --update | --check   [--src DIR] [--out DIR] [--no-calendar]"""
+표시 보정(시세 오류 봉): data/chart_overrides.yaml 목록을 종목 페이지가 그리기 직전에만 적용한다 — 이 모듈이 쓰는 차트 JSON 은 원천 그대로다.
+  active_overrides()(원값 일치 확인) → mm_site 가 페이지에 싣고, pricechart.js 가 clip_bar() 와 같은 규칙으로 자른다.
+사용: python3 scripts/mm_charts.py --build | --update | --check | --scan   [--src DIR] [--out DIR] [--no-calendar]"""
 import sys, json, math, argparse, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -142,6 +144,83 @@ def update_one(t, src=None, out=None, cal_events=None, full=False):
     return dict(status="appended", added=len(new), bars=len(merged), bytes=dump(to_obj(t, merged), path), note="")
 
 
+OVR = DATA / "chart_overrides.yaml"
+OVR_FIELDS = {"low": "l", "high": "h"}
+
+
+def load_overrides(path=None):
+    """표시 보정 목록(data/chart_overrides.yaml) → [{ticker,date,field,original,corrected,reason}]. 파일 없음·형식 오류 → []"""
+    p = Path(path or OVR)
+    if not p.exists(): return []
+    import yaml
+    d = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+    out = []
+    for x in d.get("overrides") or []:
+        if not isinstance(x, dict) or x.get("field") not in OVR_FIELDS: continue
+        out.append(dict(ticker=str(x["ticker"]), date=str(x["date"]), field=x["field"], original=float(x["original"]),
+                        corrected=float(x["corrected"]), reason=str(x.get("reason", ""))))
+    return out
+
+
+def clip_bar(o, h, l, c, field):
+    """보정 규칙 1봉: low → min(시가, 종가) 아래면 거기로, high → max(시가, 종가) 위면 거기로. 시가·종가 불변. 반환 (h, l)"""
+    if field == "low" and l < min(o, c): l = min(o, c)
+    if field == "high" and h > max(o, c): h = max(o, c)
+    return h, l
+
+
+def active_overrides(t, j=None, ovs=None, out=None):
+    """한 종목에 지금 적용할 보정 [{d, f}] — 해당 날짜 봉이 있고 그 필드의 현재 값이 original 과 같을 때(상대 TOL)만.
+    j = 차트 JSON(dict, 없으면 out/<t>.json 을 읽음). 반환 (적용 목록, 미적용 사유 목록)."""
+    ovs = load_overrides() if ovs is None else ovs
+    mine = [x for x in ovs if x["ticker"] == t]
+    if not mine: return [], []
+    if j is None:
+        p = Path(out or OUT) / f"{t}.json"
+        if not p.exists(): return [], [f"{t} 차트 파일 없음"]
+        j = json.loads(p.read_text(encoding="utf-8"))
+    df = from_obj(j); act, skip = [], []
+    for x in mine:
+        d = pd.Timestamp(x["date"]); k = OVR_FIELDS[x["field"]]
+        if d not in df.index: skip.append(f"{t} {x['date']} 봉 없음"); continue
+        v = float(df.at[d, k])
+        if abs(v - x["original"]) > TOL * max(abs(x["original"]), 1e-9): skip.append(f"{t} {x['date']} {x['field']} 현재 값 {v} ≠ 원값 {x['original']}"); continue
+        act.append({"d": x["date"], "f": k})
+    return act, skip
+
+
+def apply_overrides(df, act):
+    """보정 적용 사본(df = from_obj 결과). act = active_overrides 의 적용 목록. 원본 df 는 바꾸지 않는다."""
+    df = df.copy()
+    for x in act:
+        d = pd.Timestamp(x["d"])
+        if d not in df.index: continue
+        r = df.loc[d]; h, l = clip_bar(r.o, r.h, r.l, r.c, "low" if x["f"] == "l" else "high")
+        df.at[d, "h"] = h; df.at[d, "l"] = l
+    return df
+
+
+def range_outliers(df, k=20, mult=10.0, min_win=10):
+    """시세 오류 봉 후보(목록만 — 자동 보정 없음): 그 봉의 고저폭(고가−저가)이 앞뒤 k봉(그 봉 제외, 이력 끝에서는 있는 만큼) 고저폭 중앙값의 mult 배 초과.
+    비교 봉 < min_win → 판정 제외. 중앙값 0 → 0 아닌 고저폭의 중앙값으로 대신(note='nz'), 비교 봉 고저폭이 전부 0 이고 그 봉 폭 > 0 → note='분모0'(배수 inf).
+    반환 [{date,o,h,l,c,rng,med,mult,note}]"""
+    import statistics
+    R = (df.h - df.l).tolist(); out = []
+    for i, (d, r) in enumerate(df.iterrows()):
+        win = R[max(0, i - k):i] + R[i + 1:i + 1 + k]
+        if len(win) < min_win: continue
+        m = statistics.median(win); note = ""
+        if m == 0:
+            nz = [x for x in win if x > 0]
+            if not nz:
+                if R[i] > 0: out.append(dict(date=str(d.date()), o=r.o, h=r.h, l=r.l, c=r.c, rng=R[i], med=0.0, mult=float("inf"), note="분모0"))
+                continue
+            m = statistics.median(nz); note = "nz"
+        if R[i] > mult * m:
+            out.append(dict(date=str(d.date()), o=r.o, h=r.h, l=r.l, c=r.c, rng=round(R[i], 6), med=round(m, 6), mult=round(R[i] / m, 2), note=note))
+    return out
+
+
 def calendar_events(timeout=10):
     """나스닥 분할 캘린더(최근 LOOKBACK 일 이후) → {심볼: [(날짜, f)]}. 실패 → {}"""
     try:
@@ -181,6 +260,14 @@ def daily_update(log=print, tickers=None, src=None, out=None, cal=True, full=Fal
             except TypeError: log(f"[mm_charts] {t}: {r['status']} — {r['note']}")
         elif r["status"] == "rebuilt":
             log(f"[mm_charts] {t}: {r['note']}")
+    try:                                                                # 표시 보정 목록이 현재 데이터와 맞는지(안 맞는 항목은 페이지에서 적용되지 않는다)
+        ovs = load_overrides(); skip = []
+        for t in sorted(set(x["ticker"] for x in ovs) & set(tickers)): skip += active_overrides(t, ovs=ovs, out=out)[1]
+        for s in skip:
+            try: log(f"[mm_charts] 표시 보정 미적용: {s}", "alerts")
+            except TypeError: log(f"[mm_charts] 표시 보정 미적용: {s}")
+    except Exception as e:
+        log(f"[mm_charts] 표시 보정 목록 확인 실패: {type(e).__name__}: {str(e)[:150]}")
     return res
 
 
@@ -204,9 +291,15 @@ if __name__ == "__main__":
     g.add_argument("--build", action="store_true", help="전 종목 전체 생성(기존 파일 무시)")
     g.add_argument("--update", action="store_true", help="일일 갱신과 같은 경로(새 봉 덧붙임 + 마지막 봉 재대조)")
     g.add_argument("--check", action="store_true", help="파일 ↔ 원천 대조표만 출력(쓰기 0)")
+    g.add_argument("--scan", action="store_true", help="시세 오류 봉 후보 목록(고저폭 > 앞뒤 20봉 중앙값 × 10)만 출력(쓰기 0, 보정 0)")
     ap.add_argument("--src"); ap.add_argument("--out"); ap.add_argument("--no-calendar", action="store_true")
     a = ap.parse_args()
-    if a.check:
+    if a.scan:
+        for t in universe():
+            p = Path(a.out or OUT) / f"{t}.json"
+            if p.exists():
+                for x in range_outliers(from_obj(json.loads(p.read_text(encoding="utf-8")))): print(t, x)
+    elif a.check:
         pd.set_option("display.width", 200); print(check(a.src, a.out).to_string())
     else:
         daily_update(log=lambda m, *k: print(m), src=a.src, out=a.out, cal=not a.no_calendar, full=a.build)

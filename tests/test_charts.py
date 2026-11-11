@@ -173,7 +173,86 @@ ok("훅 예외 격리(try/except Exception)", wrapped)
 # 16. 가이드: 설명 단락 + 9절 변경 이력 1줄 + 외부 라이브러리 명시
 g = (ROOT / "scripts" / "mm_guide.py").read_text(encoding="utf-8")
 ok("가이드 가격 차트 단락", 'id="pricechart"' in g and "외부 라이브러리 1개" in g)
-ok("9절 변경 이력 2026-11-11 1줄", g.count("<tr><td>2026-11-11</td>") == 1)
+ok("9절 변경 이력 2026-11-11 2줄(가격 차트 추가 + 표시 보정·축 서식)", g.count("<tr><td>2026-11-11</td>") == 2 and "시세 오류 봉 2건" in g)
+
+# ---- MM-PRICE-CHART-FIX-20261111: 시세 오류 봉 표시 보정 · 가격 서식 · 축 여백 · 후보 스캔 ----
+# 17. 보정 목록: 실제 data/chart_overrides.yaml — 2건, 기록한 보정값 = 규칙 결과, 현재 차트 데이터와 원값 일치
+ovs = M.load_overrides()
+ok("보정 목록 2건(DFEN 2024-06-03 · NAIL 2020-03-16, 저가)", sorted((x["ticker"], x["date"], x["field"]) for x in ovs) == [("DFEN", "2024-06-03", "low"), ("NAIL", "2020-03-16", "low")])
+ok("보정 목록 항목마다 원값·보정값·사유", all(x["reason"] and x["original"] > 0 and x["corrected"] > 0 for x in ovs))
+for x in ovs:
+    j = json.loads((M.OUT / f"{x['ticker']}.json").read_text(encoding="utf-8")); df0 = M.from_obj(j); r0 = df0.loc[pd.Timestamp(x["date"])]
+    act, skip = M.active_overrides(x["ticker"], j=j, ovs=ovs)
+    ok(f"{x['ticker']} 원값 일치·적용 1건", act == [{"d": x["date"], "f": "l"}] and not skip, (act, skip))
+    df1 = M.apply_overrides(df0, act); r1 = df1.loc[pd.Timestamp(x["date"])]
+    ok(f"{x['ticker']} 보정값 = 기록값, 시가·종가·고가 불변", r1.l == x["corrected"] and r1.o == r0.o and r1.c == r0.c and r1.h == r0.h and r0.l == x["original"], (r0.tolist(), r1.tolist()))
+    ok(f"{x['ticker']} 원본 DataFrame 불변(사본에만 적용)", df0.loc[pd.Timestamp(x["date"])].l == x["original"])
+    ok(f"{x['ticker']} 보정 봉 외 전부 동일", df1.drop(index=pd.Timestamp(x["date"])).equals(df0.drop(index=pd.Timestamp(x["date"]))))
+# 원값이 현재 데이터와 다르면(원천이 바뀜) 미적용 + 사유
+bad_ov = [dict(ovs[0], original=ovs[0]["original"] * 2)]
+act, skip = M.active_overrides(bad_ov[0]["ticker"], ovs=bad_ov)
+ok("원값 불일치 → 미적용 + 사유", act == [] and len(skip) == 1 and "원값" in skip[0], skip)
+act, skip = M.active_overrides("DFEN", ovs=[dict(ovs[0], date="1999-01-04")])
+ok("해당 날짜 봉 없음 → 미적용", act == [] and "봉 없음" in skip[0], skip)
+# 규칙 단위: 범위 안이면 그대로, 고가 필드도 대칭
+ok("clip_bar 저가 범위 밖 → min(시,종)", M.clip_bar(10, 12, 1, 8, "low") == (12, 8))
+ok("clip_bar 저가가 이미 범위 끝 → 그대로·지정 안 한 고가 불변", M.clip_bar(10, 12, 8, 8, "low") == (12, 8))
+ok("clip_bar 고가 범위 밖 → max(시,종)", M.clip_bar(10, 99, 7, 8, "high") == (10, 7))
+# 임시 yaml 로더(형식 오류 항목 무시)
+ty = TMP / "ov.yaml"; ty.write_text('overrides:\n  - {ticker: AAA, date: "2026-01-06", field: low, original: 1, corrected: 2, reason: r}\n  - {ticker: BBB, date: "2026-01-06", field: close, original: 1, corrected: 2}\n', encoding="utf-8")
+ok("로더: 허용 필드(low/high)만", [x["ticker"] for x in M.load_overrides(ty)] == ["AAA"])
+ok("로더: 파일 없음 → []", M.load_overrides(TMP / "none.yaml") == [])
+
+# 18. 차트 JSON 원본 무변경: 보정 기능은 docs/data/charts 를 쓰지 않는다(소스 정적 확인 + update_one 결과에 보정 없음)
+csrc = (ROOT / "scripts" / "mm_charts.py").read_text(encoding="utf-8")
+ok("update_one·to_obj 경로에 보정 호출 없음", "apply_overrides" not in csrc.split("def update_one")[1].split("def calendar_events")[0].split("OVR =")[0])
+src = mk_src("OVT", walk(60, seed=7)); outo = TMP / "out_ov"; M.update_one("OVT", src=src, out=outo)
+b0 = (outo / "OVT.json").read_bytes(); M.daily_update(log=lambda *a: None, tickers=["OVT"], src=src, out=outo, cal=False)
+ok("daily_update 후 차트 파일 = 원천 그대로(보정 목록과 무관)", (outo / "OVT.json").read_bytes() == b0)
+
+# 19. 렌더러: 보정 종목만 data-ov + 문구 「시세 오류 봉 N건 보정」, 나머지는 기존 문구
+hd = mm_site.price_chart_html("DFEN"); hs = mm_site.price_chart_html("SOXL")
+ok("DFEN data-ov(날짜·필드)", 'data-ov="[{&quot;d&quot;:&quot;2024-06-03&quot;,&quot;f&quot;:&quot;l&quot;}]"' in hd)
+ok("DFEN 문구 「분할 조정 가격 · 시세 오류 봉 1건 보정 · 참고용」", '<div class="chartnote">분할 조정 가격 · 시세 오류 봉 1건 보정 · 참고용</div>' in hd)
+ok("SOXL data-ov 없음·기존 문구", "data-ov" not in hs and '<div class="chartnote">분할 조정 가격 · 참고용</div>' in hs)
+ok("보정 문구 종목 = 목록 종목(37종 중 DFEN·NAIL 만)", sorted(t for t in M.universe() if "시세 오류 봉" in mm_site.price_chart_html(t)) == ["DFEN", "NAIL"])
+
+# 20. pricechart.js: fix()(보정)·주봉은 보정 후 집계·fmt()(가격 서식)를 node 로 그대로 실행
+js = (ROOT / "docs" / "assets" / "pricechart.js").read_text(encoding="utf-8")
+ok("축: 맨 위·아래 잘린 눈금 글자 숨김(entireTextOnly)", "entireTextOnly: true" in js)
+ok("축: 아래 여백(로고 자리) scaleMargins", "scaleMargins: { top: 0.08, bottom: 0.16 }" in js)
+ok("로고 표기 유지(attributionLogo: true)", "attributionLogo: true" in js)
+ok("가격 서식 함수 1개를 축·십자선·판독 줄 공용(priceFormatter: fmt)", "priceFormatter: fmt" in js and js.count("function fmt(") == 1)
+if node:
+    import re as _re
+    grab = lambda name: _re.search(r"  function " + name + r"\(.*?\n  \}\n", js, _re.S).group(0)
+    code = _re.search(r"  function ymdKey\(t\).*?\n", js).group(0) + grab("fix") + grab("weekly") + grab("fmt") + r"""
+const t=(s)=>Date.UTC(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10))/1000;
+const a=[{time:t('2024-05-31'),open:27.2,high:28.56,low:27.19,close:28.56},{time:t('2024-06-03'),open:28.75,high:29.28,low:0.27,close:10.17},{time:t('2024-06-04'),open:28.76,high:29.01,low:28.19,close:28.93}];
+const f=fix(a,[{d:'2024-06-03',f:'l'}]); const w=weekly(f); const w0=weekly(a);
+const g=fix([{time:t('2024-06-03'),open:5,high:9,low:4,close:6}],[{d:'2024-06-03',f:'h'},{d:'2024-06-03',f:'l'}]);
+const cases=[4785.6,1234.567,56.06,1,0.9996,0.999,0.272,0.2,0.17708,0.0123,0.0000123,0];
+console.log(JSON.stringify({f,w,w0,orig:a[1].low,same:fix(a,[])===a,g,fm:cases.map(fmt)}));"""
+    r = json.loads(subprocess.run([node, "-e", code], capture_output=True, text=True, timeout=30).stdout)
+    ok("JS 보정: 저가 0.27 → 10.17(시가·종가·고가 불변)", r["f"][1] == {"time": r["f"][1]["time"], "open": 28.75, "high": 29.28, "low": 10.17, "close": 10.17}, r["f"][1])
+    ok("JS 보정: 원본 배열 불변", r["orig"] == 0.27 and r["same"] is True)
+    ok("JS 주봉 = 보정 후 일봉 집계(저가 10.17, 미보정이면 0.27)", r["w"][-1]["low"] == 10.17 and r["w0"][-1]["low"] == 0.27, (r["w"], r["w0"]))
+    ok("JS 보정: 고가·저가 동시 필드 / 범위 안 값", r["g"][0]["high"] == 6 and r["g"][0]["low"] == 5)
+    ok("JS·Python 보정 규칙 일치(DFEN 기록값)", r["f"][1]["low"] == [x for x in ovs if x["ticker"] == "DFEN"][0]["corrected"])
+    ok("JS fmt: 1 이상 소수 2자리·쉼표, 1 미만 유효숫자 3자리",
+       r["fm"] == ["4,785.60", "1,234.57", "56.06", "1.00", "1.00", "0.999", "0.272", "0.200", "0.177", "0.0123", "0.0000123", "0.00"], r["fm"])
+else:
+    print("SKIP node 없음")
+
+# 21. 후보 스캔 양성 대조: 실제 37종 — DFEN 2024-06-03 은 잡히고(배수 > 10), NAIL 2020-03-16 은 고저폭 기준으로는 안 잡힌다(정체 봉 유형이라 폭이 평범)
+hits = {}
+for t in M.universe():
+    for x in M.range_outliers(M.from_obj(json.loads((M.OUT / f"{t}.json").read_text(encoding="utf-8")))): hits[(t, x["date"])] = x
+ok("스캔 양성 대조: DFEN 2024-06-03 검출", ("DFEN", "2024-06-03") in hits and hits[("DFEN", "2024-06-03")]["mult"] > 10, hits.get(("DFEN", "2024-06-03")))
+ok("스캔: NAIL 2020-03-16 은 이 기준 밖(알려진 한계)", ("NAIL", "2020-03-16") not in hits)
+ok("스캔: 합성 이력 — 튄 봉 1개만 검출", [x["date"] for x in M.range_outliers(pd.DataFrame({"o": [10.0] * 41, "h": [10.5] * 20 + [10.5] + [10.5] * 20, "l": [9.5] * 20 + [0.3] + [9.5] * 20, "c": [10.0] * 41}, index=pd.bdate_range("2026-01-05", periods=41)))] == ["2026-02-02"])
+z = pd.DataFrame({"o": [10.0] * 30, "h": [10.0] * 15 + [11.0] + [10.0] * 14, "l": [10.0] * 30, "c": [10.0] * 30}, index=pd.bdate_range("2026-01-05", periods=30))
+ok("스캔: 분모 0(정체 봉 연속) → note 분모0·배수 inf", [(x["note"], x["mult"]) for x in M.range_outliers(z)] == [("분모0", float("inf"))])
 
 shutil.rmtree(TMP, ignore_errors=True)
 print(f"{P} PASS / {F} FAIL")

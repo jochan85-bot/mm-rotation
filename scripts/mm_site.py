@@ -389,16 +389,29 @@ PRICE_ATTR = ('<div class="stamp">가격 차트: TradingView Lightweight Charts�
 PRICE_RANGES = (("m1", "1개월"), ("m3", "3개월"), ("m6", "6개월"), ("y1", "1년"), ("y3", "3년"), ("all", "전체"))
 
 
+def price_overrides(t):
+    """표시 보정(data/chart_overrides.yaml) 중 이 종목에 지금 적용할 것 [{d, f}] — 실패 시 [](보정 없이 원천 그대로 표시)."""
+    try:
+        import mm_charts
+        return mm_charts.active_overrides(t)[0]
+    except Exception:
+        return []
+
+
 def price_chart_html(t):
-    """가격 차트 컨테이너 — 기본 일봉·1년·선형 축(전체를 누르면 로그 축), 버튼 상태는 pricechart.js 가 aria-pressed 로 맞춘다."""
+    """가격 차트 컨테이너 — 기본 일봉·1년·선형 축(전체를 누르면 로그 축), 버튼 상태는 pricechart.js 가 aria-pressed 로 맞춘다.
+    시세 오류 봉 표시 보정이 있으면 data-ov 에 싣고(그리기 직전에만 적용) 차트 아래 문구에 봉 수를 적는다."""
+    ov = price_overrides(t); n = len(set(x["d"] for x in ov))
+    ova = f' data-ov="{E(json.dumps(ov, separators=(",", ":")))}"' if ov else ""
+    note = f"분할 조정 가격 · 시세 오류 봉 {n}건 보정 · 참고용" if n else "분할 조정 가격 · 참고용"
     iv = ('<button class="btn on" data-piv="d" aria-pressed="true">일봉</button><button class="btn" data-piv="w" aria-pressed="false">주봉</button>'
           '<span class="sp"></span><button class="btn" data-pscale aria-pressed="false" aria-label="가격 축 로그/선형 전환">선형 축</button>')
     rg = "".join(f'<button class="btn{" on" if k == "y1" else ""}" data-prange="{k}" aria-pressed="{"true" if k == "y1" else "false"}">{n}</button>' for k, n in PRICE_RANGES)
     return (f'<div class="pcap">가격</div><div class="pbar" role="group" aria-label="봉 주기·가격 축">{iv}</div>'
             f'<div class="pbar rng" role="group" aria-label="기간">{rg}</div>'
-            f'<div class="chartbox"><div id="pchart" data-t="{E(t)}" role="img" aria-label="{E(t)} 가격 캔들 차트"><div class="chartnote pfail">불러오는 중…</div></div>'
+            f'<div class="chartbox"><div id="pchart" data-t="{E(t)}"{ova} role="img" aria-label="{E(t)} 가격 캔들 차트"><div class="chartnote pfail">불러오는 중…</div></div>'
             '<div class="chartnote" id="preadout"></div></div>'
-            '<div class="chartnote">분할 조정 가격 · 참고용</div>')
+            f'<div class="chartnote">{note}</div>')
 
 
 def build_products_dir(df, uni, items):

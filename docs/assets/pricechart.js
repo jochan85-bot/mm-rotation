@@ -1,7 +1,10 @@
 /* 종목 페이지 가격 차트 — 3배 상품 자체의 분할·병합 조정 일봉 캔들(주봉은 이 파일에서 일봉을 묶어 만든다). M-score 차트와 연동하지 않는 독립 차트.
    데이터: data/charts/<티커>.json = {t, v, d0, dt:[달력일 차], o, h, l, c} — 이 페이지를 열 때 그 종목 파일 1개만 읽는다.
    라이브러리: TradingView Lightweight Charts™ 5.2.1 (Apache-2.0, 버전 고정 CDN + SRI). 불러오지 못하면 차트 자리에 안내 문구만 나오고 페이지 나머지는 그대로다.
-   상승·하락 색 = 사이트 공용 변수 --up(초록)·--dn(빨강). 판·글자·격자 색도 mm.css 변수를 읽는다(색 구성이 바뀌면 다시 적용). */
+   상승·하락 색 = 사이트 공용 변수 --up(초록)·--dn(빨강). 판·글자·격자 색도 mm.css 변수를 읽는다(색 구성이 바뀌면 다시 적용).
+   시세 오류 봉 표시 보정: #pchart 의 data-ov = [{d:날짜, f:'l'|'h'}](목록 data/chart_overrides.yaml). 그리기 직전 일봉에만 적용 — 저가는 min(시가, 종가), 고가는 max(시가, 종가)
+   밖이면 거기로 자른다(시가·종가 불변). 주봉은 보정된 일봉으로 묶는다. 받은 데이터 파일은 그대로다.
+   가격 표시(축 눈금·십자선·판독 줄 공통) = fmt(): 1 이상 소수 2자리(천 단위 쉼표), 1 미만 유효숫자 3자리. */
 (function () {
   'use strict';
   var box = document.getElementById('pchart');
@@ -12,6 +15,7 @@
   var MONTHS = { m1: 1, m3: 3, m6: 6, y1: 12, y3: 36, all: 0 };
   var st = { iv: 'd', range: 'y1', log: false }, D = null, W = null, chart = null, series = null, LW = null;
   var out = document.getElementById('preadout');
+  var OV = []; try { OV = JSON.parse(box.getAttribute('data-ov') || '[]'); } catch (e) { OV = []; }
 
   function fail() {
     box.innerHTML = '<div class="chartnote pfail">차트를 불러오지 못했습니다.</div>';
@@ -37,6 +41,20 @@
     }
     return a;
   }
+  function ymdKey(t) { return new Date(t * 1000).toISOString().slice(0, 10); }
+  function fix(a, ov) {                                 // 표시 보정 — 지정 봉의 저가/고가를 시가·종가 범위로 자른다(새 배열·새 봉, 원본 배열 불변)
+    if (!ov || !ov.length) return a;
+    var m = {}; ov.forEach(function (x) { (m[x.d] = m[x.d] || []).push(x.f); });
+    return a.map(function (b) {
+      var fs = m[ymdKey(b.time)]; if (!fs) return b;
+      var n = { time: b.time, open: b.open, high: b.high, low: b.low, close: b.close };
+      fs.forEach(function (f) {
+        if (f === 'l' && n.low < Math.min(n.open, n.close)) n.low = Math.min(n.open, n.close);
+        if (f === 'h' && n.high > Math.max(n.open, n.close)) n.high = Math.max(n.open, n.close);
+      });
+      return n;
+    });
+  }
   function weekly(a) {                                  // 주(월요일 시작) 단위 — 시가=첫 봉, 고가=최대, 저가=최소, 종가=마지막 봉. 휴장으로 빠진 날은 있는 봉만 묶는다
     var w = [], cur = null, key = null;
     a.forEach(function (b) {
@@ -53,7 +71,7 @@
       layout: { background: { type: 'solid', color: css('--bg2', '#0b0f17') }, textColor: css('--muted', '#8b949e'), attributionLogo: true,
         fontFamily: getComputedStyle(document.body).fontFamily },
       grid: { vertLines: { color: css('--grid', '#1f2a3a') }, horzLines: { color: css('--grid', '#1f2a3a') } },
-      rightPriceScale: { borderColor: css('--border', '#30363d') },
+      rightPriceScale: { borderColor: css('--border', '#30363d'), entireTextOnly: true, scaleMargins: { top: 0.08, bottom: 0.16 } },   // 맨 위·아래 눈금 글자가 잘리면 숨김 / 아래 여백 = 왼쪽 아래 TradingView 로고(높이 19px, 바닥에서 10px) 자리 — 봉이 로고 밑으로 들어가지 않게
       timeScale: { borderColor: css('--border', '#30363d') }
     };
   }
@@ -61,7 +79,14 @@
     var up = css('--up', '#22c55e'), dn = css('--dn', '#ef4444');
     return { upColor: up, downColor: dn, borderUpColor: up, borderDownColor: dn, wickUpColor: up, wickDownColor: dn };
   }
-  function fmt(p) { return p > 0 && p < 1 ? p.toFixed(4) : p.toFixed(2); }
+  function fmt(p) {                                     // 1 이상 = 소수 2자리(쉼표), 1 미만 = 유효숫자 3자리(지수 표기 없이)
+    if (typeof p !== 'number' || !isFinite(p)) return '';
+    var a = Math.abs(p);
+    if (a >= 1 || a === 0) return p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    var s = p.toPrecision(3);
+    if (s.indexOf('e') >= 0) s = p.toFixed(Math.min(20, 2 - Math.floor(Math.log10(a))));
+    return s;
+  }
   function ymd(t) { var d = new Date(t * 1000); return d.getUTCFullYear() + '-' + ('0' + (d.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + d.getUTCDate()).slice(-2); }
   function readout(b) {
     if (!out) return;
@@ -92,7 +117,7 @@
     } else chart.timeScale().fitContent();
   }
   function init(lw, j) {
-    LW = lw; D = bars(j); W = weekly(D);
+    LW = lw; D = fix(bars(j), OV); W = weekly(D);
     if (!D.length) return fail();
     box.innerHTML = '';
     var o = theme();
@@ -102,7 +127,7 @@
     o.crosshair = { mode: lw.CrosshairMode.Normal };
     o.timeScale.fixLeftEdge = true; o.timeScale.fixRightEdge = true; o.timeScale.minBarSpacing = 0.01;   // 전체(일봉 4천여 개)도 좁은 화면 폭에 다 들어가게
     chart = lw.createChart(box, o);
-    series = chart.addSeries(lw.CandlestickSeries, Object.assign({ priceLineVisible: false }, colors()));
+    series = chart.addSeries(lw.CandlestickSeries, Object.assign({ priceLineVisible: false, priceFormat: { type: 'price', precision: 3, minMove: 0.001 } }, colors()));   // 눈금 간격 하한 0.001(1 미만 가격용) — 글자는 fmt
     chart.subscribeCrosshairMove(function (p) {
       var b = p && p.time !== undefined && p.seriesData ? p.seriesData.get(series) : null;
       var a = data(); readout(b && b.open !== undefined ? b : a[a.length - 1]);
