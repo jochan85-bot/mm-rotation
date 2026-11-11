@@ -1,7 +1,8 @@
 /* mm-rotation 공용 스타일 — 국장/미장 리포트(mactrader-reports)의 색·타이포·카드·표 서식 + 크립토/골드 시그널 리포트 차트 색을 따른다.
    외부 폰트·라이브러리 0. 모바일 우선(기준 375px, 가로 스크롤 없음), 데스크톱은 최대 960px 중앙 정렬. 생성: scripts/mm_site.py */
 :root{--bg:#0d1117;--bg2:#0b0f17;--panel:#161b22;--panel2:#1c2330;--border:#30363d;--grid:#1f2a3a;--text:#e6edf3;--muted:#8b949e;
- --accent:#58a6ff;--up:#22c55e;--dn:#ef4444;--amber:#f59e0b;--blue:#3b82f6;--warn-bg:rgba(245,158,11,.12);--warn-bd:rgba(245,158,11,.45)}
+ --accent:#58a6ff;--up:#22c55e;--dn:#ef4444;--amber:#f59e0b;--blue:#3b82f6;--warn-bg:rgba(245,158,11,.12);--warn-bd:rgba(245,158,11,.45);
+ --sec-gap:22px}
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);
@@ -15,7 +16,7 @@ nav.top a.g{flex:0 0 auto;padding:6px 14px;color:var(--accent);border-color:rgba
 nav.top a.g.cur{background:#1e3a8a;color:#fff}
 h1{color:var(--accent);font-size:20px;line-height:1.25;margin:2px 0 4px}
 h1 small{display:block;color:var(--muted);font-size:12px;font-weight:400;margin-top:2px}
-h2{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin:22px 0 8px;padding-bottom:6px;border-bottom:1px solid #21262d;font-weight:600}
+h2{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin:var(--sec-gap) 0 8px;padding-bottom:6px;border-bottom:1px solid #21262d;font-weight:600}
 h3{font-size:14px;margin:14px 0 4px}
 p{margin:6px 0}
 .meta{color:var(--muted);font-size:12.5px;line-height:1.6;margin:2px 0 8px}
@@ -192,3 +193,5 @@ table.rk td.wc{text-align:center}
 #pchart{position:relative;width:100%;height:300px;overflow:hidden}
 @media (max-width:480px){#pchart{height:260px}}
 .pfail{display:flex;align-items:center;justify-content:center;height:100%;text-align:center}
+/* 가격 차트 하단 문구 ↔ 소개 글 상자: 섹션 사이 간격(--sec-gap = h2 위 여백)과 같게. 이 인접 쌍은 종목 페이지에만 있다 */
+body>.chartnote+.intro{margin-top:var(--sec-gap)}

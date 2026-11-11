@@ -254,6 +254,17 @@ ok("스캔: 합성 이력 — 튄 봉 1개만 검출", [x["date"] for x in M.ran
 z = pd.DataFrame({"o": [10.0] * 30, "h": [10.0] * 15 + [11.0] + [10.0] * 14, "l": [10.0] * 30, "c": [10.0] * 30}, index=pd.bdate_range("2026-01-05", periods=30))
 ok("스캔: 분모 0(정체 봉 연속) → note 분모0·배수 inf", [(x["note"], x["mult"]) for x in M.range_outliers(z)] == [("분모0", float("inf"))])
 
+
+# 22. 간격: 가격 차트 하단 문구 ↔ 소개 글 상자 = 섹션 사이 간격(--sec-gap = h2 위 여백 22px) 재사용, 새 px 값 0·다른 규칙 불변
+css = (ROOT / "docs" / "assets" / "mm.css").read_text(encoding="utf-8")
+ok("간격: --sec-gap 정의 1곳(22px = 기존 h2 위 여백)", re.findall(r"--sec-gap:([^;}]+)[;}]", css) == ["22px"], re.findall(r"--sec-gap:([^;}]+)[;}]", css))
+ok("간격: h2 위 여백이 --sec-gap 사용", "letter-spacing:1.2px;margin:var(--sec-gap) 0 8px;" in css)
+ok("간격: 문구↔상자 규칙은 이 인접 쌍만 대상", re.findall(r"([^{}\n]*)\{margin-top:var\(--sec-gap\)\}", css) == ["body>.chartnote+.intro"])
+ok("간격: .intro 기본 여백 불변(다른 위치의 소개 상자 영향 0)", ".intro{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13.5px;line-height:1.75;margin:2px 0 10px}" in css)
+adj = [p.stem for p in sorted((ROOT / "docs" / "products").glob("*.html"))
+       if re.search(r'<div class="chartnote"[^>]*>분할 조정 가격[^<]*</div>\s*<div class="intro">', p.read_text(encoding="utf-8"))]
+ok("간격: 37종 모두 하단 문구 바로 뒤 소개 상자(선택자 적용 대상)", len(adj) == 37, len(adj))
+
 shutil.rmtree(TMP, ignore_errors=True)
 print(f"{P} PASS / {F} FAIL")
 sys.exit(1 if F else 0)
