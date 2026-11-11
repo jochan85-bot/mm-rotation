@@ -372,9 +372,9 @@ def build_product(t, u, it, hold=None):
         '<div class="chartnote" id="creadout">불러오는 중…</div></div>')
     risks = "".join(f'<li>{E(x)}</li>' for x in tx.get("risk", [])) or '<li>—</li>'
     body = f"""<h1>{E(t)}<small>{sub}</small></h1>
-<h2>소개</h2><div class="intro">{intro_html(tx.get("intro"))}</div>
+<h2>소개</h2>{price_chart_html(t)}
+<div class="intro">{intro_html(tx.get("intro"))}</div>
 {chart_html}
-{price_chart_html(t)}
 <h2>구성</h2>{comp}
 <h2>기본 정보</h2>{basic}{hist_line(t)}
 <h2>구조 리스크</h2><ul class="risk">{risks}</ul>
@@ -382,7 +382,7 @@ def build_product(t, u, it, hold=None):
     return pg(f"{t} — 무매 M-score", body, "products.html", root="../", scripts='<script src="../assets/chart.js"></script><script src="../assets/pricechart.js"></script>')
 
 
-# 가격 차트(MM-PRICE-CHART-20261111): 소개 안 M-score 차트 아래 — 새 절 없음. 데이터 data/charts/<티커>.json(scripts/mm_charts.py), 동작 assets/pricechart.js.
+# 가격 차트(MM-PRICE-CHART-20261111): 소개 제목 바로 아래·설명 상자 위(MM-PRICE-CHART-POS-20261111) — 새 절 없음. 데이터 data/charts/<티커>.json(scripts/mm_charts.py), 동작 assets/pricechart.js.
 # 라이선스(Apache-2.0) 요구 표기 = NOTICE 문구 + tradingview.com 링크(차트 안 로고 링크 attributionLogo 와 별도로 페이지 하단에 둔다). NOTICE 원문 그대로(v5.2.1 태그).
 PRICE_ATTR = ('<div class="stamp">가격 차트: TradingView Lightweight Charts™ · Copyright (с) 2025 TradingView, Inc. '
               '<a href="https://www.tradingview.com/" rel="noopener">https://www.tradingview.com/</a> · Apache License 2.0</div>')

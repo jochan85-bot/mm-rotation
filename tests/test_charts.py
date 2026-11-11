@@ -139,7 +139,7 @@ src_site = (ROOT / "scripts" / "mm_site.py").read_text(encoding="utf-8")
 ok("출처 표기: NOTICE 문구 + tradingview 링크", "TradingView Lightweight Charts™ · Copyright (с) 2025 TradingView, Inc." in mm_site.PRICE_ATTR and 'href="https://www.tradingview.com/"' in mm_site.PRICE_ATTR)
 ok("종목 페이지 스크립트에 pricechart.js", '<script src="../assets/pricechart.js"></script>' in src_site)
 body = re.search(r'def build_product\(.*?return pg\(', src_site, re.S).group(0)
-ok("가격 차트는 소개 절 안(M-score 차트 다음·구성 절 앞)", body.index("{chart_html}") < body.index("{price_chart_html(t)}") < body.index("<h2>구성</h2>"))
+ok("가격 차트는 소개 제목 바로 아래·설명 상자 위(그 뒤 M-score 차트·구성 절 순서 유지)", '<h2>소개</h2>{price_chart_html(t)}\n<div class="intro">' in body and body.index("{price_chart_html(t)}") < body.index('<div class="intro">') < body.index("{chart_html}") < body.index("<h2>구성</h2>"))
 
 # 13. pricechart.js: 버전 고정·SRI·로고 표기·폴백·lazy(그 종목 파일 1개)
 js = (ROOT / "docs" / "assets" / "pricechart.js").read_text(encoding="utf-8")
