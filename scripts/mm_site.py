@@ -1,6 +1,7 @@
 """정적 페이지 생성 — docs/index.html · longterm.html · guide.html · products.html · products/<티커>.html · data/series/<티커>.json.
 MM-PAGE-V3-DESIGN-20261010: 표시층 전면 재구성(렌더러만 교체 — compute·판정 규칙·CSV 형식 무변경).
-스타일 = docs/assets/mm.css, 동작 = docs/assets/index.js · chart.js (정적 파일). 외부 라이브러리·외부 스크립트 0, 개인 정보 0."""
+스타일 = docs/assets/mm.css, 동작 = docs/assets/index.js · chart.js · pricechart.js (정적 파일). 개인 정보 0.
+외부 라이브러리는 종목 페이지 가격 차트의 TradingView Lightweight Charts™ 1개뿐(버전 고정 CDN + SRI, pricechart.js 가 그 페이지에서만 불러온다 — MM-PRICE-CHART-20261111)."""
 import json, html, re, urllib.parse
 from pathlib import Path
 import numpy as np, pandas as pd
@@ -373,11 +374,31 @@ def build_product(t, u, it, hold=None):
     body = f"""<h1>{E(t)}<small>{sub}</small></h1>
 <h2>소개</h2><div class="intro">{intro_html(tx.get("intro"))}</div>
 {chart_html}
+{price_chart_html(t)}
 <h2>구성</h2>{comp}
 <h2>기본 정보</h2>{basic}{hist_line(t)}
 <h2>구조 리스크</h2><ul class="risk">{risks}</ul>
-<div class="stamp">마지막 수정일 {E(str(it.get("modified", "—")))} · <a href="../products.html">상품 목록</a> · <a href="../index.html">순위표</a></div>"""
-    return pg(f"{t} — 무매 M-score", body, "products.html", root="../", scripts='<script src="../assets/chart.js"></script>')
+<div class="stamp">마지막 수정일 {E(str(it.get("modified", "—")))} · <a href="../products.html">상품 목록</a> · <a href="../index.html">순위표</a></div>{PRICE_ATTR}"""
+    return pg(f"{t} — 무매 M-score", body, "products.html", root="../", scripts='<script src="../assets/chart.js"></script><script src="../assets/pricechart.js"></script>')
+
+
+# 가격 차트(MM-PRICE-CHART-20261111): 소개 안 M-score 차트 아래 — 새 절 없음. 데이터 data/charts/<티커>.json(scripts/mm_charts.py), 동작 assets/pricechart.js.
+# 라이선스(Apache-2.0) 요구 표기 = NOTICE 문구 + tradingview.com 링크(차트 안 로고 링크 attributionLogo 와 별도로 페이지 하단에 둔다). NOTICE 원문 그대로(v5.2.1 태그).
+PRICE_ATTR = ('<div class="stamp">가격 차트: TradingView Lightweight Charts™ · Copyright (с) 2025 TradingView, Inc. '
+              '<a href="https://www.tradingview.com/" rel="noopener">https://www.tradingview.com/</a> · Apache License 2.0</div>')
+PRICE_RANGES = (("m1", "1개월"), ("m3", "3개월"), ("m6", "6개월"), ("y1", "1년"), ("y3", "3년"), ("all", "전체"))
+
+
+def price_chart_html(t):
+    """가격 차트 컨테이너 — 기본 일봉·1년·선형 축(전체를 누르면 로그 축), 버튼 상태는 pricechart.js 가 aria-pressed 로 맞춘다."""
+    iv = ('<button class="btn on" data-piv="d" aria-pressed="true">일봉</button><button class="btn" data-piv="w" aria-pressed="false">주봉</button>'
+          '<span class="sp"></span><button class="btn" data-pscale aria-pressed="false" aria-label="가격 축 로그/선형 전환">선형 축</button>')
+    rg = "".join(f'<button class="btn{" on" if k == "y1" else ""}" data-prange="{k}" aria-pressed="{"true" if k == "y1" else "false"}">{n}</button>' for k, n in PRICE_RANGES)
+    return (f'<div class="pcap">가격</div><div class="pbar" role="group" aria-label="봉 주기·가격 축">{iv}</div>'
+            f'<div class="pbar rng" role="group" aria-label="기간">{rg}</div>'
+            f'<div class="chartbox"><div id="pchart" data-t="{E(t)}" role="img" aria-label="{E(t)} 가격 캔들 차트"><div class="chartnote pfail">불러오는 중…</div></div>'
+            '<div class="chartnote" id="preadout"></div></div>'
+            '<div class="chartnote">분할 조정 가격 · 참고용</div>')
 
 
 def build_products_dir(df, uni, items):

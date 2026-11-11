@@ -124,6 +124,9 @@ def run(push=True, fetch=True, manual=None, alert=None):
     p0=pd.read_csv(L.DATA/"product_info.csv")
     mm_site.build_all(df,uni,meta,p0,[])
     n_el=int((df.table=="순위").sum()); L.log(f"산출 완료 순위 {n_el}/{len(df)} 제외 {(df.table=='제외').sum()} ⚠ {(df.table=='⚠').sum()} 배지 종목 {(df.badges.fillna('')!='').sum()} 이상봉 {len(an)}건")
+    try:                                                                    # MM-PRICE-CHART-20261111: 종목 페이지 가격 차트 새 봉 덧붙임 — 후단 훅(점수·순위 산출 후, 읽기 원천 = RAW). 실패해도 발행 계속
+        import mm_charts; mm_charts.daily_update(log=L.log)
+    except Exception as e: L.log(f"[mm_charts] 가격 차트 갱신 실패(발행 계속): {type(e).__name__}: {str(e)[:200]}","alerts")
     if push: git_push(T)
     check_and_alert(T,prov,dropped,df,tail,alert=alert)                    # 미산출 감시(§3): 기준일 ≠ 직전 US 거래일이면 경보 1건
     return df
