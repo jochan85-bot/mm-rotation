@@ -4,3 +4,14 @@ __pycache__/
 data/raw/
 tests/fp_cache/
 data/products_cache/raw/
+# 편집 도구 백업 파일(공개 docs/ 옆에 생겨도 커밋되지 않게) — MM-CHART-WRAP-20261112
+*.bak
+*.bak.*
+*.bak_*
+*.pre-*
+*.orig
+*.rej
+*~
+*.swp
+*.swo
+.#*

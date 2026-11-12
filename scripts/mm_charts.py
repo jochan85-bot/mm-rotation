@@ -10,7 +10,7 @@
   · 그 밖의 대조 불일치·날짜 삽입/삭제 → 원천으로 전체 재생성(로그 1줄)
 실패는 종목 단위로 격리하고, 훅 전체 실패도 일일 발행을 막지 않는다(mm_daily 쪽 try/except).
 표시 보정(시세 오류 봉): data/chart_overrides.yaml 목록을 종목 페이지가 그리기 직전에만 적용한다 — 이 모듈이 쓰는 차트 JSON 은 원천 그대로다.
-  active_overrides()(원값 일치 확인) → mm_site 가 페이지에 싣고, pricechart.js 가 clip_bar() 와 같은 규칙으로 자른다.
+  active_overrides()(원값 일치 확인) → mm_site 가 페이지에 싣고, pricechart.js 가 같은 규칙으로 적용한다(clip = clip_bar() 로 자름, set = 두 번째 소스 정상값으로 교체).
 사용: python3 scripts/mm_charts.py --build | --update | --check | --scan   [--src DIR] [--out DIR] [--no-calendar]"""
 import sys, json, math, argparse, time
 from pathlib import Path
@@ -145,19 +145,22 @@ def update_one(t, src=None, out=None, cal_events=None, full=False):
 
 
 OVR = DATA / "chart_overrides.yaml"
-OVR_FIELDS = {"low": "l", "high": "h"}
+OVR_FIELDS = {"low": "l", "high": "h"}                                  # mode clip(기본): 고가·저가를 시가·종가 범위로 자름
+SET_FIELDS = {"open": "o", "high": "h", "low": "l", "close": "c"}       # mode set: 두 번째 시세 소스로 확인한 정상값으로 교체(MM-CHART-WRAP-20261112)
 
 
 def load_overrides(path=None):
-    """표시 보정 목록(data/chart_overrides.yaml) → [{ticker,date,field,original,corrected,reason}]. 파일 없음·형식 오류 → []"""
+    """표시 보정 목록(data/chart_overrides.yaml) → [{ticker,date,field,mode,original,corrected,reason}]. 파일 없음·형식 오류 → []"""
     p = Path(path or OVR)
     if not p.exists(): return []
     import yaml
     d = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
     out = []
     for x in d.get("overrides") or []:
-        if not isinstance(x, dict) or x.get("field") not in OVR_FIELDS: continue
-        out.append(dict(ticker=str(x["ticker"]), date=str(x["date"]), field=x["field"], original=float(x["original"]),
+        if not isinstance(x, dict): continue
+        mode = x.get("mode", "clip")
+        if x.get("field") not in {"clip": OVR_FIELDS, "set": SET_FIELDS}.get(mode, {}): continue
+        out.append(dict(ticker=str(x["ticker"]), date=str(x["date"]), field=x["field"], mode=mode, original=float(x["original"]),
                         corrected=float(x["corrected"]), reason=str(x.get("reason", ""))))
     return out
 
@@ -181,18 +184,23 @@ def active_overrides(t, j=None, ovs=None, out=None):
         j = json.loads(p.read_text(encoding="utf-8"))
     df = from_obj(j); act, skip = [], []
     for x in mine:
-        d = pd.Timestamp(x["date"]); k = OVR_FIELDS[x["field"]]
+        d = pd.Timestamp(x["date"]); k = SET_FIELDS[x["field"]]
         if d not in df.index: skip.append(f"{t} {x['date']} 봉 없음"); continue
         v = float(df.at[d, k])
         if abs(v - x["original"]) > TOL * max(abs(x["original"]), 1e-9): skip.append(f"{t} {x['date']} {x['field']} 현재 값 {v} ≠ 원값 {x['original']}"); continue
-        act.append({"d": x["date"], "f": k})
+        act.append({"d": x["date"], "f": k, "v": x["corrected"]} if x.get("mode") == "set" else {"d": x["date"], "f": k})
     return act, skip
 
 
 def apply_overrides(df, act):
-    """보정 적용 사본(df = from_obj 결과). act = active_overrides 의 적용 목록. 원본 df 는 바꾸지 않는다."""
+    """보정 적용 사본(df = from_obj 결과). act = active_overrides 의 적용 목록. 원본 df 는 바꾸지 않는다.
+    set(값 교체)을 먼저, clip(범위 자름)을 나중에 적용한다 — pricechart.js fix() 와 같은 순서."""
     df = df.copy()
     for x in act:
+        d = pd.Timestamp(x["d"])
+        if "v" in x and d in df.index: df.at[d, x["f"]] = float(x["v"])
+    for x in act:
+        if "v" in x: continue
         d = pd.Timestamp(x["d"])
         if d not in df.index: continue
         r = df.loc[d]; h, l = clip_bar(r.o, r.h, r.l, r.c, "low" if x["f"] == "l" else "high")
