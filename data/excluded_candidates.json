@@ -1377,6 +1377,19 @@
    "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001211/f46591d1.htm",
    "filed": "2026-11-05",
    "owner_override": false
+  },
+  {
+   "key": "glld",
+   "ticker": "GLLD",
+   "name": "MicroSectors Gold 3X Leveraged ETN",
+   "issuer": "BMO MicroSectors",
+   "leverage": "3x",
+   "rule": "c",
+   "reason": "원자재 상품 — 주식 지수·섹터·테마 아님",
+   "found": "2026-11-14",
+   "source": "https://microsectors.com/",
+   "filed": "2026-11-14",
+   "owner_override": false
   }
  ]
 }
