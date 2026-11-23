@@ -45,7 +45,7 @@ def labels(html):
 
 
 BLOCK = ["div.pcap:가격", "div.pbar", "div.pbar.rng", "div.chartbox{pchart,preadout}"]
-uni = [r["ticker"] for r in csv.DictReader(open(ROOT / "data" / "universe.csv", encoding="utf-8"))]
+uni = [r["ticker"] for r in csv.DictReader(open(ROOT / "data" / "universe.csv", encoding="utf-8"))] + [r["ticker"] for r in csv.DictReader(open(ROOT / "data" / "universe_groups.csv", encoding="utf-8"))]   # MM-UNIVERSE-GROUPS-20261123: 기본 37 + 신규 49
 pages = sorted((ROOT / "docs" / "products").glob("*.html"))
 ok(f"종목 페이지 수 = 유니버스 수({len(uni)})", sorted(p.stem for p in pages) == sorted(uni), f"{len(pages)}")
 bad = []

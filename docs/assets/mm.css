@@ -206,3 +206,4 @@ body>.chartnote+.intro{margin-top:var(--sec-gap)}
 .gc{display:inline-block;font-size:10px;line-height:1.5;padding:0 5px;margin-left:5px;border-radius:999px;border:1px solid var(--border);color:var(--muted);vertical-align:1px;white-space:nowrap}
 .gc.g-crypto{color:#fbbf24;border-color:rgba(245,158,11,.5)}.gc.g-bond{color:#4ade80;border-color:rgba(34,197,94,.45)}
 .gc.g-intl{color:#7dd3fc;border-color:rgba(56,189,248,.45)}.gc.g-inv{color:#fca5a5;border-color:rgba(239,68,68,.5)}
+.rangebar:has(.gbar){flex-wrap:wrap}.rangebar .sp{flex:1 1 8px}.gbar.inl{display:flex;flex-wrap:wrap;gap:6px;margin:0}.gbar.inl .gb{padding:4px 8px}

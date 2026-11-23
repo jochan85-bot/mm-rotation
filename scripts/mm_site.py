@@ -271,12 +271,14 @@ def build_guide(df, meta, uni):
 
 
 # ---------- 종목 페이지 ----------
-def load_page_items():
+def load_page_items(groups=False):
+    """products_page.json 의 기본 37종 항목. groups=True 면 신규 49종 템플릿 항목(products_page_groups.json)을 더한다(기본 37종 항목은 덮지 않는다)."""
     p = DATA / "products_page.json"
     try:
         items = json.load(open(p, encoding="utf-8")).get("items", {})
     except Exception:
         items = {}
+    if not groups: return items
     try:                                                          # MM-UNIVERSE-GROUPS-20261123: 신규 49종 문구(템플릿, 기본 37종 항목은 덮지 않는다)
         g = json.load(open(DATA / "products_page_groups.json", encoding="utf-8")).get("items", {})
         items = {**g, **items}
@@ -385,7 +387,7 @@ def build_product(t, u, it, hold=None):
     """종목 페이지 1개. u = universe 행(Series/namedtuple), it = products_page.json 항목(없으면 {}), hold = holdings.json 항목."""
     tx = it.get("text", {}); b = it.get("basic", {})
     base_t = t in mm_groups.base_tickers()
-    grp_html = ('<div class="gcap">그룹 추가 (켜면 그 그룹을 더한 모집단으로 M-score·순위를 다시 그립니다)</div><div class="gbar" id="gbar" role="group" aria-label="그룹 추가"></div>' if base_t else "")
+    grp_html = ('<span class="sp"></span><span class="gbar inl" data-gbar="1" role="group" aria-label="그룹 추가(켜면 그 그룹을 더한 모집단으로 다시 그립니다)"></span>' if base_t else "")
     basis_html = ('<div class="chartnote">M-score·순위 기준: 미국 기본 37종 모집단(위 그룹 버튼으로 모집단에 그룹을 더할 수 있습니다)</div>' if base_t else
                   f'<div class="chartnote">M-score·순위 기준: 5개 그룹 전 종목({len(mm_groups.page_cfg()["gt"])}종)을 모집단으로 한 값입니다(그룹 버튼 없음).</div>')
     sub = f'{E(b.get("issuer", u.issuer))} · {E(b.get("type", u.type))} · {E(b.get("leverage", ""))}'
@@ -394,8 +396,8 @@ def build_product(t, u, it, hold=None):
     fee = b.get("fee") or tx.get("fee") or "—"
     basic = (f'<table class="info" style="table-layout:auto"><tr><th style="width:auto">발행사</th><th style="width:auto">구분</th><th style="width:auto">배수</th><th style="width:auto">보수</th><th style="width:auto">상장일</th></tr>'
              f'<tr><td>{E(b.get("issuer", ""))}</td><td>{E(b.get("type", ""))}</td><td>{E(b.get("leverage", ""))}</td><td>{E(fee)}</td><td>{E(str(b.get("inception") or "—"))}</td></tr></table>')
-    chart_html = ('<div class="rangebar"><button class="btn" data-range="m3">3개월</button><button class="btn" data-range="m6">6개월</button><button class="btn on" data-range="y1">1년</button><button class="btn" data-range="all">전체</button></div>'
-        f'{grp_html}<div class="chartbox"><div id="chart" data-t="{E(t)}" data-g="{"base" if base_t else "all"}"></div>'
+    chart_html = ('<div class="rangebar"><button class="btn" data-range="m3">3개월</button><button class="btn" data-range="m6">6개월</button><button class="btn on" data-range="y1">1년</button><button class="btn" data-range="all">전체</button>' + grp_html + '</div>'
+        f'<div class="chartbox"><div id="chart" data-t="{E(t)}" data-g="{"base" if base_t else "all"}"></div>'
         '<div class="legend"><span><i style="background:#f59e0b"></i>M-score (좌축)</span><span><i style="background:#3b82f6"></i>순위 (우축·1위가 위)</span></div>'
         '<div class="chartnote" id="creadout">불러오는 중…</div>' + basis_html + '</div>')
     risks = "".join(f'<li>{E(x)}</li>' for x in tx.get("risk", [])) or '<li>—</li>'
@@ -537,7 +539,7 @@ def build_all(latest_df, uni, meta, p0, score_files):
             from mm_lib import log
             log(f"[page_text] 종목 문구 갱신 건너뜀: {type(e).__name__}: {str(e)[:150]}", "alerts")
         except Exception: pass
-    items = load_page_items(); hold = load_holdings()
+    items = load_page_items(groups=True); hold = load_holdings()
     uni_all = mm_groups.uni_with_groups(uni)                      # 기본 + 신규 49종(페이지·목록·차트 데이터용)
     (DOCS / "index.html").write_text(build_index(latest_df, meta), encoding="utf-8")
     (DOCS / "guide.html").write_text(build_guide(latest_df, meta, uni), encoding="utf-8")

@@ -286,7 +286,7 @@ ok("간격: 문구↔상자 규칙은 이 인접 쌍만 대상", re.findall(r"([
 ok("간격: .intro 기본 여백 불변(다른 위치의 소개 상자 영향 0)", ".intro{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13.5px;line-height:1.75;margin:2px 0 10px}" in css)
 adj = [p.stem for p in sorted((ROOT / "docs" / "products").glob("*.html"))
        if re.search(r'<div class="chartnote"[^>]*>분할 조정 가격[^<]*</div>\s*<div class="intro">', p.read_text(encoding="utf-8"))]
-ok("간격: 37종 모두 하단 문구 바로 뒤 소개 상자(선택자 적용 대상)", len(adj) == 37, len(adj))
+ok("간격: 37종(+그룹 신규 49종) 모두 하단 문구 바로 뒤 소개 상자(선택자 적용 대상)", len(adj) == 37 + len(__import__("pandas").read_csv(ROOT / "data" / "universe_groups.csv")), len(adj))
 
 shutil.rmtree(TMP, ignore_errors=True)
 print(f"{P} PASS / {F} FAIL")

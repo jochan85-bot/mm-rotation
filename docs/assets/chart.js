@@ -98,7 +98,7 @@
 
   /* 미국 기본 37종 페이지: 그룹 버튼(크립토·채권·해외지수·인버스)을 켜면 그 그룹을 더한 모집단으로 M-score·순위를 다시 그린다(MM-UNIVERSE-GROUPS-20261123). 상태는 이 페이지 안에서만(저장 안 함) */
   function initGroups() {
-    var bar = document.getElementById('gbar');
+    var bar = document.querySelector('[data-gbar]');
     if (!bar || !window.MMG || box.getAttribute('data-g') !== 'base') return;
     fetch('../data/groups_meta.json').then(function (r) { return r.json(); }).then(function (cfg) {
       var MG = window.MMG.init(cfg, '../', { persist: false });
