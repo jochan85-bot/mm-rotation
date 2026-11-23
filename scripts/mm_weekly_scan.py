@@ -63,6 +63,9 @@ def main(push=True):
     pre_daily_if_stale(push)                                                   # MM-FEED-LAG-FIX-20261018 §3
     today=dt.date.today(); since=today-dt.timedelta(days=LOOKBACK)
     uni=pd.read_csv(L.DATA/"universe.csv"); info=pd.read_csv(L.DATA/"product_info.csv"); status=L.load_status()
+    import mm_groups as _G                                                     # MM-UNIVERSE-GROUPS-20261123-R3 §3: E5 점검·신상품 스캔 범위 = 기본 37종 + 4개 그룹(−3배 지수·섹터, 채권 3배, 해외지수 3배, 크립토 2배)
+    uni=_G.uni_with_groups(uni); _ig=L.DATA/"product_info_groups.csv"
+    if _ig.exists(): info=pd.concat([info,pd.read_csv(_ig)],ignore_index=True)
     np_path=L.DATA/"new_products.json"; newp=json.load(open(np_path,encoding="utf-8"))
     ok_src=[]; fail_src=[]; issues=[]; docs=0; found_names=set(); actions=[]; web_fail=[]; subst_src=[]
     fails=L.fetch_all(L.need_tickers()); L.log(f"주간 수신 실패={fails}","weekly")
@@ -77,7 +80,7 @@ def main(push=True):
     known_names={n for names,_ in al.values() for n in names}
     u0=pd.read_csv("%s/p0/universe_v2.csv"%L.STUDY); known_tick=set(u0.ticker)|set(uni.ticker)|{c.get("ticker") for c in newp["candidates"]}|{x.get("ticker") for x in mm_newprod.load_json(L.DATA/"excluded_candidates.json",{"items":[]})["items"] if x.get("ticker")}
     known_names|={str(x).replace("™","") for x in u0.yf_longName.dropna()}
-    known_tick|=set(L.thin_tickers())                                          # MM-FUNDTRACK-20261023 §3: 거래량 극소로 유니버스 밖에 있는 종목을 신상품으로 재발견하지 않게
+    known_tick|=set(L.thin_tickers())|{h["ticker"] for h in _G.groups_def().get("held",[])}   # 그룹 보류 종목도 신상품으로 재발견하지 않게                                          # MM-FUNDTRACK-20261023 §3: 거래량 극소로 유니버스 밖에 있는 종목을 신상품으로 재발견하지 않게
     for _t in L.thin_tickers():
         _ln=info.loc[info.ticker==_t,"yf_longName"]
         if len(_ln) and isinstance(_ln.iloc[0],str): known_names.add(_ln.iloc[0].replace("™","").strip())
@@ -178,7 +181,7 @@ def main(push=True):
         if is_tk and lev in ("?","") and name:
             _L=mm_newprod.parse_leverage(name); lev=f"{_L:g}x" if _L else "?"
         found.append((nm,isr,lev,url,fd,nm if is_tk else "",name))
-    np_res=mm_newprod.process(found,today=str(today))
+    np_res=mm_newprod.process(found,today=str(today),groups=True)
     added=np_res["listed_added"]+np_res["pipeline_added"]
     L.save_json(L.DATA/"status.json",status)
     rep=dict(date=str(today),lookback_days=LOOKBACK,sources_ok=ok_src,sources_failed=fail_src,sources_substituted=subst_src,docs_scanned=docs,issues=issues,actions=actions,new_products=np_res)

@@ -79,6 +79,9 @@ def run(push=True, fetch=True, manual=None, alert=None):
     except Exception as e: split_info={}; L.log(f"[mm_splits] 가드 단계 실패(가드 없이 계속): {type(e).__name__}: {str(e)[:200]}","alerts")
     try: tail=L.apply_tail_etn(T,log=L.log)                                   # 1x 최신 봉 < 기준일 → 3배 일간수익률÷3 으로 보정(최대 3일, MM-FEED-LAG-FIX-20261018 §2)
     except Exception as e: tail={}; L.log(f"[mm_tailetn] 보정 단계 실패(보정 없이 계속): {type(e).__name__}: {str(e)[:200]}","alerts")
+    try:                                                                    # MM-UNIVERSE-GROUPS-20261123-R3: 인버스 −1x 계열(짝 롱 1x 의 일간 수익률 부호 반전 누적) — 표시 계층, 실패해도 발행 계속
+        import mm_groups; mm_groups.build_inverse(L.RAW/"data",log=L.log,current_only=True)
+    except Exception as e: L.log(f"[mm_groups] 인버스 계열 생성 실패(그룹 원값만 영향): {type(e).__name__}: {str(e)[:200]}","alerts")
     S=L.load_study(T)
     pq=pd.read_csv(L.DATA/"proxy_quality.csv")
     df,upd=L.compute(S,T,T,cfg,status,uni,pq,remeasure=True)
@@ -114,6 +117,9 @@ def run(push=True, fetch=True, manual=None, alert=None):
     L.log(pass_msg(T,prev_pub,n_new))                                       # MM-PASSLOG-20261106: 차단 2종(stale_T·shrink)을 모두 통과한 시점
     L.write_day(T,df); df.to_csv(L.DATA/"scores_latest.csv",index=False)
     idx=L.rebuild_index(); L.log(f"index.json {idx['count']}일 ({idx['first']}~{idx['last']})")
+    try:                                                                    # MM-UNIVERSE-GROUPS-20261123-R3 §4-3: 새 종목 원값 갱신(docs/data/raw) — 점수 파일·scores_latest 무변경, 실패해도 발행 계속
+        import mm_groups; _gr=mm_groups.daily_update(S,T,cfg,status=status,log=L.log); L.log(f"[mm_groups] 원값 {_gr.get('days',0)}일 추가")
+    except Exception as e: L.log(f"[mm_groups] 원값 갱신 실패(발행 계속, 그룹 보기만 영향): {type(e).__name__}: {str(e)[:200]}","alerts")
     an=L.scan_anomalies(S,uni,cfg); an.to_csv(L.DATA/"anomalies.csv",index=False)
     import json
     np_path=L.DATA/"new_products.json"

@@ -42,11 +42,12 @@ def uni_at(u, d):
             if d0<=ds: cur=p0
         px.append(cur)
     u2["proxy"]=px; return u2
-def build_inverse(raw_data_dir, log=print):
+def build_inverse(raw_data_dir, log=print, current_only=False):
     """INV_<키>.csv — RAW 의 1x(<키>) 일간 수익률 r 의 부호를 뒤집은 −1x 누적 계열 Π(1−r)·100. 1x 기준선이 아니라 일간 곱(경로 의존) — 오너 결정 §1-3."""
     from pathlib import Path
     d=Path(raw_data_dir); out={}
-    for k in inverse_keys():
+    u=load_universe(); cur={p for p in u.proxy.dropna() if p.startswith("INV_")} if len(u) else set()
+    for k in (sorted(cur) if current_only else inverse_keys()):
         src=d/f"{k[4:]}.csv"
         if not src.exists(): out[k]="1x 원본 없음"; log(f"[mm_groups] {k}: 1x 원본 {src.name} 없음"); continue
         h=pd.read_csv(src,index_col=0); c=h["Close"].astype(float).values
@@ -62,9 +63,9 @@ def mult_adjust(df, cfg, uni):
     if not str((cfg or {}).get("sigma_leverage_adjust","false")).lower() in ("true","1"): return df
     m=dict(zip(uni.ticker,uni.mult.abs()/3.0)); df=df.copy(); df["sig"]=[s*m.get(t,1.0) if s==s else s for t,s in zip(df.ticker,df.sig)]
     return df
-def compute_new(S,asof,cfg,pq,uni,remeasure=False):
+def compute_new(S,asof,cfg,pq,uni,remeasure=False,status=None):
     """새 종목만의 compute — 반환 (df, pq 갱신분). M·순위·p_* 는 이 부분 모집단 기준이라 쓰지 않는다(브라우저가 켜진 그룹 모집단으로 다시 계산)."""
-    df,upd=L.compute(S,asof,asof,cfg,{"excluded":{}},uni,pq,remeasure=remeasure)
+    df,upd=L.compute(S,asof,asof,cfg,(status if status is not None else {"excluded":{}}),uni,pq,remeasure=remeasure)
     return mult_adjust(df,cfg,uni),upd
 def _r(x,n=6):
     return None if x is None or (isinstance(x,float) and not math.isfinite(x)) else (round(float(x),n))
@@ -200,3 +201,50 @@ def series_all_new():
                 a=out[t]; a["d"].append(d); a["m"].append(round(float(m),1)); a["r"].append(int(rk)); a["n"].append(n)
     return {t:a for t,a in out.items() if a["d"]}
 RETRO_FROM="2020-01-02"
+
+
+# ---------- 일일 갱신 (mm_daily 후크) ----------
+def append_day(date, rows):
+    """docs/data/raw/<연도>.json 에 한 날짜 열을 추가(이미 있으면 교체). 새 종목 배열은 앞쪽을 null 로 채운다. 원자적 쓰기."""
+    y=int(date[:4]); p=RAWDIR/f"{y}.json"
+    if p.exists(): o=json.load(open(p,encoding="utf-8"))
+    else: o={"y":y,"f":FIELDS,"d":[],"t":{}}
+    d=o["d"]
+    if date in d: k=d.index(date)
+    else:
+        if d and date<d[-1]: raise ValueError(f"raw 달력 역행: {date} < {d[-1]}")
+        d.append(date); k=len(d)-1
+        for t in o["t"]: o["t"][t].append(None)
+    for t,row in rows.items():
+        arr=o["t"].setdefault(t,[None]*len(d))
+        while len(arr)<len(d): arr.append(None)
+        arr[k]=row
+    for t,arr in o["t"].items():
+        if t not in rows: arr[k]=None
+    tmp=p.with_suffix(".json.tmp")
+    with open(tmp,"w",encoding="utf-8") as f: json.dump(o,f,ensure_ascii=False,separators=(",",":"))
+    tmp.replace(p)
+def daily_update(S, T, cfg, status=None, log=print):
+    """기준일 T 까지 원값 달력에 없는 거래일(보통 1일)의 새 종목 원값을 계산해 raw 파일에 추가한다. 호출 전제: 점수 날짜 파일(L.write_day) 기록 후, 인버스 1x 계열(build_inverse) 생성 후.
+    미국 기본 37종은 방금 기록된 날짜 파일에서 복사(base_rows), 인버스 σ 는 짝 롱 값 상속. 반환 {days, added}. 실패는 호출자가 잡는다(발행 계속)."""
+    T=pd.Timestamp(T); u=load_universe()
+    if not len(u): return {"days":0}
+    pq=pd.read_csv(DATA/"proxy_quality_groups.csv"); base_set=set(pd.read_csv(DATA/"universe.csv").ticker)
+    ip=RAWDIR/"index.json"; last=json.load(open(ip,encoding="utf-8"))["cal"][-1] if ip.exists() else "0000-00-00"
+    spy=S.loadp("SPY"); todo=[d for d in spy.index if d<=T and str(d.date())>last]; n=0
+    for d in todo:
+        ds=str(d.date()); day=L.read_day(d)
+        if day is None: log(f"[mm_groups] {ds} 날짜 파일 없음 — 건너뜀"); continue
+        df,upd=compute_new(S,d,cfg,pq,uni_at(u,ds),remeasure=(d==T),status=status)
+        if upd:
+            for t,v in upd.items(): pq=pq[pq.ticker!=t]; pq=pd.concat([pq,pd.DataFrame([v])],ignore_index=True)
+            pq.to_csv(DATA/"proxy_quality_groups.csv",index=False); log(f"[mm_groups] E4 재측정 갱신: {list(upd)}")
+            df,_=compute_new(S,d,cfg,pq,uni_at(u,ds),remeasure=False,status=status)
+        rows={}
+        for r in df.itertuples():
+            x=new_row(r)
+            if x is not None: rows[r.ticker]=x
+        rows.update(base_rows(day)); inherit_pair_sigma(rows,u,base_set)
+        append_day(ds,rows); n+=1
+    write_raw_index(); write_meta()
+    return {"days":n}

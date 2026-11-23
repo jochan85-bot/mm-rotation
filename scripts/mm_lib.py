@@ -8,6 +8,8 @@ DATA=ROOT/"data"; LOCAL=ROOT/".local"; RAW=LOCAL/"p0view"; FETCHED=LOCAL/"fetche
 SCORES=DOCS/"data"/"scores"; INDEX_JSON=DOCS/"data"/"index.json"   # GitHub Pages 는 /docs 만 서빙 — 달력 뷰(JS)가 읽으려면 docs 아래에 둔다
 STUDY=Path.home()/"studies"/"mm_rotation_20261007"
 MSCORE_DOC=STUDY/"MSCORE_V1_1.md"
+MSCORE_V12_DOC=STUDY/"MSCORE_V1_2_GROUPS.md"   # MM-UNIVERSE-GROUPS-20261123(-R3): 그룹·−1x·배수 보정 정의 — 매 실행 sha 대조(v1.1 은 불변)
+MSCORE_V12_SHA="086866afc72db64dac31a99f374b565c2cd759bc15844ec5c48f4a35d5ea32d4"
 MSCORE_SHA="b4ce99a877b7a4e053de14458c61fbfb7a592e5b4375a7d6ddacb9374fecd8f8"   # v1.1(+V2.3 후속 기록): 산식 불변; 직전 sha 69de08d1…bdaa2(→2c2b8f73…c590), v1 sha (v1 sha 41e4f209f338ba7ebb09bc7905be081f99e6b5abfef3170b84494bb223a9c83a 는 MSCORE_V1.md 에 보존)
 KST=dt.timezone(dt.timedelta(hours=9))
 class FormulaMismatch(RuntimeError): pass
@@ -21,6 +23,8 @@ def check_formula():
     """매 실행 sha 대조 — 불일치 시 중단"""
     got=hashlib.sha256(open(MSCORE_DOC,"rb").read()).hexdigest()
     if got!=MSCORE_SHA: raise FormulaMismatch(f"MSCORE_V1.md sha 불일치: {got}")
+    got2=hashlib.sha256(open(MSCORE_V12_DOC,"rb").read()).hexdigest()
+    if got2!=MSCORE_V12_SHA: raise FormulaMismatch(f"MSCORE_V1_2_GROUPS.md sha 불일치: {got2}")
 # ---------- 알림 ----------
 def tg_send(text, retries=3, wait=30):
     """텔레그램 1건 (토큰=키체인, chat_id=.local/config.json). 실패는 예외 대신 False.

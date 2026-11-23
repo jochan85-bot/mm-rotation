@@ -21,13 +21,27 @@ C_RULES=[("채권",re.compile(r"\b(Treasur\w*|Bonds?|T-?Notes?|Yield|Aggregate|I
          ("VIX·변동성",re.compile(r"\b(VIX|Volatility|VSTOXX)\b",re.I)),
          ("원자재",re.compile(r"\b(Crude|WTI|Brent|Natural Gas|Gold(?! Miners| Mining| Producers)|Silver(?! Miners| Mining)|Copper|Platinum|Palladium|Commodit\w+|Wheat|Corn|Soybean|Uranium Futures)\b|K-1 Free",re.I)),
          ("통화",re.compile(r"\b(Dollar|Yen|Euro|Currency|Currencies|Sterling)\b",re.I))]
-def classify(name="", ticker="", lev="", issuer="", overrides=None):
+def _group_candidate(name, L):
+    """그룹 후보 사유 문구 또는 None. −3배 지수·섹터(개별종목·원자재·VIX·통화·크립토 제외) · 채권 +3배 · 크립토 +2배(명명 지수 확인은 사람이)"""
+    nm=name or ""; lab={k:rx for k,rx in C_RULES}
+    ind=re.search(r"(?:Direxion Daily|ProShares (?:UltraPro Short|UltraShort))\s+([A-Z]{1,5})\b(?:\s+(?:Bull|Bear)\s+\dX|\s*$|\s+(?:ETF|Shares))",nm)
+    if ind and ind.group(1) not in ("QQQ","SPY","IWM","DJI","DOW","S","P","US","AI","ETF","EV"): return None
+    if L==-3.0:
+        if any(lab[k].search(nm) for k in ("원자재","VIX·변동성","통화","암호화폐")): return None
+        return "그룹 인버스: −3배 인버스" + (" 채권" if lab["채권"].search(nm) else " 지수·섹터")
+    if L==3.0 and lab["채권"].search(nm) and not any(lab[k].search(nm) for k in ("원자재","VIX·변동성","통화","암호화폐")): return "그룹 채권: +3배 채권"
+    if L==2.0 and lab["암호화폐"].search(nm): return "그룹 크립토: +2배 암호화폐(명명 지수·지수 이력 확인 필요)"
+    return None
+def classify(name="", ticker="", lev="", issuer="", overrides=None, groups=False):
     """반환 dict(decision='include'|'exclude'|'unknown', rule, reason). ticker 가 없어도 (a)~(c) 판정은 한다."""
     key=norm(ticker) if ticker else norm(name)
     ov=(overrides or {}).get(key) or (overrides or {}).get(norm(name))
     if ov: return dict(decision="exclude",rule="override",reason=ov)
     L=parse_leverage(name,lev)
     if L is None: return dict(decision="unknown",rule="a",reason="배수 확인 불가 — 상품명·배수 미확인")
+    if groups:                                                  # MM-UNIVERSE-GROUPS-20261123-R3 §3: 주간 스캔 범위를 4개 그룹(−3배 지수·섹터 · 채권 3배 · 해외지수 3배 · 크립토 2배)까지 넓힌다(점검·후보 기록만, 편입은 오너 결정)
+        g=_group_candidate(name,L)
+        if g: return dict(decision="include",rule="grp",reason=g)
     if L<0: return dict(decision="exclude",rule="a",reason=f"인버스({L:g}배) — 롱 +3배 아님")
     if L!=3.0: return dict(decision="exclude",rule="a",reason=f"{L:g}배 — +3배 아님")
     nm=name or ""
@@ -43,7 +57,7 @@ def load_json(p,default):
     try: return json.load(open(p,encoding="utf-8"))
     except Exception: return default
 def save_json(p,obj): json.dump(obj,open(p,"w",encoding="utf-8"),ensure_ascii=False,indent=1)
-def process(found, listed_names=None, today=None, data=DATA):
+def process(found, listed_names=None, today=None, data=DATA, groups=False):
     """found: [(name_or_ticker, issuer, lev, url, filed_date, ticker_or_empty, name)] 을 분류해 파일 갱신.
     반환 dict(pipeline_added, listed_added, excluded_added, skipped). 파일: pipeline.json / excluded_candidates.json / new_products.json"""
     today=today or str(dt.date.today())
@@ -54,7 +68,7 @@ def process(found, listed_names=None, today=None, data=DATA):
     for (label,issuer,lev,url,filed,ticker,name) in found:
         key=norm(ticker) if ticker else norm(name or label)
         if key in xk or key in pk or key in nk: out["skipped"]+=1; continue
-        c=classify(name or label,ticker,lev,issuer,OV)
+        c=classify(name or label,ticker,lev,issuer,OV,groups=groups)
         if c["decision"]=="exclude":
             X["items"].append(dict(key=key,ticker=ticker,name=name or label,issuer=issuer,leverage=lev,rule=c["rule"],reason=c["reason"],found=today,source=url,filed=filed,owner_override=(c["rule"]=="override")))
             xk.add(key); out["excluded_added"].append(f"{ticker or name or label}: {c['reason']}")
