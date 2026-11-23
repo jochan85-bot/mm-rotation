@@ -54,3 +54,5 @@ anomaly:
   three_x: 0.75
   window: 60
   rule: 1x(지수 레벨) 일간수익률 |r|>one_x 인 봉이 기준일 이전 window 봉 안에 있으면 ⚠·순위 제외·σ60 보류(사유 '1x 이상 봉 YYYY-MM-DD'). 3배 봉은 |r|>three_x 이고 기준일 봉일 때 ⚠. 전 구간 목록은 data/anomalies.csv (운영값)
+# MM-UNIVERSE-GROUPS-20261123 §3-3: 변동성 항 원값 = σ60(1x) × |배수|/3 (3배·−3배 변화 없음, 2배만 ×2/3). false 면 보정 없음.
+sigma_leverage_adjust: true

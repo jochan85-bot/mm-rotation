@@ -70,6 +70,8 @@ def need_tickers():
     import mm_proxy
     s-=set(mm_proxy.synthetic_keys(DATA))                         # 합성 키는 yfinance 티커가 아님
     s|=set(mm_proxy.full_fetch_tickers(DATA))                     # Yahoo 지수·splice 후반 ETF
+    import mm_groups; s|=set(mm_groups.need_extra())              # MM-UNIVERSE-GROUPS-20261123: 그룹 종목(3배·1x) — 표시 계층, 기존 산출 불변
+    s-=set(mm_proxy.synthetic_keys(DATA))
     return sorted(s)
 def thin_excluded():
     """data/thin_excluded.json 의 items (거래량 극소로 유니버스에서 뺀 종목). 파일이 없거나 깨졌으면 빈 리스트."""
