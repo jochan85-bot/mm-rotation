@@ -97,6 +97,23 @@ def write_year(y, dates, rows_by_date):
     obj={"y":y,"f":FIELDS,"d":dates,"t":{t:[rows_by_date.get(d,{}).get(t) for d in dates] for t in tk}}
     with open(RAWDIR/f"{y}.json","w",encoding="utf-8") as f: json.dump(obj,f,ensure_ascii=False,separators=(",",":"))
     return len(tk)
+_BT=None
+def base_tickers():
+    """기본 37종 티커 집합(data/universe.csv)"""
+    global _BT
+    if _BT is None: _BT=set(pd.read_csv(DATA/"universe.csv").ticker)
+    return _BT
+def page_cfg():
+    """페이지 내장용 {groups, gt} — write_meta 와 같은 내용(파일 대신 객체)"""
+    gd=groups_def(); u=load_universe(); b=pd.read_csv(DATA/"universe.csv")
+    gt={t:"base" for t in b.ticker}; gt.update({t:g for t,g in zip(u.ticker,u.grp)})
+    return {"groups":gd["groups"],"gt":gt}
+def tk_new(short_index):
+    """새 종목의 메인 표 메타 {티커: {iss,typ,ix,px,c,g}} — ix 는 공식 지수 약칭(mm_site.short_index), px 는 1x 계열 키(동일 지수 그룹 묶기), c 는 칩 문구"""
+    chip={g["id"]:g.get("chip","") for g in groups_def()["groups"]}; u=load_universe(); out={}
+    for r in u.itertuples():
+        out[r.ticker]=dict(iss=str(r.issuer),typ=str(r.type),ix=short_index(str(r.index_name)) or str(r.proxy),px=str(r.proxy),c=chip.get(r.grp,""),g=str(r.grp))
+    return out
 def write_meta():
     """docs/data/groups_meta.json = {groups:[{id,label,chip,default}], gt:{티커:그룹 id}} — 브라우저 엔진 설정(종목→그룹). 기본 37종 = base"""
     gd=groups_def(); u=load_universe(); b=pd.read_csv(DATA/"universe.csv")
@@ -154,3 +171,32 @@ def series_scores(by, cal, tickers, idx_from=0):
             df[f"a{N}"]=a; s=pd.Series(a); df[f"r{N}"]=s.round(6).rank(ascending=False,method="min").values if s.notna().any() else np.nan
         out[d]=df
     return out
+
+
+# ---------- 페이지 빌더 보조 (mm_site) ----------
+def uni_with_groups(uni):
+    """기본 universe + 새 종목(issuer·type 만 쓰는 사이트 빌더용) — 열 다름은 NaN"""
+    u=load_universe()
+    if not len(u): return uni
+    add=u[["ticker","group","type","issuer","proxy","approx","leverage","added","source","proxy_disp","proxy_tip","vstate"]].copy()
+    have=set(uni.ticker); add=add[~add.ticker.isin(have)]
+    return pd.concat([uni,add],ignore_index=True)
+def all_raw():
+    """전 연도 원값 → ({날짜: {티커: 행}}, 달력)"""
+    by={}
+    for p in sorted(RAWDIR.glob("[0-9][0-9][0-9][0-9].json")):
+        d,rb=read_year(int(p.stem)); by.update(rb)
+    return by,sorted(by)
+def series_all_new():
+    """새 종목별 {d,m,r,n} — 5개 그룹 전 종목을 모집단으로(2020-01-02 이후, 모집단에 든 날만). 반환 {티커: {"d":[...],"m":[...],"r":[...],"n":[...]}}"""
+    u=load_universe()
+    if not len(u): return {}
+    by,cal=all_raw(); allt=set(base_tickers())|set(u.ticker); new=set(u.ticker); out={t:{"d":[],"m":[],"r":[],"n":[]} for t in new}
+    for d in cal:
+        if d<RETRO_FROM: continue
+        sc=day_scores(by.get(d,{}),allt); n=len(sc)
+        for t,m,rk in zip(sc.ticker,sc.M,sc["rank"]):
+            if t in new:
+                a=out[t]; a["d"].append(d); a["m"].append(round(float(m),1)); a["r"].append(int(rk)); a["n"].append(n)
+    return {t:a for t,a in out.items() if a["d"]}
+RETRO_FROM="2020-01-02"

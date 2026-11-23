@@ -1,0 +1,413 @@
+{
+ "generated": "2026-11-24",
+ "items": {
+  "EDC": {
+   "basis": "1x ETF EEM 보유(상위)",
+   "as_of": "2026-11-24",
+   "fetched": "2026-11-24",
+   "total": 9,
+   "scope": "상위 9종",
+   "source": {
+    "name": "Yahoo Finance 펀드 보유(상위)",
+    "url": "https://finance.yahoo.com/quote/EEM/holdings"
+   },
+   "items": [
+    {
+     "n": "Taiwan Semiconductor Manufacturing Co Ltd",
+     "w": 15.843
+    },
+    {
+     "n": "Samsung Electronics Co Ltd",
+     "w": 6.976
+    },
+    {
+     "n": "SK hynix Inc",
+     "w": 5.192
+    },
+    {
+     "n": "Tencent Holdings Ltd",
+     "w": 2.653
+    },
+    {
+     "n": "Alibaba Group Holding Ltd Ordinary Shares",
+     "w": 1.836
+    },
+    {
+     "n": "MediaTek Inc",
+     "w": 1.534
+    },
+    {
+     "n": "China Construction Bank Corp Class H",
+     "w": 0.974
+    },
+    {
+     "n": "Hon Hai Precision Industry Co Ltd",
+     "w": 0.817
+    },
+    {
+     "n": "HDFC Bank Ltd",
+     "w": 0.736
+    }
+   ]
+  },
+  "YINN": {
+   "basis": "1x ETF FXI 보유(상위)",
+   "as_of": "2026-11-24",
+   "fetched": "2026-11-24",
+   "total": 10,
+   "scope": "상위 10종",
+   "source": {
+    "name": "Yahoo Finance 펀드 보유(상위)",
+    "url": "https://finance.yahoo.com/quote/FXI/holdings"
+   },
+   "items": [
+    {
+     "n": "China Construction Bank Corp Class H",
+     "w": 9.95
+    },
+    {
+     "n": "Alibaba Group Holding Ltd Ordinary Shares",
+     "w": 8.537
+    },
+    {
+     "n": "Tencent Holdings Ltd",
+     "w": 8.467
+    },
+    {
+     "n": "Industrial And Commercial Bank Of China Ltd Class H",
+     "w": 6.865
+    },
+    {
+     "n": "Xiaomi Corp Class B",
+     "w": 4.962
+    },
+    {
+     "n": "Bank Of China Ltd Class H",
+     "w": 4.775
+    },
+    {
+     "n": "Meituan Class B",
+     "w": 4.508
+    },
+    {
+     "n": "NetEase Inc Ordinary Shares",
+     "w": 3.765
+    },
+    {
+     "n": "Ping An Insurance (Group) Co. of China Ltd Class H",
+     "w": 3.522
+    },
+    {
+     "n": "BYD Co Ltd Class H",
+     "w": 2.966
+    }
+   ]
+  },
+  "KORU": {
+   "basis": "1x ETF EWY 보유(상위)",
+   "as_of": "2026-11-24",
+   "fetched": "2026-11-24",
+   "total": 10,
+   "scope": "상위 10종",
+   "source": {
+    "name": "Yahoo Finance 펀드 보유(상위)",
+    "url": "https://finance.yahoo.com/quote/EWY/holdings"
+   },
+   "items": [
+    {
+     "n": "SK hynix Inc",
+     "w": 23.764
+    },
+    {
+     "n": "Samsung Electronics Co Ltd",
+     "w": 23.026
+    },
+    {
+     "n": "SK Square",
+     "w": 2.96
+    },
+    {
+     "n": "Samsung Electro-Mechanics Co Ltd",
+     "w": 2.605
+    },
+    {
+     "n": "KB Financial Group Inc",
+     "w": 2.128
+    },
+    {
+     "n": "Shinhan Financial Group Co Ltd",
+     "w": 1.569
+    },
+    {
+     "n": "Samsung SDI Co Ltd",
+     "w": 1.453
+    },
+    {
+     "n": "Hana Financial Group Inc",
+     "w": 1.447
+    },
+    {
+     "n": "Hyundai Motor Co",
+     "w": 1.442
+    },
+    {
+     "n": "Celltrion Inc",
+     "w": 1.351
+    }
+   ]
+  },
+  "MEXX": {
+   "basis": "1x ETF EWW 보유(상위)",
+   "as_of": "2026-11-24",
+   "fetched": "2026-11-24",
+   "total": 10,
+   "scope": "상위 10종",
+   "source": {
+    "name": "Yahoo Finance 펀드 보유(상위)",
+    "url": "https://finance.yahoo.com/quote/EWW/holdings"
+   },
+   "items": [
+    {
+     "n": "Grupo Mexico SAB de CV Class B",
+     "w": 14.887
+    },
+    {
+     "n": "Grupo Financiero Banorte SAB de CV Class O",
+     "w": 11.228
+    },
+    {
+     "n": "Fomento Economico Mexicano SAB de CV Units Cons. Of 1 Shs-B- And 4 Shs-D-",
+     "w": 8.903
+    },
+    {
+     "n": "America Movil SAB de CV Ordinary Shares - Class B",
+     "w": 7.925
+    },
+    {
+     "n": "Cemex SAB de CV Cert Part Ord Repr 2 Shs-A- & 1 Shs-B-",
+     "w": 4.556
+    },
+    {
+     "n": "Wal - Mart de Mexico SAB de CV",
+     "w": 4.372
+    },
+    {
+     "n": "Grupo Aeroportuario del Pacifico SAB de CV Class B",
+     "w": 3.841
+    },
+    {
+     "n": "Industrias Penoles SAB de CV",
+     "w": 3.396
+    },
+    {
+     "n": "Arca Continental SAB de CV Class B Ordinary Shares",
+     "w": 2.832
+    },
+    {
+     "n": "Fibra Uno Administracion SA de CV Certificados Bursatiles Fiduciarios Inmob",
+     "w": 2.503
+    }
+   ]
+  },
+  "EURL": {
+   "basis": "1x ETF VGK 보유(상위)",
+   "as_of": "2026-11-24",
+   "fetched": "2026-11-24",
+   "total": 10,
+   "scope": "상위 10종",
+   "source": {
+    "name": "Yahoo Finance 펀드 보유(상위)",
+    "url": "https://finance.yahoo.com/quote/VGK/holdings"
+   },
+   "items": [
+    {
+     "n": "ASML Holding NV",
+     "w": 3.907
+    },
+    {
+     "n": "Roche Holding AG Ordinary Shares new",
+     "w": 2.212
+    },
+    {
+     "n": "Shell PLC",
+     "w": 2.035
+    },
+    {
+     "n": "Novartis AG Registered Shares",
+     "w": 1.936
+    },
+    {
+     "n": "HSBC Holdings PLC",
+     "w": 1.888
+    },
+    {
+     "n": "AstraZeneca PLC",
+     "w": 1.798
+    },
+    {
+     "n": "Nestle SA",
+     "w": 1.7
+    },
+    {
+     "n": "SAP SE",
+     "w": 1.479
+    },
+    {
+     "n": "Siemens AG",
+     "w": 1.379
+    },
+    {
+     "n": "TotalEnergies SE",
+     "w": 1.236
+    }
+   ]
+  },
+  "JPNU": {
+   "basis": "1x ETF EWJ 보유(상위)",
+   "as_of": "2026-11-24",
+   "fetched": "2026-11-24",
+   "total": 10,
+   "scope": "상위 10종",
+   "source": {
+    "name": "Yahoo Finance 펀드 보유(상위)",
+    "url": "https://finance.yahoo.com/quote/EWJ/holdings"
+   },
+   "items": [
+    {
+     "n": "Mitsubishi UFJ Financial Group Inc",
+     "w": 4.524
+    },
+    {
+     "n": "Toyota Motor Corp",
+     "w": 3.578
+    },
+    {
+     "n": "Advantest Corp",
+     "w": 3.135
+    },
+    {
+     "n": "Recruit Holdings Co Ltd",
+     "w": 3.125
+    },
+    {
+     "n": "Sumitomo Mitsui Financial Group Inc",
+     "w": 2.886
+    },
+    {
+     "n": "Sony Group Corp",
+     "w": 2.829
+    },
+    {
+     "n": "Hitachi Ltd",
+     "w": 2.767
+    },
+    {
+     "n": "Tokyo Electron Ltd",
+     "w": 2.599
+    },
+    {
+     "n": "Mizuho Financial Group Inc",
+     "w": 2.209
+    },
+    {
+     "n": "SoftBank Group Corp",
+     "w": 2.044
+    }
+   ]
+  },
+  "BRZL": {
+   "basis": "1x ETF EWZ 보유(상위)",
+   "as_of": "2026-11-24",
+   "fetched": "2026-11-24",
+   "total": 7,
+   "scope": "상위 7종",
+   "source": {
+    "name": "Yahoo Finance 펀드 보유(상위)",
+    "url": "https://finance.yahoo.com/quote/EWZ/holdings"
+   },
+   "items": [
+    {
+     "n": "Vale SA",
+     "w": 8.651
+    },
+    {
+     "n": "Petroleo Brasileiro SA Petrobras",
+     "w": 8.474
+    },
+    {
+     "n": "Nu Holdings Ltd Ordinary Shares Class A",
+     "w": 8.474
+    },
+    {
+     "n": "Weg SA",
+     "w": 3.418
+    },
+    {
+     "n": "Axia Energia",
+     "w": 2.994
+    },
+    {
+     "n": "Embraer SA",
+     "w": 2.992
+    },
+    {
+     "n": "B3 SA - Brasil Bolsa Balcao",
+     "w": 2.976
+    }
+   ]
+  },
+  "TAWN": {
+   "basis": "1x ETF EWT 보유(상위)",
+   "as_of": "2026-11-24",
+   "fetched": "2026-11-24",
+   "total": 10,
+   "scope": "상위 10종",
+   "source": {
+    "name": "Yahoo Finance 펀드 보유(상위)",
+    "url": "https://finance.yahoo.com/quote/EWT/holdings"
+   },
+   "items": [
+    {
+     "n": "Taiwan Semiconductor Manufacturing Co Ltd",
+     "w": 22.323
+    },
+    {
+     "n": "MediaTek Inc",
+     "w": 6.098
+    },
+    {
+     "n": "Hon Hai Precision Industry Co Ltd",
+     "w": 3.357
+    },
+    {
+     "n": "ASE Technology Holding Co Ltd",
+     "w": 3.0
+    },
+    {
+     "n": "Delta Electronics Inc",
+     "w": 2.946
+    },
+    {
+     "n": "Nan Ya Plastics Corp",
+     "w": 2.582
+    },
+    {
+     "n": "Unimicron Technology Corp",
+     "w": 1.949
+    },
+    {
+     "n": "Fubon Financial Holdings Co Ltd",
+     "w": 1.905
+    },
+    {
+     "n": "Elite Material Co Ltd",
+     "w": 1.892
+    },
+    {
+     "n": "CTBC Financial Holding Co Ltd",
+     "w": 1.752
+    }
+   ]
+  }
+ }
+}

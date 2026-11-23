@@ -1,0 +1,1029 @@
+{
+ "meta": {
+  "block": "MM-UNIVERSE-GROUPS-20261123-R3",
+  "generated": "2026-11-24",
+  "count": 49,
+  "note": "템플릿 생성(LLM 0) — 사실은 발행사 1차 문서(docs 열)로 확인한 지수명·배수·발행사·유형뿐, 보수는 미수록"
+ },
+ "items": {
+  "BITU": {
+   "modified": "2026-11-24",
+   "sector": "크립토 · Bloomberg Bitcoin Index",
+   "basic": {
+    "issuer": "ProShares",
+    "type": "ETF",
+    "leverage": "2배(일간)",
+    "fee": null,
+    "inception": "2024-04-02"
+   },
+   "text": {
+    "construction": "기준 자산: 비트코인(단일 코인의 달러 가격) · 구성 종목 없음(지수 Bloomberg Bitcoin Index)",
+    "intro": "발행사 ProShares의 이 상품은 Bloomberg Bitcoin Index의 일간 수익률을 2배로 따른다. 이 지수는 비트코인(단일 코인의 달러 가격)의 가격을 재는 지수이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 2배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 2배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "기초 지수가 24시간 거래되는 암호화폐 가격이라 미국 장 마감 시각과 지수 기준 시각이 달라 일간 추종 오차가 생길 수 있고, 이 사이트의 대용 품질(β·R²)은 '근사'로 표시될 수 있다."
+    ],
+    "fee": ""
+   }
+  },
+  "ETHT": {
+   "modified": "2026-11-24",
+   "sector": "크립토 · Bloomberg Ethereum Index",
+   "basic": {
+    "issuer": "ProShares",
+    "type": "ETF",
+    "leverage": "2배(일간)",
+    "fee": null,
+    "inception": "2024-06-07"
+   },
+   "text": {
+    "construction": "기준 자산: 이더리움(단일 코인의 달러 가격) · 구성 종목 없음(지수 Bloomberg Ethereum Index)",
+    "intro": "발행사 ProShares의 이 상품은 Bloomberg Ethereum Index의 일간 수익률을 2배로 따른다. 이 지수는 이더리움(단일 코인의 달러 가격)의 가격을 재는 지수이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 2배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 2배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "기초 지수가 24시간 거래되는 암호화폐 가격이라 미국 장 마감 시각과 지수 기준 시각이 달라 일간 추종 오차가 생길 수 있고, 이 사이트의 대용 품질(β·R²)은 '근사'로 표시될 수 있다."
+    ],
+    "fee": ""
+   }
+  },
+  "EDC": {
+   "modified": "2026-11-24",
+   "sector": "해외지수 · MSCI Emerging Markets Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "3배(일간)",
+    "fee": null,
+    "inception": "2008-12-30"
+   },
+   "text": {
+    "construction": "지수 추종(MSCI Emerging Markets Index) · 구성 데이터는 1x ETF EEM 상위 보유 기준",
+    "intro": "발행사 Direxion의 이 상품은 MSCI Emerging Markets Index의 일간 수익률을 3배로 따른다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다."
+    ],
+    "fee": ""
+   }
+  },
+  "YINN": {
+   "modified": "2026-11-24",
+   "sector": "해외지수 · FTSE China 50 Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "3배(일간)",
+    "fee": null,
+    "inception": "2009-12-03"
+   },
+   "text": {
+    "construction": "지수 추종(FTSE China 50 Index) · 구성 데이터는 1x ETF FXI 상위 보유 기준",
+    "intro": "발행사 Direxion의 이 상품은 FTSE China 50 Index의 일간 수익률을 3배로 따른다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다."
+    ],
+    "fee": ""
+   }
+  },
+  "KORU": {
+   "modified": "2026-11-24",
+   "sector": "해외지수 · MSCI Korea 25/50 Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "3배(일간)",
+    "fee": null,
+    "inception": "2013-04-10"
+   },
+   "text": {
+    "construction": "지수 추종(MSCI Korea 25/50 Index) · 구성 데이터는 1x ETF EWY 상위 보유 기준",
+    "intro": "발행사 Direxion의 이 상품은 MSCI Korea 25/50 Index의 일간 수익률을 3배로 따른다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다."
+    ],
+    "fee": ""
+   }
+  },
+  "MEXX": {
+   "modified": "2026-11-24",
+   "sector": "해외지수 · MSCI Mexico IMI 25/50 Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "3배(일간)",
+    "fee": null,
+    "inception": "2017-05-03"
+   },
+   "text": {
+    "construction": "지수 추종(MSCI Mexico IMI 25/50 Index) · 구성 데이터는 1x ETF EWW 상위 보유 기준",
+    "intro": "발행사 Direxion의 이 상품은 MSCI Mexico IMI 25/50 Index의 일간 수익률을 3배로 따른다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다."
+    ],
+    "fee": ""
+   }
+  },
+  "EURL": {
+   "modified": "2026-11-24",
+   "sector": "해외지수 · FTSE Developed Europe All Cap Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "3배(일간)",
+    "fee": null,
+    "inception": "2014-01-22"
+   },
+   "text": {
+    "construction": "지수 추종(FTSE Developed Europe All Cap Index) · 구성 데이터는 1x ETF VGK 상위 보유 기준",
+    "intro": "발행사 Direxion의 이 상품은 FTSE Developed Europe All Cap Index의 일간 수익률을 3배로 따른다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다."
+    ],
+    "fee": ""
+   }
+  },
+  "JPNU": {
+   "modified": "2026-11-24",
+   "sector": "해외지수 · VettaFi Japan Equity Fund-Tracking Index (iShares MSCI Japan ETF 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "3배(일간)",
+    "fee": null,
+    "inception": "2026-08-20"
+   },
+   "text": {
+    "construction": "지수 추종(VettaFi Japan Equity Fund-Tracking Index (iShares MSCI Japan ETF 추종)) · 구성 데이터는 1x ETF EWJ 상위 보유 기준",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi Japan Equity Fund-Tracking Index (iShares MSCI Japan ETF 추종)의 일간 수익률을 3배로 따른다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다."
+    ],
+    "fee": ""
+   }
+  },
+  "BRZL": {
+   "modified": "2026-11-24",
+   "sector": "해외지수 · VettaFi Brazil Equity Fund-Tracking Index (iShares MSCI Brazil ETF 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "3배(일간)",
+    "fee": null,
+    "inception": "2026-08-20"
+   },
+   "text": {
+    "construction": "지수 추종(VettaFi Brazil Equity Fund-Tracking Index (iShares MSCI Brazil ETF 추종)) · 구성 데이터는 1x ETF EWZ 상위 보유 기준",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi Brazil Equity Fund-Tracking Index (iShares MSCI Brazil ETF 추종)의 일간 수익률을 3배로 따른다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다."
+    ],
+    "fee": ""
+   }
+  },
+  "TAWN": {
+   "modified": "2026-11-24",
+   "sector": "해외지수 · VettaFi Taiwan Equity Fund-Tracking Index (iShares MSCI Taiwan ETF 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "3배(일간)",
+    "fee": null,
+    "inception": "2026-08-20"
+   },
+   "text": {
+    "construction": "지수 추종(VettaFi Taiwan Equity Fund-Tracking Index (iShares MSCI Taiwan ETF 추종)) · 구성 데이터는 1x ETF EWT 상위 보유 기준",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi Taiwan Equity Fund-Tracking Index (iShares MSCI Taiwan ETF 추종)의 일간 수익률을 3배로 따른다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다."
+    ],
+    "fee": ""
+   }
+  },
+  "TMF": {
+   "modified": "2026-11-24",
+   "sector": "채권 · ICE U.S. Treasury 20+ Year Bond Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "3배(일간)",
+    "fee": null,
+    "inception": "2009-04-16"
+   },
+   "text": {
+    "construction": "기준 자산: ICE U.S. Treasury 20+ Year Bond Index(채권) · 개별 구성 종목을 담지 않는 지수",
+    "intro": "발행사 Direxion의 이 상품은 ICE U.S. Treasury 20+ Year Bond Index의 일간 수익률을 3배로 따른다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다."
+    ],
+    "fee": ""
+   }
+  },
+  "TYD": {
+   "modified": "2026-11-24",
+   "sector": "채권 · ICE U.S. Treasury 7-10 Year Bond Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "3배(일간)",
+    "fee": null,
+    "inception": "2009-04-16"
+   },
+   "text": {
+    "construction": "기준 자산: ICE U.S. Treasury 7-10 Year Bond Index(채권) · 개별 구성 종목을 담지 않는 지수",
+    "intro": "발행사 Direxion의 이 상품은 ICE U.S. Treasury 7-10 Year Bond Index의 일간 수익률을 3배로 따른다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다."
+    ],
+    "fee": ""
+   }
+  },
+  "HYGU": {
+   "modified": "2026-11-24",
+   "sector": "채권 · VettaFi High Yield Corporate Bond Fund-Tracking Index (iShares iBoxx $ High Yield Corporate Bond ETF 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "3배(일간)",
+    "fee": null,
+    "inception": "2026-08-11"
+   },
+   "text": {
+    "construction": "기준 자산: VettaFi High Yield Corporate Bond Fund-Tracking Index (iShares iBoxx $ High Yield Corporate Bond ETF 추종)(채권) · 개별 구성 종목을 담지 않는 지수",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi High Yield Corporate Bond Fund-Tracking Index (iShares iBoxx $ High Yield Corporate Bond ETF 추종)의 일간 수익률을 3배로 따른다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "1x 계열을 iShares ETF 종가(배당 미반영)로 쓰므로 총수익 지수와 차이가 날 수 있다(대용 품질 '근사')."
+    ],
+    "fee": ""
+   }
+  },
+  "LQDU": {
+   "modified": "2026-11-24",
+   "sector": "채권 · VettaFi Investment Grade Corporate Bond Fund-Tracking Index (iShares iBoxx $ Investment Grade Corporate Bond ETF 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "3배(일간)",
+    "fee": null,
+    "inception": "2026-08-11"
+   },
+   "text": {
+    "construction": "기준 자산: VettaFi Investment Grade Corporate Bond Fund-Tracking Index (iShares iBoxx $ Investment Grade Corporate Bond ETF 추종)(채권) · 개별 구성 종목을 담지 않는 지수",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi Investment Grade Corporate Bond Fund-Tracking Index (iShares iBoxx $ Investment Grade Corporate Bond ETF 추종)의 일간 수익률을 3배로 따른다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "1x 계열을 iShares ETF 종가(배당 미반영)로 쓰므로 총수익 지수와 차이가 날 수 있다(대용 품질 '근사')."
+    ],
+    "fee": ""
+   }
+  },
+  "EDZ": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · MSCI Emerging Markets Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2008-12-30"
+   },
+   "text": {
+    "construction": "짝 롱 상품 EDC과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 MSCI Emerging Markets Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 EDC이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "YANG": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · FTSE China 50 Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2009-12-03"
+   },
+   "text": {
+    "construction": "짝 롱 상품 YINN과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 FTSE China 50 Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 YINN이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "JPND": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · VettaFi Japan Equity Fund-Tracking Index (iShares MSCI Japan ETF 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2026-08-20"
+   },
+   "text": {
+    "construction": "짝 롱 상품 JPNU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi Japan Equity Fund-Tracking Index (iShares MSCI Japan ETF 추종)의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 JPNU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "BRZD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · VettaFi Brazil Equity Fund-Tracking Index (iShares MSCI Brazil ETF 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2026-08-20"
+   },
+   "text": {
+    "construction": "짝 롱 상품 BRZL과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi Brazil Equity Fund-Tracking Index (iShares MSCI Brazil ETF 추종)의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 BRZL이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "TPEI": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · VettaFi Taiwan Equity Fund-Tracking Index (iShares MSCI Taiwan ETF 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2026-08-20"
+   },
+   "text": {
+    "construction": "짝 롱 상품 TAWN과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi Taiwan Equity Fund-Tracking Index (iShares MSCI Taiwan ETF 추종)의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 TAWN이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "TMV": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · ICE U.S. Treasury 20+ Year Bond Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2009-04-16"
+   },
+   "text": {
+    "construction": "짝 롱 상품 TMF과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 ICE U.S. Treasury 20+ Year Bond Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 TMF이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "TTT": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · ICE U.S. Treasury 20+ Year Bond Index",
+   "basic": {
+    "issuer": "ProShares",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2012-03-29"
+   },
+   "text": {
+    "construction": "짝 롱 상품 TMF과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 ProShares의 이 상품은 ICE U.S. Treasury 20+ Year Bond Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 TMF이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "TYO": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · ICE U.S. Treasury 7-10 Year Bond Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2009-04-16"
+   },
+   "text": {
+    "construction": "짝 롱 상품 TYD과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 ICE U.S. Treasury 7-10 Year Bond Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 TYD이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "HYGD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · VettaFi High Yield Corporate Bond Fund-Tracking Index (iShares iBoxx $ High Yield Corporate Bond ETF 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2026-08-11"
+   },
+   "text": {
+    "construction": "짝 롱 상품 HYGU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi High Yield Corporate Bond Fund-Tracking Index (iShares iBoxx $ High Yield Corporate Bond ETF 추종)의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 HYGU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "LQDD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · VettaFi Investment Grade Corporate Bond Fund-Tracking Index (iShares iBoxx $ Investment Grade Corporate Bond ETF 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2026-08-11"
+   },
+   "text": {
+    "construction": "짝 롱 상품 LQDU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi Investment Grade Corporate Bond Fund-Tracking Index (iShares iBoxx $ Investment Grade Corporate Bond ETF 추종)의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 LQDU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "SQQQ": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · Nasdaq-100 Index",
+   "basic": {
+    "issuer": "ProShares",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2010-02-11"
+   },
+   "text": {
+    "construction": "짝 롱 상품 TQQQ과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 ProShares의 이 상품은 Nasdaq-100 Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 TQQQ이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "SPXU": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · S&P 500 Index",
+   "basic": {
+    "issuer": "ProShares",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2009-06-25"
+   },
+   "text": {
+    "construction": "짝 롱 상품 SPXL과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 ProShares의 이 상품은 S&P 500 Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 SPXL이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "SPXS": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · S&P 500 Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2008-11-19"
+   },
+   "text": {
+    "construction": "짝 롱 상품 SPXL과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 S&P 500 Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 SPXL이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "SDOW": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · Dow Jones Industrial Average",
+   "basic": {
+    "issuer": "ProShares",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2010-02-11"
+   },
+   "text": {
+    "construction": "짝 롱 상품 UDOW과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 ProShares의 이 상품은 Dow Jones Industrial Average의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 UDOW이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "TZA": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · Russell 2000 Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2008-11-19"
+   },
+   "text": {
+    "construction": "짝 롱 상품 TNA과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 Russell 2000 Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 TNA이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "SRTY": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · Russell 2000 Index",
+   "basic": {
+    "issuer": "ProShares",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2010-02-11"
+   },
+   "text": {
+    "construction": "짝 롱 상품 TNA과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 ProShares의 이 상품은 Russell 2000 Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 TNA이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "SMDD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · S&P MidCap 400 Index",
+   "basic": {
+    "issuer": "ProShares",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2010-02-11"
+   },
+   "text": {
+    "construction": "짝 롱 상품 MIDU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 ProShares의 이 상품은 S&P MidCap 400 Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 MIDU이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "HIBS": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · S&P 500 High Beta Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2019-11-07"
+   },
+   "text": {
+    "construction": "짝 롱 상품 HIBL과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 S&P 500 High Beta Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 HIBL이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "SOXS": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · NYSE Semiconductor Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2010-03-11"
+   },
+   "text": {
+    "construction": "짝 롱 상품 SOXL과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 NYSE Semiconductor Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 SOXL이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "TECS": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · Technology Select Sector Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2008-12-30"
+   },
+   "text": {
+    "construction": "짝 롱 상품 TECL과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 Technology Select Sector Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 TECL이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "SMHD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · VettaFi Semiconductor Fund-Tracking Index (VanEck Semiconductor ETF 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2026-08-04"
+   },
+   "text": {
+    "construction": "짝 롱 상품 SMHU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi Semiconductor Fund-Tracking Index (VanEck Semiconductor ETF 추종)의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 SMHU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "AIQD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · BITA AI Leaders Select NTR US Index",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2026-06-02"
+   },
+   "text": {
+    "construction": "짝 롱 상품 AIQU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 BITA AI Leaders Select NTR US Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 AIQU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "FNGD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · NYSE FANG+ Index (gross total return version)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2018-01-23"
+   },
+   "text": {
+    "construction": "짝 롱 상품 FNGU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 NYSE FANG+ Index (gross total return version)의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 FNGU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "BERZ": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · Solactive FANG Innovation Index",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2021-08-18"
+   },
+   "text": {
+    "construction": "짝 롱 상품 BULZ과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 Solactive FANG Innovation Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 BULZ이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "FAZ": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · Financials Select Sector Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2008-11-19"
+   },
+   "text": {
+    "construction": "짝 롱 상품 FAS과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 Financials Select Sector Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 FAS이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "BNKD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · Solactive MicroSectors U.S. Big Banks Index (gross total return version)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2025-02-20"
+   },
+   "text": {
+    "construction": "짝 롱 상품 BNKU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 Solactive MicroSectors U.S. Big Banks Index (gross total return version)의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 BNKU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "NRGD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · Solactive MicroSectors U.S. Big Oil Index (gross total return version)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2025-02-20"
+   },
+   "text": {
+    "construction": "짝 롱 상품 NRGU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 Solactive MicroSectors U.S. Big Oil Index (gross total return version)의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 NRGU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "OILD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · Solactive MicroSectors Oil & Gas Exploration & Production Index",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2021-11-09"
+   },
+   "text": {
+    "construction": "짝 롱 상품 OILU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 Solactive MicroSectors Oil & Gas Exploration & Production Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 OILU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "LABD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · S&P Biotechnology Select Industry Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2015-05-28"
+   },
+   "text": {
+    "construction": "짝 롱 상품 LABU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 S&P Biotechnology Select Industry Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 LABU이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "DRV": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · Real Estate Select Sector Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2009-07-16"
+   },
+   "text": {
+    "construction": "짝 롱 상품 DRN과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 Real Estate Select Sector Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 DRN이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "GDXD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · S-Network MicroSectors Gold Miners Index",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2020-12-03"
+   },
+   "text": {
+    "construction": "짝 롱 상품 GDXU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 S-Network MicroSectors Gold Miners Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 GDXU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "FLYD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · MerQube MicroSectors U.S. Travel Index",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2022-06-22"
+   },
+   "text": {
+    "construction": "짝 롱 상품 FLYU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 MerQube MicroSectors U.S. Travel Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 FLYU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "XLCD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · VettaFi US Communications Fund-Tracking Index (Communication Services Select Sector SPDR 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2026-10-22"
+   },
+   "text": {
+    "construction": "짝 롱 상품 XLCU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi US Communications Fund-Tracking Index (Communication Services Select Sector SPDR 추종)의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 XLCU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "XLPD": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · VettaFi US Consumer Staples Fund-Tracking Index (Consumer Staples Select Sector SPDR 추종)",
+   "basic": {
+    "issuer": "BMO MicroSectors",
+    "type": "ETN",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2026-10-22"
+   },
+   "text": {
+    "construction": "짝 롱 상품 XLPU과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 BMO MicroSectors의 이 상품은 VettaFi US Consumer Staples Fund-Tracking Index (Consumer Staples Select Sector SPDR 추종)의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 XLPU이다.\n\n이 상품은 ETN이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "ETN은 BMO MicroSectors 발행 무담보 채무라 발행사 신용위험에 노출되며 발행사 조기상환 가능성이 있다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  },
+  "WEBS": {
+   "modified": "2026-11-24",
+   "sector": "인버스 · Dow Jones Internet Composite Index",
+   "basic": {
+    "issuer": "Direxion",
+    "type": "ETF",
+    "leverage": "−3배(일간)",
+    "fee": null,
+    "inception": "2019-11-07"
+   },
+   "text": {
+    "construction": "짝 롱 상품 WEBL과 같은 지수 구성 · 지수 하락 시 상승(−3배, 지수 상승 시 하락)",
+    "intro": "발행사 Direxion의 이 상품은 Dow Jones Internet Composite Index의 일간 수익률의 −3배를 따르는 인버스 상품이다. 지수가 하루 동안 오르면 같은 비율의 3배만큼 내리고, 내리면 3배만큼 오르도록 설계돼 있으며, 짝이 되는 롱 상품은 WEBL이다.\n\n이 상품은 ETF이며 매일 레버리지를 재설정하는 일간 목표 구조이다. 1일을 넘겨 보유하면 일별 수익률이 복리로 쌓여 지수 수익률의 −3배와 달라진다.",
+    "risk": [
+     "매일 레버리지를 재설정하는 일간 목표 상품이라 1일을 넘는 보유 수익률은 지수 수익률의 −3배와 달라진다(변동성이 큰 장세일수록 차이가 커진다).",
+     "파생상품으로 지수 노출을 만들기 때문에 거래상대방 위험과 롤·금융 비용이 수익률에 반영된다.",
+     "지수가 오르면 손실이 나는 구조라 상승 추세가 이어지는 구간에서는 손실이 빠르게 커지며, 장기 보유할수록 복리 효과로 불리해진다."
+    ],
+    "fee": ""
+   }
+  }
+ }
+}

@@ -5,7 +5,7 @@
   'use strict';
   var box = document.getElementById('chart');
   if (!box) return;
-  var T = box.getAttribute('data-t'), S = null, range = 'y1';
+  var T = box.getAttribute('data-t'), S = null, range = 'y1', BASE_S = null;
   var C = { m: '#f59e0b', r: '#3b82f6', grid: '#1f2a3a', txt: '#8b97a7', bg: '#0b0f17' };
   var RANGES = { m3: 92, m6: 183, y1: 366, all: 0 };
   var ts = function (d) { var p = d.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); };
@@ -90,8 +90,27 @@
   var rt;
   window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (S) draw(); }, 150); });
   fetch('../data/series/' + T + '.json').then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
-    S = j; if (!S.d.length) throw 0;
+    S = j; if (!S.d.length) throw 0; BASE_S = j;
     var span = (ts(S.d[S.d.length - 1]) - ts(S.d[0])) / 86400000;
     setRange(span < 366 ? 'all' : 'y1');
+    initGroups();
   }).catch(function () { box.innerHTML = '<div class="chartnote">차트 데이터를 읽지 못했습니다(웹 주소로 여십시오).</div>'; });
+
+  /* 미국 기본 37종 페이지: 그룹 버튼(크립토·채권·해외지수·인버스)을 켜면 그 그룹을 더한 모집단으로 M-score·순위를 다시 그린다(MM-UNIVERSE-GROUPS-20261123). 상태는 이 페이지 안에서만(저장 안 함) */
+  function initGroups() {
+    var bar = document.getElementById('gbar');
+    if (!bar || !window.MMG || box.getAttribute('data-g') !== 'base') return;
+    fetch('../data/groups_meta.json').then(function (r) { return r.json(); }).then(function (cfg) {
+      var MG = window.MMG.init(cfg, '../', { persist: false });
+      MG.renderBar(bar, { ids: ['crypto', 'bond', 'intl', 'inv'], onChange: function (sel) {
+        var extra = sel.filter(function (x) { return x !== 'base'; });
+        if (!extra.length) { S = BASE_S; draw(); return; }
+        document.getElementById('creadout').textContent = '선택한 그룹의 원값을 불러오는 중…';
+        MG.ensureAll().then(function () {
+          var s = MG.series(T, MG.tickers(['base'].concat(extra)));
+          if (!s.d.length) throw 0; S = s; draw();
+        }).catch(function () { document.getElementById('creadout').textContent = '그룹 원값을 읽지 못했습니다(웹 주소로 여십시오).'; });
+      } });
+    }).catch(function () { bar.hidden = true; });
+  }
 })();

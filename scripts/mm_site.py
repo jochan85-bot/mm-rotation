@@ -7,10 +7,10 @@ from pathlib import Path
 import numpy as np, pandas as pd
 try:
     from mm_lib import DATA, DOCS, ROOT, now_kst, MSCORE_SHA, load_status
-    import mm_guide, mm_idxhist
+    import mm_guide, mm_idxhist, mm_groups
 except ImportError:
     from scripts.mm_lib import DATA, DOCS, ROOT, now_kst, MSCORE_SHA, load_status
-    from scripts import mm_guide, mm_idxhist
+    from scripts import mm_guide, mm_idxhist, mm_groups
 E = html.escape
 NAV = (("index.html", "순위"), ("longterm.html", "장기순위"), ("products.html", "종목"), ("guide.html", "Guide"))
 NOTICE = mm_guide.NOTICE_TEXT
@@ -144,7 +144,8 @@ def build_index(df, meta):
     rows = latest_rows(df)
     first, last, dates = date_list()
     if not dates: first = last = meta["asof"]; dates = [meta["asof"]]
-    data = {"asof": meta["asof"], "first": first, "last": last, "dates": dates, "latest": rows, "tk": tk, "rc": rc_map(), "histWin": mm_idxhist.WINDOW, "rcNote": RC_NOTE}
+    tk.update(mm_groups.tk_new(short_index))                      # MM-UNIVERSE-GROUPS-20261123: 그룹 종목 메타(칩·1x 키·약칭)
+    data = {"asof": meta["asof"], "first": first, "last": last, "dates": dates, "latest": rows, "tk": tk, "rc": rc_map(), "histWin": mm_idxhist.WINDOW, "rcNote": RC_NOTE, "grp": mm_groups.page_cfg()}
     prov = meta.get("provisional")
     pill = (f'<span class="pill prov" title="{E("SPY 일봉 최신 행(" + prov["raw_last"] + ")이 " + prov["reason"] + " → 직전 확정일로 산출")}">잠정</span>' if prov else "")
     banner = ""                                                   # 예약 실행 확인(2026-10-09 17:18 launchd) 후 배너 제거
@@ -156,19 +157,25 @@ def build_index(df, meta):
     else:
         xhtml = '<div class="empty">현재 없음</div>'
     body = f"""<h1>{BRAND_SVG}무매 M-score<small>3배 레버리지 ETF·ETN 상대 순위 · 참고용</small></h1>
-<div class="meta" id="top1">기준일 <b>{E(meta['asof'])}</b> · 종목 수 <b>{len(rows)}</b> {pill}</div>
+<div class="meta" id="top1">기준일 <b>{E(meta['asof'])}</b> · 종목 수 <b id="ncnt">{len(rows)}</b> {pill}</div>
 {banner}
 <div id="calbox"></div>
+{GROUP_BAR}
 <div class="tbar"><div class="ttl" id="ttl"></div><div class="acts"><button class="btn" id="todaybtn" hidden>오늘로</button><button class="btn" id="modebtn">상세보기</button></div></div>
 <div class="capt">변동성·상대강도·추세 = 유니버스 내 상대 점수, 100=최상위 · 열 머리를 누르면 정렬(다시 누르면 반대 방향)</div>
 <div class="capt rcn" id="rcnote" hidden></div>
 <div class="wrap"><table class="rk" id="rk"></table></div>
+<div class="gempty" id="gempty" hidden>그룹을 하나 이상 켜 주세요</div>
 {heldhtml}<h2>제외 목록</h2>{xhtml}
 <h2>안내</h2><div class="notice">{E(NOTICE)}</div>
 <p class="meta" style="margin-top:8px"><a href="guide.html">산출 방식·데이터 출처는 가이드 페이지</a></p>
 <script id="mmdata" type="application/json">{jscript(data)}</script>"""
-    return pg("무매 M-score", body, "index.html", scripts='<script src="assets/index.js"></script>', pop=True)
+    return pg("무매 M-score", body, "index.html", scripts='<script src="assets/groups.js"></script><script src="assets/index.js"></script>', pop=True)
 
+
+
+GROUP_BAR = ('<div class="gcap">그룹 (켠 그룹의 종목 전체를 모집단으로 점수·순위를 다시 계산합니다)</div>'
+             '<div class="gbar" id="gbar" role="group" aria-label="그룹 선택"></div>')
 
 
 # ---------- 장기순위 (§11) ----------
@@ -245,15 +252,17 @@ def build_longterm(lt, meta):
         body = '<h1>장기순위</h1><div class="empty">장기순위 데이터를 만들지 못했습니다.</div>'
         return pg("무매 장기순위", body, "longterm.html")
     body = f"""<h1>장기순위<small>기간별 평균 M-score 순위 · 참고용</small></h1>
-<div class="meta">기준일 <b>{E(lt['asof'])}</b> · 종목 수 <b>{lt['n_pop']}</b> {pill}</div>
+<div class="meta">기준일 <b>{E(lt['asof'])}</b> · 종목 수 <b id="ncnt">{lt['n_pop']}</b> {pill}</div>
+{GROUP_BAR}
 <div class="rangebar" id="ltabs"></div>
 <div class="tbar"><div class="ttl" id="ltl"></div></div>
 <div class="capt">평균 변동성·상대강도·추세 = 유니버스 내 상대 점수의 기간 평균, 100=최상위 · 열 머리를 누르면 정렬(다시 누르면 반대 방향)</div>
 <div class="capt rcn" id="rcnote" hidden></div>
 <div class="wrap"><table class="rk" id="lt"></table></div>
+<div class="gempty" id="gempty" hidden>그룹을 하나 이상 켜 주세요</div>
 <p class="meta" style="margin-top:8px">기간 평균 M-score = 그 기간 거래일별 M-score(그날 모집단 안의 상대 점수)의 단순평균이며, 이 평균을 오늘 모집단 안에서 다시 순위 매깁니다. 기간 안에 점수가 있는 날이 창의 80% 미만이면 "—"입니다. 평균 변동성·상대강도·추세도 같은 기간의 일별 점수 평균입니다. 자세한 설명은 <a href="guide.html#longterm">Guide</a>.</p>
-<script id="ltdata" type="application/json">{jscript(lt)}</script>"""
-    return pg("무매 장기순위", body, "longterm.html", scripts='<script src="assets/longterm.js"></script>', pop=True)
+<script id="ltdata" type="application/json">{jscript(dict(lt, grp=mm_groups.page_cfg(), tk={t: dict(c=v["c"], g=v["g"]) for t, v in mm_groups.tk_new(short_index).items()}))}</script>"""
+    return pg("무매 장기순위", body, "longterm.html", scripts='<script src="assets/groups.js"></script><script src="assets/longterm.js"></script>', pop=True)
 
 
 # ---------- 가이드 ----------
@@ -265,16 +274,31 @@ def build_guide(df, meta, uni):
 def load_page_items():
     p = DATA / "products_page.json"
     try:
-        return json.load(open(p, encoding="utf-8")).get("items", {})
+        items = json.load(open(p, encoding="utf-8")).get("items", {})
     except Exception:
-        return {}
+        items = {}
+    try:                                                          # MM-UNIVERSE-GROUPS-20261123: 신규 49종 문구(템플릿, 기본 37종 항목은 덮지 않는다)
+        g = json.load(open(DATA / "products_page_groups.json", encoding="utf-8")).get("items", {})
+        items = {**g, **items}
+    except Exception:
+        pass
+    return items
 
 
 def load_holdings():
     try:
-        return json.load(open(DATA / "holdings.json", encoding="utf-8")).get("items", {})
+        h = json.load(open(DATA / "holdings.json", encoding="utf-8")).get("items", {})
     except Exception:
-        return {}
+        h = {}
+    try:                                                          # MM-UNIVERSE-GROUPS-20261123: 해외지수 롱 8종(1x ETF 상위 보유) + 인버스 = 짝 롱 구성(그룹 크립토·채권은 구성 대신 기준 자산 1줄이라 보유 없음)
+        hg = json.load(open(DATA / "holdings_groups.json", encoding="utf-8")).get("items", {})
+        h = {**hg, **h}
+        u = mm_groups.load_universe()
+        for t, g, pr in zip(u.ticker, u.grp, u.pair):
+            if g == "inv" and isinstance(pr, str) and pr in h and t not in h: h[t] = h[pr]
+    except Exception:
+        pass
+    return h
 
 
 _RULES_DEF = {"base": "https://m.stock.naver.com", "overview_path": "/worldstock/stock/{code}/overview", "total_path": "/worldstock/stock/{code}",
@@ -360,6 +384,10 @@ def hist_line(t):
 def build_product(t, u, it, hold=None):
     """종목 페이지 1개. u = universe 행(Series/namedtuple), it = products_page.json 항목(없으면 {}), hold = holdings.json 항목."""
     tx = it.get("text", {}); b = it.get("basic", {})
+    base_t = t in mm_groups.base_tickers()
+    grp_html = ('<div class="gcap">그룹 추가 (켜면 그 그룹을 더한 모집단으로 M-score·순위를 다시 그립니다)</div><div class="gbar" id="gbar" role="group" aria-label="그룹 추가"></div>' if base_t else "")
+    basis_html = ('<div class="chartnote">M-score·순위 기준: 미국 기본 37종 모집단(위 그룹 버튼으로 모집단에 그룹을 더할 수 있습니다)</div>' if base_t else
+                  f'<div class="chartnote">M-score·순위 기준: 5개 그룹 전 종목({len(mm_groups.page_cfg()["gt"])}종)을 모집단으로 한 값입니다(그룹 버튼 없음).</div>')
     sub = f'{E(b.get("issuer", u.issuer))} · {E(b.get("type", u.type))} · {E(b.get("leverage", ""))}'
     comp = (f'<table class="info"><tr><th>섹터·테마</th><td>{E(it.get("sector", ""))}</td></tr>'
             f'<tr><th>구성 방식</th><td>{E(tx.get("construction", "—"))}</td></tr></table>{holdings_html(hold)}')
@@ -367,9 +395,9 @@ def build_product(t, u, it, hold=None):
     basic = (f'<table class="info" style="table-layout:auto"><tr><th style="width:auto">발행사</th><th style="width:auto">구분</th><th style="width:auto">배수</th><th style="width:auto">보수</th><th style="width:auto">상장일</th></tr>'
              f'<tr><td>{E(b.get("issuer", ""))}</td><td>{E(b.get("type", ""))}</td><td>{E(b.get("leverage", ""))}</td><td>{E(fee)}</td><td>{E(str(b.get("inception") or "—"))}</td></tr></table>')
     chart_html = ('<div class="rangebar"><button class="btn" data-range="m3">3개월</button><button class="btn" data-range="m6">6개월</button><button class="btn on" data-range="y1">1년</button><button class="btn" data-range="all">전체</button></div>'
-        f'<div class="chartbox"><div id="chart" data-t="{E(t)}"></div>'
+        f'{grp_html}<div class="chartbox"><div id="chart" data-t="{E(t)}" data-g="{"base" if base_t else "all"}"></div>'
         '<div class="legend"><span><i style="background:#f59e0b"></i>M-score (좌축)</span><span><i style="background:#3b82f6"></i>순위 (우축·1위가 위)</span></div>'
-        '<div class="chartnote" id="creadout">불러오는 중…</div></div>')
+        '<div class="chartnote" id="creadout">불러오는 중…</div>' + basis_html + '</div>')
     risks = "".join(f'<li>{E(x)}</li>' for x in tx.get("risk", [])) or '<li>—</li>'
     body = f"""<h1>{E(t)}<small>{sub}</small></h1>
 <h2>소개</h2>{price_chart_html(t)}
@@ -379,7 +407,7 @@ def build_product(t, u, it, hold=None):
 <h2>기본 정보</h2>{basic}{hist_line(t)}
 <h2>구조 리스크</h2><ul class="risk">{risks}</ul>
 <div class="stamp">마지막 수정일 {E(str(it.get("modified", "—")))} · <a href="../products.html">상품 목록</a> · <a href="../index.html">순위표</a></div>{PRICE_ATTR}"""
-    return pg(f"{t} — 무매 M-score", body, "products.html", root="../", scripts='<script src="../assets/chart.js"></script><script src="../assets/pricechart.js"></script>')
+    return pg(f"{t} — 무매 M-score", body, "products.html", root="../", scripts='<script src="../assets/groups.js"></script><script src="../assets/chart.js"></script><script src="../assets/pricechart.js"></script>')
 
 
 # 가격 차트(MM-PRICE-CHART-20261111): 소개 제목 바로 아래·설명 상자 위(MM-PRICE-CHART-POS-20261111) — 새 절 없음. 데이터 data/charts/<티커>.json(scripts/mm_charts.py), 동작 assets/pricechart.js.
@@ -416,8 +444,11 @@ def price_chart_html(t):
 
 def build_products_dir(df, uni, items):
     rows = sorted(((u.ticker, items.get(u.ticker, {}).get("sector", ""), u.type, str(u.issuer)) for u in uni.itertuples()), key=lambda x: x[0])
-    trs = "".join(f'<tr><td><a href="products/{E(t)}.html"><b>{E(t)}</b></a></td><td>{E(sec)}</td><td>{E(ty)}</td><td>{E(iss)}</td></tr>' for t, sec, ty, iss in rows)
+    gm = mm_groups.tk_new(short_index)
+    chip = lambda t: (f'<span class="gc g-{E(gm[t]["g"])}">{E(gm[t]["c"])}</span>' if t in gm and gm[t]["c"] else "")
+    trs = "".join(f'<tr><td><a href="products/{E(t)}.html"><b>{E(t)}</b></a>{chip(t)}</td><td>{E(sec)}</td><td>{E(ty)}</td><td>{E(iss)}</td></tr>' for t, sec, ty, iss in rows)
     body = f"""<h1>종목<small>유니버스 {len(uni)}종 · 티커를 누르면 종목 페이지로 이동 · 열 머리를 누르면 정렬</small></h1>
+<p class="meta">티커 옆 칩(크립토·채권·해외·인버스)은 순위표의 그룹 버튼으로 켜서 비교할 수 있는 종목입니다. 인버스는 −1x 계열, 2배 상품은 변동성 항 ×2/3 보정을 씁니다(<a href="guide.html#s4">Guide 4절</a>).</p>
 <div class="wrap" style="margin-top:8px"><table class="dir" id="dir"><thead><tr><th data-c="0">티커</th><th data-c="1">섹터·테마</th><th data-c="2">구분</th><th data-c="3">발행사</th></tr></thead><tbody>{trs}</tbody></table></div>"""
     return pg("무매 종목", body, "products.html", scripts='<script src="assets/sortable.js"></script>')
 
@@ -440,6 +471,8 @@ def write_series(uni):
             a["d"].append(f.stem); a["m"].append(round(float(mm), 1)); a["r"].append(int(rk)); a["n"].append(n)
     out = DOCS / "data" / "series"; out.mkdir(parents=True, exist_ok=True)
     want = set(uni.ticker)
+    for t, a in mm_groups.series_all_new().items():               # MM-UNIVERSE-GROUPS-20261123: 신규 49종 = 5개 그룹 전 종목 모집단 기준 M-score·순위
+        acc[t] = a
     for t, a in acc.items():
         if t in want:
             json.dump(dict(t=t, **a), open(out / f"{t}.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
@@ -505,18 +538,19 @@ def build_all(latest_df, uni, meta, p0, score_files):
             log(f"[page_text] 종목 문구 갱신 건너뜀: {type(e).__name__}: {str(e)[:150]}", "alerts")
         except Exception: pass
     items = load_page_items(); hold = load_holdings()
+    uni_all = mm_groups.uni_with_groups(uni)                      # 기본 + 신규 49종(페이지·목록·차트 데이터용)
     (DOCS / "index.html").write_text(build_index(latest_df, meta), encoding="utf-8")
     (DOCS / "guide.html").write_text(build_guide(latest_df, meta, uni), encoding="utf-8")
     lt = compute_longterm(latest_df, meta["asof"])
     if lt is not None:
         json.dump(lt, open(DOCS / "data" / "longterm.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     (DOCS / "longterm.html").write_text(build_longterm(lt, meta), encoding="utf-8")
-    (DOCS / "products.html").write_text(build_products_dir(latest_df, uni, items), encoding="utf-8")
+    (DOCS / "products.html").write_text(build_products_dir(latest_df, uni_all, items), encoding="utf-8")
     pd_ = DOCS / "products"; pd_.mkdir(exist_ok=True)
-    for u in uni.itertuples():
+    for u in uni_all.itertuples():
         (pd_ / f"{u.ticker}.html").write_text(build_product(u.ticker, u, items.get(u.ticker, {}), hold.get(u.ticker)), encoding="utf-8")
-    prune_product_pages(uni)
-    write_series(uni)
+    prune_product_pages(uni_all)
+    write_series(uni_all)
     write_tickers_json(uni, p0)
     h = DOCS / "history.html"
     if h.exists(): h.unlink()                                    # 달력은 메인에 통합 — 구 이력 페이지 삭제

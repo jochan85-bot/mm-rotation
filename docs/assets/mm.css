@@ -195,3 +195,14 @@ table.rk td.wc{text-align:center}
 .pfail{display:flex;align-items:center;justify-content:center;height:100%;text-align:center}
 /* 가격 차트 하단 문구 ↔ 소개 글 상자: 섹션 사이 간격(--sec-gap = h2 위 여백)과 같게. 이 인접 쌍은 종목 페이지에만 있다 */
 body>.chartnote+.intro{margin-top:var(--sec-gap)}
+
+/* 그룹 선택 막대·칩 (MM-UNIVERSE-GROUPS-20261123) */
+.gcap{font-size:11px;color:var(--muted);margin:8px 0 4px}
+.gbar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.gbar .gb{padding:5px 10px}
+.gbar .gb.off{opacity:.5;cursor:default}.gbar .gb.off:hover{border-color:var(--border)}
+.gbar .soon{font-size:10px;color:var(--muted);margin-left:5px}
+.gempty{color:var(--muted);font-size:13px;padding:16px 4px;text-align:center}.gempty[hidden]{display:none}
+.gc{display:inline-block;font-size:10px;line-height:1.5;padding:0 5px;margin-left:5px;border-radius:999px;border:1px solid var(--border);color:var(--muted);vertical-align:1px;white-space:nowrap}
+.gc.g-crypto{color:#fbbf24;border-color:rgba(245,158,11,.5)}.gc.g-bond{color:#4ade80;border-color:rgba(34,197,94,.45)}
+.gc.g-intl{color:#7dd3fc;border-color:rgba(56,189,248,.45)}.gc.g-inv{color:#fca5a5;border-color:rgba(239,68,68,.5)}

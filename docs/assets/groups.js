@@ -16,16 +16,20 @@
     try { var s = root.localStorage && root.localStorage.getItem(KEY); if (!s) return null; var a = JSON.parse(s); return Array.isArray(a) ? a : null; } catch (e) { return null; }
   }
   function save() {
+    if (G.persist === false) return;
     try { if (root.localStorage) root.localStorage.setItem(KEY, JSON.stringify(G.selected())); } catch (e) { /* 저장 불가(사생활 모드 등) */ }
   }
-  G.init = function (cfg, base) {
-    G.cfg = cfg; G.base = base || ''; G.sel = {};
+  G.init = function (cfg, base, opts) {
+    G.cfg = cfg; G.base = base || ''; G.sel = {}; G.persist = !(opts && opts.persist === false);
     var n = {}; cfg.groups.forEach(function (g) { n[g.id] = 0; });
     Object.keys(cfg.gt).forEach(function (t) { n[cfg.gt[t]] = (n[cfg.gt[t]] || 0) + 1; });
     G.n = n;
-    var saved = readSaved(), ok = {}; cfg.groups.forEach(function (g) { ok[g.id] = n[g.id] > 0; });
+    var saved = G.persist ? readSaved() : null, ok = {};
+    var qs = ''; try { qs = (root.location && root.location.search) || ''; } catch (e) { }
+    var qm = /[?&]g=([a-z,]*)/.exec(qs); if (qm && G.persist) saved = qm[1] ? qm[1].split(',') : [];   /* ?g=base,inv — 시험·공유용(저장하지 않음) */ cfg.groups.forEach(function (g) { ok[g.id] = n[g.id] > 0; });
     if (saved) saved.forEach(function (id) { if (ok[id]) G.sel[id] = true; });
     else cfg.groups.forEach(function (g) { if (g['default'] && ok[g.id]) G.sel[g.id] = true; });
+    if (qm && G.persist) G.fromQuery = true;
     return G;
   };
   G.selected = function () { return G.cfg.groups.map(function (g) { return g.id; }).filter(function (id) { return G.sel[id]; }); };
