@@ -5,6 +5,39 @@
   var D = JSON.parse(document.getElementById('ltdata').textContent);
   var $ = function (i) { return document.getElementById(i); };
   var cur = 0, sort = { k: 'r', dir: 1 };
+  var MG = window.MMG && D.grp ? window.MMG.init(D.grp, '') : null;   /* 그룹 엔진(MM-UNIVERSE-GROUPS-20261123) */
+  var BASE_TABS = D.tabs, WBASE = {};
+  D.tabs[0].rows.forEach(function (r) { WBASE[r.t] = r.w; });
+  function chip(t) { var m = D.tk && D.tk[t]; return m && m.c ? '<span class="gc g-' + esc(m.g) + '">' + esc(m.c) + '</span>' : ''; }
+  /* 새 그룹 종목의 사유 — 메인 표 why() 와 같은 순서·문구(mm_site._why_text) */
+  function whyNew(t) {
+    var r = MG.dayRows(D.asof); r = r && r[t]; if (!r) return '';
+    var o = [], b = r[9] ? String(r[9]).split(' · ') : [];
+    if (b.indexOf('거래량극소') >= 0) o.push('거래량 극소 부적격');
+    b.forEach(function (x) {
+      if (x === '신규') o.push('신규 ' + r[8] + '일');
+      else if (x === '저유동') o.push('$' + r[7].toFixed(2) + 'M');
+      else if (x.indexOf('무거래') === 0) o.push('무거래 ' + x.slice(3) + '일');
+      else if (x === '표본부족') o.push('표본 ' + r[12]);
+      else if (x.indexOf('지수보정') === 0) o.push('지수 ' + x.slice(4) + '일 보정');
+    });
+    return o.join(' · ');
+  }
+  function recompute() {
+    if (!MG || MG.isBaseOnly()) { D.tabs = BASE_TABS; render(); return; }
+    if (!MG.selected().length) { D.tabs = BASE_TABS.map(function (t) { return { k: t.k, label: t.label, rows: [] }; }); render(); return; }
+    MG.loadIndex().then(function () {
+      var i1 = MG.idx[D.asof], i0 = Math.max(0, i1 - Math.max.apply(null, BASE_TABS.map(function (t) { return t.k; })) + 1);
+      return MG.ensureRange(MG.cal[i0], D.asof);
+    }).then(function () {
+      var res = MG.longterm(D.asof, MG.tickers(), BASE_TABS.map(function (t) { return [t.k]; }));
+      D.tabs = res.map(function (x, i) {
+        x.rows.forEach(function (r) { r.w = (r.t in WBASE) ? WBASE[r.t] : whyNew(r.t); });
+        return { k: x.k, label: BASE_TABS[i].label, rows: x.rows };
+      });
+      render();
+    }).catch(function () { $('ltl').innerHTML = '<b>그룹 원값을 읽지 못했습니다(웹 주소로 여십시오)</b>'; });
+  }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function f1(x) { return x === null ? '—' : x.toFixed(1); }
   function iv(x) { return x === null ? '—' : String(x); }
@@ -62,11 +95,13 @@
     sorted(t.rows).forEach(function (r) {
       var ic = r.w ? '<span class="wh" data-w="' + esc(shortW(r.w)) + '">!</span>' : '';
       var rcv = D.rc && D.rc[r.t], rc = rcv ? '<span class="rc" data-w="' + esc('되계산 비중 ' + rcv.p + '% · 공식 지수 ' + rcv.of + '부터 · 해제 예정 ' + rcv.rel) + '">1Y</span>' : '';
-      h += '<tr><td class="rk1">' + (r.r === null ? '—' : r.r) + '</td><td class="tk"><a href="products/' + esc(r.t) + '.html">' + esc(r.t) + '</a><span class="ics">' + ic + rc + '</span></td><td class="m n">' + f1(r.m) +
+      h += '<tr><td class="rk1">' + (r.r === null ? '—' : r.r) + '</td><td class="tk"><a href="products/' + esc(r.t) + '.html">' + esc(r.t) + '</a>' + chip(r.t) + '<span class="ics">' + ic + rc + '</span></td><td class="m n">' + f1(r.m) +
         '</td><td class="sc n">' + iv(r.v) + '</td><td class="sc n">' + iv(r.rs) + '</td><td class="sc n">' + iv(r.tr) + '</td><td class="wc">' +
         (r.w ? '<span class="wr" data-w="' + esc(shortW(r.w)) + '">' + lines(r.w) + '</span>' : '') + '</td></tr>';
     });
-    var el = $('lt'); el.className = 'rk sum'; el.innerHTML = h + '</tbody>';
+    var ge = $('gempty'), none = MG && !MG.selected().length; if (ge) ge.hidden = !none;
+    var nc = $('ncnt'); if (nc) nc.textContent = t.rows.length;
+    var el = $('lt'); el.className = 'rk sum'; el.innerHTML = none ? '' : h + '</tbody>';
     fitRows(el);
     var nt = $('rcnote'); if (nt) { var anyRc = D.rc && Object.keys(D.rc).length; nt.hidden = !anyRc; nt.textContent = anyRc ? (D.note || '') : ''; }
     var miss = t.rows.filter(function (r) { return r.m === null; }).length;
@@ -95,5 +130,6 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fitRows($('lt')); });
   var h0 = parseInt((location.hash || '').slice(1), 10);
   D.tabs.forEach(function (t, i) { if (t.k === h0) cur = i; });
-  render();
+  if (MG && $('gbar')) MG.renderBar($('gbar'), { onChange: recompute });
+  recompute();
 })();

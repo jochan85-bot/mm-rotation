@@ -97,6 +97,13 @@ def write_year(y, dates, rows_by_date):
     obj={"y":y,"f":FIELDS,"d":dates,"t":{t:[rows_by_date.get(d,{}).get(t) for d in dates] for t in tk}}
     with open(RAWDIR/f"{y}.json","w",encoding="utf-8") as f: json.dump(obj,f,ensure_ascii=False,separators=(",",":"))
     return len(tk)
+def write_meta():
+    """docs/data/groups_meta.json = {groups:[{id,label,chip,default}], gt:{티커:그룹 id}} — 브라우저 엔진 설정(종목→그룹). 기본 37종 = base"""
+    gd=groups_def(); u=load_universe(); b=pd.read_csv(DATA/"universe.csv")
+    gt={t:"base" for t in b.ticker}; gt.update({t:g for t,g in zip(u.ticker,u.grp)})
+    obj={"groups":gd["groups"],"gt":gt}
+    with open(L.DOCS/"data"/"groups_meta.json","w",encoding="utf-8") as f: json.dump(obj,f,ensure_ascii=False,separators=(",",":"))
+    return len(gt)
 def write_raw_index():
     """docs/data/raw/index.json = {years, cal(전 연도 날짜 오름차순)} — 브라우저 엔진이 달력·필요 연도를 알기 위해 먼저 읽는다(작음)"""
     ys=sorted(int(p.stem) for p in RAWDIR.glob("[0-9][0-9][0-9][0-9].json")); cal=[]

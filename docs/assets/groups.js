@@ -69,6 +69,12 @@
       return Promise.all(Object.keys(need).map(function (y) { return loadYear(+y); }));
     });
   };
+  G.ensureRange = function (d0, d1) {                            // 두 날짜 사이 연도 파일 전부
+    return G.loadIndex().then(function () {
+      var a = +d0.slice(0, 4), b = +d1.slice(0, 4), ys = []; for (var y = a; y <= b; y++) if (G.allYears.indexOf(y) >= 0) ys.push(y);
+      return Promise.all(ys.map(loadYear));
+    });
+  };
   G.ensureAll = function () {
     return G.loadIndex().then(function () { return Promise.all(G.allYears.map(loadYear)); });
   };

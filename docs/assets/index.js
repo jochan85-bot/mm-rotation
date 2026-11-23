@@ -6,6 +6,7 @@
   var $ = function (i) { return document.getElementById(i); };
   var st = { date: D.asof, mode: 'sum', y: 0, m: 0, calOpen: true, cache: {}, rows: null, token: 0, sort: { k: 'rank', dir: 1 } };
   var availYM = {};
+  var MG = window.MMG && D.grp ? window.MMG.init(D.grp, '') : null;   /* 그룹 엔진(MM-UNIVERSE-GROUPS-20261123) — 없으면 기존 동작 */
   
   var avail = {};
   D.dates.forEach(function (d) { avail[d] = 1; availYM[+d.slice(0, 4) * 100 + +d.slice(5, 7)] = 1; });
@@ -105,6 +106,7 @@
     if (isNaN(x)) return esc(v);
     return x > 0 ? '<span class="up">▲' + x + '</span>' : (x < 0 ? '<span class="dn">▼' + (-x) + '</span>' : '0');
   }
+  function chip(t) { var m = D.tk[t]; return m && m.c ? '<span class="gc g-' + esc(m.g) + '">' + esc(m.c) + '</span>' : ''; }
   function tkLink(t) { return '<a href="products/' + esc(t) + '.html">' + esc(t) + '</a>'; }
   function ixName(t) { var m = D.tk[t]; return m ? m.ix : ''; }
 
@@ -191,7 +193,7 @@
     var r = g.rep, wt = whyText(g), det = st.mode === 'det';
     var ic = wt ? '<span class="wh" data-w="' + esc(wt) + '">!</span>' : '';
     var rci = rcIcon(r.ticker);
-    var tk = g.grp ? '<span class="nw"><span class="car">▸</span>' + esc(r.ticker) + '<span class="more">+' + (g.mem.length - 1) + '</span></span>' + ic + rci : tkLink(r.ticker) + '<span class="ics">' + ic + rci + '</span>';
+    var tk = g.grp ? '<span class="nw"><span class="car">▸</span>' + esc(r.ticker) + '<span class="more">+' + (g.mem.length - 1) + '</span></span>' + chip(r.ticker) + ic + rci : tkLink(r.ticker) + chip(r.ticker) + '<span class="ics">' + ic + rci + '</span>';
     var h = '<tr class="' + (mem ? 'mr' : 'r') + '"' + (mem ? ' hidden' : ' data-i="' + i + '"') + '><td class="rk1">' + fx(r.rank, 0) + '</td><td class="tk">' + tk + '</td><td class="m n">' + fx(r.M, 1) +
       '</td><td class="sc n">' + pct(r.p_sig) + '</td><td class="sc n">' + pct(r.p_rsA) + '</td><td class="sc n">' + pct(r.p_f1b) + '</td>' +
       '<td class="wc">' + (wt ? '<span class="wr" data-w="' + esc(wt) + '">' + whyLines(g) + '</span>' : '') + '</td>';
@@ -225,21 +227,43 @@
     $('todaybtn').hidden = (st.date === D.asof);
     $('modebtn').textContent = st.mode === 'sum' ? '상세보기' : '요약보기';
     $('modebtn').classList.toggle('on', st.mode === 'det');
+    var ge = $('gempty'), none = MG && !MG.selected().length;
+    if (ge) ge.hidden = !none;
+    var nc = $('ncnt'); if (nc) nc.textContent = rows.length;
     t.className = 'rk ' + (st.mode === 'sum' ? 'sum' : 'det');
-    t.innerHTML = colgroup() + '<thead>' + head() + '</thead><tbody>' + body(rows) + '</tbody>';
+    t.innerHTML = none ? '' : colgroup() + '<thead>' + head() + '</thead><tbody>' + body(rows) + '</tbody>';
     var nt = $('rcnote'); if (nt) { var any = rows.some(function (r) { return rcInfo(r.ticker, st.date); }); nt.hidden = !any; nt.textContent = any ? (D.rcNote || '') : ''; }
     fitRows(t);
   }
 
+  /* ---- 그룹 합성: 기본 37종만 켠 상태(기본)는 저장된 날짜 파일 그대로, 그 외에는 켜진 그룹 모집단으로 점수·순위를 브라우저가 다시 계산 ---- */
+  function compose(base, d) {
+    if (!MG || MG.isBaseOnly()) return Promise.resolve(base);
+    if (!MG.selected().length) return Promise.resolve([]);
+    return MG.ensure([d]).then(function () {
+      var tb = MG.table(d, MG.tickers()) || [], bm = {};
+      base.forEach(function (r) { bm[r.ticker] = r; });
+      return tb.map(function (r) {
+        var b = bm[r.ticker], m = D.tk[r.ticker] || {};
+        if (b) { ['proxy', 'badges', 'sig', 'rsA', 'f1b', 'c1_ma200', 'above200', 'close3', 'adtv', 'listed_days', 'beta', 'r2', 'n_beta'].forEach(function (k) { r[k] = b[k]; }); }
+        else r.proxy = m.px || '';
+        return norm(r);
+      });
+    });
+  }
+  function put(base, d, tok) {
+    compose(base, d).then(function (rows) { if (tok !== st.token) return; st.rows = rows; st.date = d; renderTable(); })
+      .catch(function () { if (tok !== st.token) return; $('ttl').innerHTML = '<b>' + d + ' 기준</b> <span>· 그룹 원값을 읽지 못했습니다(웹 주소로 여십시오)</span>'; });
+  }
   /* ---- 날짜 로드 ---- */
   function load(d) {
     var tok = ++st.token;
-    if (d === D.asof) { st.rows = D.latest.map(norm); st.date = d; renderTable(); return; }
-    if (st.cache[d]) { st.rows = st.cache[d]; st.date = d; renderTable(); return; }
+    if (d === D.asof) { put(D.latest.map(norm), d, tok); return; }
+    if (st.cache[d]) { put(st.cache[d], d, tok); return; }
     $('ttl').innerHTML = '<b>' + d + ' 기준</b> <span>· 불러오는 중…</span>';
     fetch('data/scores/' + d + '.csv').then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (t) {
       if (tok !== st.token) return;
-      st.cache[d] = parseCsv(t); st.rows = st.cache[d]; st.date = d; renderTable();
+      st.cache[d] = parseCsv(t); put(st.cache[d], d, tok);
     }).catch(function () {
       if (tok !== st.token) return;
       $('ttl').innerHTML = '<b>' + d + ' 기준</b> <span>· 이 날짜 파일을 읽지 못했습니다(웹 주소로 여십시오)</span>';
@@ -340,5 +364,6 @@
   st.y = +p0[0]; st.m = +p0[1];
   if (/[?&]cal=0/.test(location.search)) st.calOpen = false;
   if (/[?&]mode=det/.test(location.search)) st.mode = 'det';
+  if (MG && $('gbar')) MG.renderBar($('gbar'), { onChange: function () { st.cache = st.cache; load(st.date); } });
   drawCal(); load(start);
 })();
