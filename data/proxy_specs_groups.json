@@ -1,0 +1,4 @@
+{"specs": {
+ "IDX_BITCOIN": {"kind": "ft", "symbol": "BITCOIN:IOM", "xid": "880624648", "name": "Bloomberg Bitcoin Index", "start": "2019-12-01", "source": "FT Markets 일별 종가(markets.ft.com 지수 BITCOIN:IOM)", "products": ["BITU"]},
+ "IDX_ETHEREUM": {"kind": "ft", "symbol": "ETHEREUM:IOM", "xid": "880644576", "name": "Bloomberg Ethereum Index", "start": "2019-12-01", "source": "FT Markets 일별 종가(markets.ft.com 지수 ETHEREUM:IOM)", "products": ["ETHT"]}
+}}

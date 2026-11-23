@@ -32,29 +32,50 @@
    "ticker": "BITX",
    "grp": "crypto",
    "mult": 2,
-   "reason": "발행사 문서상 기준이 '가장 가까운·두 번째 만기 선물계약에 반영된 가격'일 뿐 명명된 공식 지수·기준가격이 없음 — 10-14 원칙(대용 금지) 안에서 1x 계열 불성립",
+   "reason": "발행사 문서상 기준이 선물계약 가격일 뿐 명명된 공식 지수가 없음(오너 R3 결정 §1-1 로 BITU 로 교체)",
    "doc": "Volatility Shares 497K 2026-06-26 0001213900-26-072187"
   },
   {
    "ticker": "ETHU",
    "grp": "crypto",
    "mult": 2,
-   "reason": "발행사 문서상 기준이 '가장 가까운·두 번째 만기 선물계약에 반영된 가격'일 뿐 명명된 공식 지수·기준가격이 없음 — 10-14 원칙(대용 금지) 안에서 1x 계열 불성립",
+   "reason": "명명 지수 없음(ETHT 로 교체)",
    "doc": "0001213900-26-072188"
   },
   {
    "ticker": "SOLT",
    "grp": "crypto",
    "mult": 2,
-   "reason": "발행사 문서상 기준이 '가장 가까운·두 번째 만기 선물계약에 반영된 가격'일 뿐 명명된 공식 지수·기준가격이 없음 — 10-14 원칙(대용 금지) 안에서 1x 계열 불성립",
+   "reason": "명명 지수 없음",
    "doc": "0001213900-26-072191"
   },
   {
    "ticker": "XRPT",
    "grp": "crypto",
    "mult": 2,
-   "reason": "발행사 문서상 기준이 '가장 가까운·두 번째 만기 선물계약에 반영된 가격'일 뿐 명명된 공식 지수·기준가격이 없음 — 10-14 원칙(대용 금지) 안에서 1x 계열 불성립",
+   "reason": "명명 지수 없음",
    "doc": "0001213900-26-072195"
+  },
+  {
+   "ticker": "SLON",
+   "grp": "crypto",
+   "mult": 2,
+   "reason": "명명 지수 Bloomberg Solana Index(Bloomberg ticker BSOLANA)는 공시됐으나 지수 레벨 이력 [확인실패] — Bloomberg 403, FT Markets 미등재(FT 의 SOL:IOM 은 Bloomberg Galaxy Solana Index 로 다른 지수라 대용 금지)",
+   "doc": "ProShares 497K 2026-09-28 0001174610-26-000971"
+  },
+  {
+   "ticker": "UXRP",
+   "grp": "crypto",
+   "mult": 2,
+   "reason": "명명 지수 Bloomberg XRP Index(Bloomberg ticker XRP)는 공시됐으나 지수 레벨 이력 [확인실패] — Bloomberg 403, FT Markets 미등재",
+   "doc": "ProShares 497K 2026-09-28 0001174610-26-000961"
+  },
+  {
+   "ticker": "XXRP",
+   "grp": "crypto",
+   "mult": 2,
+   "reason": "Teucrium 2x Long Daily XRP: 기준이 XRP Reference Rate·XRP Index·Spot XRP ETP 혼합(Reference Assets) — 단일 명명 지수 아님, 후보 제외",
+   "doc": "Teucrium 497K 2026-04-29 0000894189-26-013714"
   }
  ]
 }

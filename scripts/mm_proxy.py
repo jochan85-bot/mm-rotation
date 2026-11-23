@@ -11,7 +11,12 @@ import numpy as np, pandas as pd
 
 OFFICIAL_URL="https://microsectors.com/wp-content/themes/uncode-child/json/{sym}_index1.json"
 
-def _specs(DATA): return json.load(open(DATA/"proxy_specs.json",encoding="utf-8"))
+def _specs(DATA):
+    sp=json.load(open(DATA/"proxy_specs.json",encoding="utf-8"))
+    g=DATA/"proxy_specs_groups.json"            # MM-UNIVERSE-GROUPS-20261123-R3: 그룹 종목용 합성 키(크립토 명명 지수 등) — 기존 specs 는 건드리지 않고 병합
+    if g.exists():
+        sp=dict(sp); sp["specs"]={**sp["specs"],**json.load(open(g,encoding="utf-8"))["specs"]}
+    return sp
 def synthetic_keys(DATA): return list(_specs(DATA)["specs"])
 
 def yahoo_aliases(DATA):
@@ -70,6 +75,31 @@ def fetch_official(sym, cache_dir):
     s=pd.Series([x[1] for x in d],index=pd.to_datetime([pd.Timestamp(x[0],unit="ms").date() for x in d]))
     return s[~s.index.duplicated(keep="last")].sort_index(), cached
 
+FT_URL="https://markets.ft.com/data/equities/ajax/get-historical-prices?startDate={a}&endDate={b}&symbol={xid}"
+def fetch_ft(key, spec, cache_dir, today=None):
+    """FT Markets 지수 일별 종가(Bloomberg Bitcoin/Ethereum Index 등) -> Series. 캐시 CSV 에 누적, 수신 실패 시 캐시 사용(없으면 예외). 반환 (series, from_cache)"""
+    import re, datetime as dt
+    cache_dir.mkdir(parents=True,exist_ok=True); cp=cache_dir/f"{key}_ft.csv"
+    old=pd.Series(dtype=float)
+    if cp.exists():
+        h=pd.read_csv(cp); old=pd.Series(h["close"].values.astype(float),index=pd.to_datetime(h["date"]))
+    today=today or dt.date.today(); a=(old.index.max()-pd.Timedelta(days=20)).date() if len(old) else dt.date.fromisoformat(spec["start"])
+    try:
+        u=FT_URL.format(a=a.strftime("%Y/%m/%d"),b=today.strftime("%Y/%m/%d"),xid=spec["xid"])
+        raw=urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0 (mm-rotation research)"}),timeout=60).read()
+        html=json.loads(raw).get("html",""); new={}
+        for tr in re.findall(r"<tr>(.*?)</tr>",html,re.S):
+            m=re.search(r"([A-Z][a-z]{2}, [A-Z][a-z]{2} \d{1,2}, \d{4})",tr)
+            nums=re.findall(r"<td>\s*([\d,]+\.\d+)\s*</td>",tr)
+            if m and len(nums)>=4: new[pd.Timestamp(dt.datetime.strptime(m.group(1),"%a, %b %d, %Y").date())]=float(nums[3].replace(",",""))
+        if len(new)<5: raise ValueError("FT 응답 행 부족 %d"%len(new))
+        s=pd.concat([old[~old.index.isin(list(new))],pd.Series(new)]).sort_index(); cached=False
+        pd.DataFrame({"date":[f"{x:%Y-%m-%d}" for x in s.index],"close":s.values}).to_csv(cp,index=False)
+    except Exception:
+        if not len(old): raise
+        s=old; cached=True
+    return s[s>0], cached
+
 def _tail_returns(tail, spec, tail_dir, fetched):
     """꼬리 소스의 일간 수익률 Series"""
     k=tail["kind"]
@@ -97,6 +127,9 @@ def build_all(DATA, FETCHED, LOCAL, log=print):
             if v["kind"]=="yahoo":
                 src=FETCHED/f"{v['ticker']}.csv"; h=pd.read_csv(src,index_col=0); h.to_csv(FETCHED/f"{key}.csv")
                 info[key]=dict(kind="yahoo",ticker=v["ticker"],last=str(pd.to_datetime(h.index.astype(str).str[:10]).max().date())); continue
+            if v["kind"]=="ft":
+                s,cached=fetch_ft(key,v,LOCAL/"official"); write_fetched(key,s,FETCHED)
+                info[key]=dict(kind="ft",symbol=v["symbol"],index_name=v["name"],ft_from_cache=bool(cached),last=str(s.index.max().date())); continue
             if v["kind"]=="splice":
                 pre=_rd(DATA.parent/v["pre"]); e=_rd(FETCHED/f"{v['then']['ticker']}.csv")
                 cut=pd.Timestamp(v["pre_until"]); scale=pre.loc[cut]/e.loc[cut]

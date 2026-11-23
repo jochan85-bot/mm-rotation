@@ -304,7 +304,7 @@ def compute(S,asof,T,cfg,status,uni,pq,remeasure=False):
                     beta,r2,nb=b2,q2,n2; ok4=e4_ok(beta,r2,cfg); mdate=str(asof.date())
                     pq_upd[t]=dict(ticker=t,proxy=px,beta=beta,r2=r2,n=nb,measured=mdate,ok=int(ok4),source="mm_daily 재측정(trailing 365d)")
         rec.update(beta=beta,r2=r2,n_beta=nb,proxy_measured=mdate)
-        bd=badges_for(rec["listed_days"],adtv if adtv==adtv else 0.0,zero if zero==zero else 0,beta,r2,nb,cfg,tailn=_tn,vol20=(vol20 if vol20==vol20 else None))
+        bd=badges_for(rec["listed_days"],adtv if adtv==adtv else 0.0,zero if zero==zero else 0,(beta*3.0/abs(float(getattr(r,"mult",3.0))) if (beta is not None and getattr(r,"mult",None)==getattr(r,"mult",None) and getattr(r,"mult",None) not in (None,0)) else beta),r2,nb,cfg,tailn=_tn,vol20=(vol20 if vol20==vol20 else None))
         rec["badges"]=" · ".join(bd)
         ex=status.get("excluded",{}).get(t)
         if stale:

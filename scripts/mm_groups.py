@@ -18,8 +18,30 @@ def need_extra():
     for p in u.proxy.dropna():
         if not p.startswith("INV_") and p not in syn: s.add(p)
     return sorted(s)
+def _hist(r):
+    try: return json.loads(r) if isinstance(r,str) and r else []
+    except Exception: return []
 def inverse_keys():
-    u=load_universe(); return sorted({p for p in u.proxy.dropna() if p.startswith("INV_")}) if len(u) else []
+    """현행 프록시 + 날짜별 이력(proxy_hist, 오너 R3 §1-3: 짝 롱이 그날 쓴 저장 1x 계열)에 나오는 INV_ 키 전부"""
+    u=load_universe()
+    if not len(u): return []
+    s={p for p in u.proxy.dropna() if p.startswith("INV_")}
+    if "proxy_hist" in u.columns:
+        for h in u.proxy_hist: s|={p for _,p in _hist(h)}
+    return sorted(s)
+def uni_at(u, d):
+    """날짜 d(문자열 YYYY-MM-DD 또는 Timestamp)의 유니버스 — 인버스 종목의 proxy 를 그날 짝 롱의 저장 1x 계열(INV_ 판)로 바꾼 사본. 이력이 없으면 현행 그대로.
+    d 가 이력의 첫 날짜보다 앞이면 첫 계열(워밍업 포함 — 2020-01-02 이전은 첫 매핑)"""
+    if "proxy_hist" not in u.columns: return u
+    ds=str(d)[:10]; u2=u.copy(); px=[]
+    for p,h in zip(u2.proxy,u2.proxy_hist):
+        hh=_hist(h)
+        if not hh: px.append(p); continue
+        cur=hh[0][1]
+        for d0,p0 in hh:
+            if d0<=ds: cur=p0
+        px.append(cur)
+    u2["proxy"]=px; return u2
 def build_inverse(raw_data_dir, log=print):
     """INV_<키>.csv — RAW 의 1x(<키>) 일간 수익률 r 의 부호를 뒤집은 −1x 누적 계열 Π(1−r)·100. 1x 기준선이 아니라 일간 곱(경로 의존) — 오너 결정 §1-3."""
     from pathlib import Path
@@ -60,6 +82,14 @@ def base_rows(day_df):
     저장된 백분위(p_*)로 동점 순서를 복원하기 위해 값에 1e-8×p 를 더한다(다른 반올림 값 사이 간격 ≥1e-6 이라 순서는 안 뒤집히고, 같은 p 는 같은 값 유지)."""
     EPS=1e-8
     return {t:[_r(a+EPS*pa,12),_r(b+EPS*pb,12),_r(c+EPS*pc,12),1] for t,a,b,c,pa,pb,pc in zip(day_df.ticker,day_df.sig,day_df.rsA,day_df.f1b,day_df.p_sig,day_df.p_rsA,day_df.p_f1b)}
+def inherit_pair_sigma(rows, u, base_set):
+    """R3 §1-3·§2-1: 짝 롱이 기본 37종(저장 원값 보유)이면 인버스의 σ 원값 = 짝 롱의 저장 σ. σ(−1x)=σ(1x) 항등식이며, 재계산값은 그날 최근 봉 보정·수신 개정(예 2026-11-18 지수 보정분)으로
+    저장값과 1e-4~7e-3 어긋날 수 있어 저장 계열을 그대로 쓴다는 오너 규칙(짝 롱이 쓰는 저장 1x 계열)을 값으로 구현한다. RS·MA 항은 −1x 계열에서 따로 계산(짝과 다름)."""
+    if "pair" not in u.columns: return rows
+    for t,pr in zip(u.ticker,u.pair):
+        if isinstance(pr,str) and pr in base_set and t in rows and pr in rows and rows[t][0] is not None and rows[pr][0] is not None:
+            rows[t][0]=rows[pr][0]
+    return rows
 def write_year(y, dates, rows_by_date):
     """rows_by_date: {date: {ticker: row}} → docs/data/raw/<y>.json  (d: 날짜 배열, t: 종목별 날짜 정렬 배열, 없는 날은 null)"""
     RAWDIR.mkdir(parents=True,exist_ok=True)
@@ -67,6 +97,12 @@ def write_year(y, dates, rows_by_date):
     obj={"y":y,"f":FIELDS,"d":dates,"t":{t:[rows_by_date.get(d,{}).get(t) for d in dates] for t in tk}}
     with open(RAWDIR/f"{y}.json","w",encoding="utf-8") as f: json.dump(obj,f,ensure_ascii=False,separators=(",",":"))
     return len(tk)
+def write_raw_index():
+    """docs/data/raw/index.json = {years, cal(전 연도 날짜 오름차순)} — 브라우저 엔진이 달력·필요 연도를 알기 위해 먼저 읽는다(작음)"""
+    ys=sorted(int(p.stem) for p in RAWDIR.glob("[0-9][0-9][0-9][0-9].json")); cal=[]
+    for y in ys: cal+=json.load(open(RAWDIR/f"{y}.json",encoding="utf-8"))["d"]
+    with open(RAWDIR/"index.json","w",encoding="utf-8") as f: json.dump({"years":ys,"cal":cal},f,separators=(",",":"))
+    return len(ys),len(cal)
 def read_year(y):
     p=RAWDIR/f"{y}.json"
     if not p.exists(): return None
