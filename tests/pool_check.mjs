@@ -8,6 +8,7 @@ mkdirSync(OUT, { recursive: true });
 const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const PORT = 8792, DBG = 9345;
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+const LIVE = process.env.POOL_LIVE_BASE || '', ONLY = (process.env.POOL_ONLY || '').split(',').filter(Boolean);   // 라이브 URL 점검용(예: POOL_LIVE_BASE=https://…/mm-rotation POOL_ONLY=SOXL_기본,SQQQ_전부)
 const srv = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1', '--directory', path.join(ROOT, 'docs')], { stdio: 'ignore' });
 const chrome = spawn(CHROME, ['--headless=new', `--remote-debugging-port=${DBG}`, '--user-data-dir=/tmp/chrome_mm_pool', '--no-first-run', '--disable-gpu', 'about:blank'], { stdio: 'ignore' });
 function cleanup() { try { srv.kill(); } catch (e) { } try { chrome.kill(); } catch (e) { } }
@@ -45,8 +46,9 @@ const CHECK = `(() => {
   for (const [vn, vw] of Object.entries(VIEWS)) {
     await send('Emulation.setDeviceMetricsOverride', { width: vw[0], height: vw[1], deviceScaleFactor: vw[2] > 1 ? 2 : 1, mobile: vw[2] > 1 });
     for (const [label, t, store] of SC) {
+      if (ONLY.length && !ONLY.includes(label)) continue;
       errs.length = 0;
-      const url = `http://127.0.0.1:${PORT}/products/${t}.html`;
+      const url = (LIVE || `http://127.0.0.1:${PORT}`) + `/products/${t}.html`;
       await send('Page.navigate', { url }); await sleep(600);
       await ev(store ? `localStorage.setItem('mm_pool_v1', ${JSON.stringify(JSON.stringify(store))})` : `localStorage.removeItem('mm_pool_v1')`);
       await send('Page.navigate', { url }); await sleep(3500);
