@@ -38,7 +38,12 @@ def q(x):
 
 
 def universe():
-    return list(pd.read_csv(DATA / "universe.csv").ticker)
+    """차트 대상 = 미국 기본 37종(universe.csv) + 신규 그룹 49종(universe_groups.csv, MM-PRODUCT-POOL-CHARTS-20261124) — 86종"""
+    t = list(pd.read_csv(DATA / "universe.csv").ticker)
+    g = DATA / "universe_groups.csv"
+    if g.exists():
+        have = set(t); t += [x for x in pd.read_csv(g).ticker if x not in have]
+    return t
 
 
 def read_src(t, src=None):

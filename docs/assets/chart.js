@@ -5,7 +5,7 @@
   'use strict';
   var box = document.getElementById('chart');
   if (!box) return;
-  var T = box.getAttribute('data-t'), S = null, range = 'y1', BASE_S = null;
+  var T = box.getAttribute('data-t'), S = null, range = 'y1', BASE_S = null, OWN = box.getAttribute('data-g') || 'base';
   var C = { m: '#f59e0b', r: '#3b82f6', grid: '#1f2a3a', txt: '#8b97a7', bg: '#0b0f17' };
   var RANGES = { m3: 92, m6: 183, y1: 366, all: 0 };
   var ts = function (d) { var p = d.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); };
@@ -93,24 +93,52 @@
     S = j; if (!S.d.length) throw 0; BASE_S = j;
     var span = (ts(S.d[S.d.length - 1]) - ts(S.d[0])) / 86400000;
     setRange(span < 366 ? 'all' : 'y1');
-    initGroups();
+    initPool();
   }).catch(function () { box.innerHTML = '<div class="chartnote">차트 데이터를 읽지 못했습니다(웹 주소로 여십시오).</div>'; });
 
-  /* 미국 기본 37종 페이지: 그룹 버튼(크립토·채권·해외지수·인버스)을 켜면 그 그룹을 더한 모집단으로 M-score·순위를 다시 그린다(MM-UNIVERSE-GROUPS-20261123). 상태는 이 페이지 안에서만(저장 안 함) */
-  function initGroups() {
-    var bar = document.querySelector('[data-gbar]');
-    if (!bar || !window.MMG || box.getAttribute('data-g') !== 'base') return;
+  /* 풀(모집단) 선택 — 86개 종목 페이지 공통(MM-PRODUCT-POOL-CHARTS-20261124). 버튼 5개(미국 기본·크립토·채권·해외지수·인버스), 그 종목이 속한 그룹(data-g)은 켜진 채 고정(🔒).
+     기본 상태: 미국 기본 종목 = 미국 기본만 / 신규 종목 = 5개 전부. 이 기본 상태의 M-score·순위·차트는 저장된 data/series/<티커>.json 그대로이고(현행과 같은 숫자),
+     다른 조합이면 data/raw 원값에서 그룹 엔진(groups.js)이 켜진 그룹 모집단으로 다시 계산한다 — 상단 숫자·차트 두 선 모두.
+     선택은 종목 페이지 공용으로 localStorage(mm_pool_v1)에 기억하되 자기 그룹 고정이 우선, 저장값이 없으면 기본 상태. */
+  var STORE = 'mm_pool_v1', MG = null, DEF = [], tok = 0;
+  function readSaved() { try { var a = JSON.parse(window.localStorage.getItem(STORE)); return Array.isArray(a) ? a : null; } catch (e) { return null; } }
+  function writeSaved(a) { try { window.localStorage.setItem(STORE, JSON.stringify(a)); } catch (e) { /* 저장 불가 */ } }
+  function sameSet(a, b) { return a.length === b.length && a.every(function (x) { return b.indexOf(x) >= 0; }); }
+  function initPool() {
+    var bar = document.querySelector('[data-gbar]'), ro = document.getElementById('creadout');
+    if (!bar || !window.MMG) return;
     fetch('../data/groups_meta.json').then(function (r) { return r.json(); }).then(function (cfg) {
-      var MG = window.MMG.init(cfg, '../', { persist: false });
-      MG.renderBar(bar, { ids: ['crypto', 'bond', 'intl', 'inv'], onChange: function (sel) {
-        var extra = sel.filter(function (x) { return x !== 'base'; });
-        if (!extra.length) { S = BASE_S; draw(); return; }
-        document.getElementById('creadout').textContent = '선택한 그룹의 원값을 불러오는 중…';
-        MG.ensureAll().then(function () {
-          var s = MG.series(T, MG.tickers(['base'].concat(extra)));
-          if (!s.d.length) throw 0; S = s; draw();
-        }).catch(function () { document.getElementById('creadout').textContent = '그룹 원값을 읽지 못했습니다(웹 주소로 여십시오).'; });
-      } });
-    }).catch(function () { bar.hidden = true; });
+      MG = window.MMG.init(cfg, '../', { persist: false });
+      var ids = cfg.groups.map(function (g) { return g.id; }).filter(function (id) { return MG.n[id] > 0; });
+      DEF = OWN === 'base' ? ['base'] : ids.slice();
+      var saved = readSaved(), init = saved ? saved.filter(function (id) { return ids.indexOf(id) >= 0; }) : DEF.slice();
+      if (init.indexOf(OWN) < 0) init.push(OWN);                       // 자기 그룹 고정(저장값·기본값보다 우선)
+      MG.sel = {}; init.forEach(function (id) { MG.sel[id] = true; });
+      function render() { MG.renderBar(bar, { locked: [OWN], onChange: function (sel) { writeSaved(sel); apply(); } }); }
+      render(); apply();
+    }).catch(function () { bar.hidden = true; if (ro) ro.textContent = ''; });
+  }
+  function poolLabel(sel) { var L = {}; MG.cfg.groups.forEach(function (g) { L[g.id] = g.label; }); return sel.map(function (id) { return L[id]; }).join('·'); }
+  function apply() {
+    var sel = MG.selected(), my = ++tok, ro = document.getElementById('creadout'), st = document.getElementById('pstat'), nb = document.getElementById('pbasis');
+    var isDef = sameSet(sel, DEF), tset = MG.tickers(sel), npool = Object.keys(tset).length;
+    if (nb) nb.textContent = 'M-score·순위 기준: ' + poolLabel(sel) + ' 모집단(풀 ' + npool + '종, 날짜별로 순위에 든 종목만 집계)' + (isDef ? ' — 기본 상태' : ' — 원값에서 다시 계산');
+    // 상단 숫자(최신 기준일): 연도 파일은 마지막 해 1개만 읽는다
+    MG.loadIndex().then(function () {
+      var last = MG.cal[MG.cal.length - 1]; return MG.ensure([last], 0).then(function () { return last; });
+    }).then(function (last) {
+      if (my !== tok) return;
+      var sc = MG.dayScores(MG.dayRows(last) || {}, tset), me = null; sc.forEach(function (x) { if (x.t === T) me = x; });
+      if (st) st.innerHTML = me ? '<span class="mu">' + last + ' 기준</span><span><span class="pl">M-score</span><b>' + me.M.toFixed(1) + '</b></span><span><span class="pl">순위</span><b>' + sc.length + '종 중 ' + me.rank + '위</b></span>' +
+        '<span><span class="pl">변동성</span>' + Math.round(me.p[0] * 100) + '</span><span><span class="pl">상대강도</span>' + Math.round(me.p[1] * 100) + '</span><span><span class="pl">추세</span>' + Math.round(me.p[2] * 100) + '</span>'
+        : '<span class="mu">' + last + ' 기준 — 이 종목은 선택한 풀의 순위 모집단에 없습니다(상장 직후·제외 등)</span>';
+    }).catch(function () { if (st) st.textContent = '그룹 원값을 읽지 못했습니다(웹 주소로 여십시오).'; });
+    // 차트: 기본 상태 = 저장 계열 그대로, 아니면 전 구간을 켜진 모집단으로 다시 계산
+    if (isDef) { S = BASE_S; draw(); return; }
+    if (ro) ro.textContent = '선택한 그룹의 원값을 불러오는 중…';
+    MG.ensureAll().then(function () {
+      if (my !== tok) return;
+      var s = MG.series(T, tset); if (!s.d.length) throw 0; S = s; draw();
+    }).catch(function () { if (my === tok && ro) ro.textContent = '그룹 원값을 읽지 못했거나 이 풀에는 이 종목의 순위 이력이 없습니다.'; });
   }
 })();

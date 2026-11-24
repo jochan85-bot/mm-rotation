@@ -386,18 +386,17 @@ def hist_line(t):
 def build_product(t, u, it, hold=None):
     """종목 페이지 1개. u = universe 행(Series/namedtuple), it = products_page.json 항목(없으면 {}), hold = holdings.json 항목."""
     tx = it.get("text", {}); b = it.get("basic", {})
-    base_t = t in mm_groups.base_tickers()
-    grp_html = ('<span class="sp"></span><span class="gbar inl" data-gbar="1" role="group" aria-label="그룹 추가(켜면 그 그룹을 더한 모집단으로 다시 그립니다)"></span>' if base_t else "")
-    basis_html = ('<div class="chartnote">M-score·순위 기준: 미국 기본 37종 모집단(위 그룹 버튼으로 모집단에 그룹을 더할 수 있습니다)</div>' if base_t else
-                  f'<div class="chartnote">M-score·순위 기준: 5개 그룹 전 종목({len(mm_groups.page_cfg()["gt"])}종)을 모집단으로 한 값입니다(그룹 버튼 없음).</div>')
+    own = mm_groups.page_cfg()["gt"].get(t, "base")        # 이 종목이 속한 그룹(풀 선택 막대에서 켜진 채 고정) — MM-PRODUCT-POOL-CHARTS-20261124
+    grp_html = '<span class="sp"></span><span class="gbar inl" data-gbar="1" role="group" aria-label="풀(모집단) 선택 — 켜 둔 그룹 전체를 모집단으로 점수·순위를 다시 계산합니다. 이 종목의 그룹은 항상 켜져 있습니다"></span>'
+    basis_html = '<div class="chartnote" id="pbasis">M-score·순위 기준: 불러오는 중…</div>'
     sub = f'{E(b.get("issuer", u.issuer))} · {E(b.get("type", u.type))} · {E(b.get("leverage", ""))}'
     comp = (f'<table class="info"><tr><th>섹터·테마</th><td>{E(it.get("sector", ""))}</td></tr>'
             f'<tr><th>구성 방식</th><td>{E(tx.get("construction", "—"))}</td></tr></table>{holdings_html(hold)}')
     fee = b.get("fee") or tx.get("fee") or "—"
     basic = (f'<table class="info" style="table-layout:auto"><tr><th style="width:auto">발행사</th><th style="width:auto">구분</th><th style="width:auto">배수</th><th style="width:auto">보수</th><th style="width:auto">상장일</th></tr>'
              f'<tr><td>{E(b.get("issuer", ""))}</td><td>{E(b.get("type", ""))}</td><td>{E(b.get("leverage", ""))}</td><td>{E(fee)}</td><td>{E(str(b.get("inception") or "—"))}</td></tr></table>')
-    chart_html = ('<div class="rangebar"><button class="btn" data-range="m3">3개월</button><button class="btn" data-range="m6">6개월</button><button class="btn on" data-range="y1">1년</button><button class="btn" data-range="all">전체</button>' + grp_html + '</div>'
-        f'<div class="chartbox"><div id="chart" data-t="{E(t)}" data-g="{"base" if base_t else "all"}"></div>'
+    chart_html = ('<div class="pstat" id="pstat" aria-live="polite"><span class="mu">불러오는 중…</span></div><div class="rangebar"><button class="btn" data-range="m3">3개월</button><button class="btn" data-range="m6">6개월</button><button class="btn on" data-range="y1">1년</button><button class="btn" data-range="all">전체</button>' + grp_html + '</div>'
+        f'<div class="chartbox"><div id="chart" data-t="{E(t)}" data-g="{E(own)}"></div>'
         '<div class="legend"><span><i style="background:#f59e0b"></i>M-score (좌축)</span><span><i style="background:#3b82f6"></i>순위 (우축·1위가 위)</span></div>'
         '<div class="chartnote" id="creadout">불러오는 중…</div>' + basis_html + '</div>')
     risks = "".join(f'<li>{E(x)}</li>' for x in tx.get("risk", [])) or '<li>—</li>'

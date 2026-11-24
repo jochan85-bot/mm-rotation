@@ -59,8 +59,8 @@ for f in pages:
         if s[i + 4] != "div.chartnote:분할 조정 가격": why = f"하단 문구 자리 {s[i + 4]}"
         elif s[i - 1] != "h2:소개": why = f"블록 앞 {s[i - 1]}"
         elif s[i + 5] != "div.intro": why = f"블록 뒤 {s[i + 5]}"
-        elif s[i + 6:i + 8] != ["div.rangebar", "div.chartbox{chart,creadout}"]: why = f"설명 상자 뒤 {s[i + 6:i + 8]}"
-        elif s[i + 8] != "h2:구성": why = f"M-score 차트 뒤 {s[i + 8]}"
+        elif s[i + 6:i + 9] != ["div.pstat#pstat", "div.rangebar", "div.chartbox{chart,creadout,pbasis}"]: why = f"설명 상자 뒤 {s[i + 6:i + 9]}"   # MM-PRODUCT-POOL-CHARTS-20261124: 상단 숫자 줄이 기간·풀 버튼 앞
+        elif s[i + 9] != "h2:구성": why = f"M-score 차트 뒤 {s[i + 9]}"
         elif h2 != ["h2:소개", "h2:구성", "h2:기본 정보", "h2:구조 리스크"]: why = f"절 순서 {h2}"
         elif s[:2] != ["nav.top", "h1"]: why = f"머리 {s[:2]}"
     if why: bad.append((f.stem, why))

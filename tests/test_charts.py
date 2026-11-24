@@ -115,12 +115,12 @@ if M.SRC.exists():
     res = M.daily_update(log=lambda *a: None, out=real, cal=False, full=True)
     uni = M.universe()
     tot = sum(f.stat().st_size for f in real.glob("*.json"))
-    ok("37종 전부 생성", len(uni) == 37 and all(res[t]["status"] == "new" for t in uni), {t: r["status"] for t, r in res.items() if r["status"] != "new"})
+    ok("86종(기본 37 + 신규 그룹 49) 전부 생성", len(uni) == 86 and all(res[t]["status"] == "new" for t in uni), {t: r["status"] for t, r in res.items() if r["status"] != "new"})
     ok("합계 15MB 이하", tot <= 15e6, tot)
     chk = M.check(out=real)
     ok("원천과 전 종목 일치·분할 미반영 0", bool(chk.equal.all()) and all(len(a) == 0 for a in chk.art), chk[~chk.equal].t.tolist())
     pi = pd.read_csv(ROOT / "data" / "product_info.csv").set_index("ticker")
-    bad = [t for t in uni if str(chk.set_index("t").loc[t, "first"]) != str(pi.loc[t, "first_bar"]) and t not in ("XLCU", "XLPU")]
+    bad = [t for t in uni if t in pi.index and str(chk.set_index("t").loc[t, "first"]) != str(pi.loc[t, "first_bar"]) and t not in ("XLCU", "XLPU")]   # 신규 49종은 product_info 에 없음(test_pool.py 가 원천 첫 봉으로 대조)
     ok("첫 봉 = 상장 첫 거래일(product_info first_bar, XLCU·XLPU 는 나스닥 보충으로 하루 빠름)", not bad, bad)
 else:
     print("SKIP 실제 원천 없음")

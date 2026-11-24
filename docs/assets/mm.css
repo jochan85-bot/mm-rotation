@@ -207,3 +207,7 @@ body>.chartnote+.intro{margin-top:var(--sec-gap)}
 .gc.g-crypto{color:#fbbf24;border-color:rgba(245,158,11,.5)}.gc.g-bond{color:#4ade80;border-color:rgba(34,197,94,.45)}
 .gc.g-intl{color:#7dd3fc;border-color:rgba(56,189,248,.45)}.gc.g-inv{color:#fca5a5;border-color:rgba(239,68,68,.5)}
 .rangebar:has(.gbar){flex-wrap:wrap}.rangebar .sp{flex:1 1 8px}.gbar.inl{display:flex;flex-wrap:wrap;gap:6px;margin:0}.gbar.inl .gb{padding:4px 8px}
+/* 종목 페이지 풀(모집단) 선택 — 자기 그룹 고정(🔒) (MM-PRODUCT-POOL-CHARTS-20261124) */
+.gbar .gb.lock{cursor:default;border-style:dashed}.gbar .gb.lock:hover{border-color:var(--border)}.gbar .gb .lk{font-size:10px;margin-right:4px;opacity:.85}
+.pstat{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;margin:8px 0 6px;font-size:13px}.pstat b{font-size:15px}.pstat .mu{color:var(--muted);font-size:12px}
+.pstat .pl{color:var(--muted);font-size:11px;margin-right:3px}

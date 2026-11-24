@@ -168,22 +168,25 @@
 
   /* ---------- 그룹 버튼 막대 ---------- */
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  /* el 안에 버튼을 그린다. opts.ids: 표시할 그룹 id(기본 전부), opts.onChange(selectedIds) */
+  /* el 안에 버튼을 그린다. opts.ids: 표시할 그룹 id(기본 전부), opts.locked: 켜진 채 고정할 그룹 id 배열(눌러도 변화 없음, 🔒 표시 — 종목 페이지의 자기 그룹),
+     opts.onChange(selectedIds) */
   G.renderBar = function (el, opts) {
     opts = opts || {};
-    var ids = opts.ids || G.cfg.groups.map(function (g) { return g.id; });
+    var ids = opts.ids || G.cfg.groups.map(function (g) { return g.id; }), lk = opts.locked || [];
     var h = '';
     G.cfg.groups.forEach(function (g) {
       if (ids.indexOf(g.id) < 0) return;
-      var empty = !(G.n[g.id] > 0), on = G.isOn(g.id) && !empty;
-      h += '<button type="button" class="btn gb' + (on ? ' on' : '') + (empty ? ' off' : '') + '" data-g="' + esc(g.id) + '" aria-pressed="' + (on ? 'true' : 'false') + '"' + (empty ? ' disabled' : '') + '>' +
-        esc(g.label) + (empty ? '<span class="soon">준비 중</span>' : '') + '</button>';
+      var empty = !(G.n[g.id] > 0), locked = lk.indexOf(g.id) >= 0, on = (locked || G.isOn(g.id)) && !empty;
+      h += '<button type="button" class="btn gb' + (on ? ' on' : '') + (empty ? ' off' : '') + (locked ? ' lock' : '') + '" data-g="' + esc(g.id) + '" aria-pressed="' + (on ? 'true' : 'false') + '"' +
+        (locked ? ' aria-disabled="true" title="이 종목이 속한 그룹 — 항상 켜져 있습니다"' : '') + (empty ? ' disabled' : '') + '>' +
+        (locked ? '<span class="lk" aria-hidden="true">🔒</span>' : '') + esc(g.label) + (empty ? '<span class="soon">준비 중</span>' : '') + '</button>';
     });
     el.innerHTML = h;
     el.onclick = function (e) {
       var b = e.target.closest ? e.target.closest('button[data-g]') : null;
       if (!b || b.disabled) return;
-      var id = b.getAttribute('data-g'); G.setOn(id, !G.isOn(id));
+      var id = b.getAttribute('data-g'); if (lk.indexOf(id) >= 0) return;          // 고정 그룹: 변화 없음
+      G.setOn(id, !G.isOn(id));
       G.renderBar(el, opts); if (opts.onChange) opts.onChange(G.selected());
     };
   };
