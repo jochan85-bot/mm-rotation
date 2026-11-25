@@ -1,6 +1,6 @@
 """MM-UNIVERSE-GROUPS-20261123 — 신규 49종 종목 페이지 문구·구성 데이터 생성(LLM 호출 0, 발행사 문서로 확인된 사실만 템플릿으로 채운다).
 산출: data/products_page_groups.json (items, build_product 입력) · data/holdings_groups.json (해외지수 롱 8종 = 1x ETF 상위 보유, yfinance funds_data).
-인버스는 짝 롱 구성을 쓰고(페이지 빌더가 합침), 크립토·채권은 구성 대신 '기준 자산' 1줄. 보수(fee)는 문서에서 신뢰성 있게 뽑지 못해 비워 둔다('—'). 사용: python3 scripts/mm_groups_pages.py [수정일]"""
+인버스는 짝 롱 구성을 쓰고(페이지 빌더가 합침), 크립토·채권은 구성 대신 '기준 자산' 1줄. 소개·보수·구성 요약줄·구조 리스크는 data/intro_groups.json(MM-PRODUCT-INTRO-ENRICH-20261124)이 뒤에 덮어쓴다. 사용: python3 scripts/mm_groups_pages.py [수정일]"""
 import json, sys, datetime as dt
 from pathlib import Path
 import pandas as pd
@@ -68,6 +68,9 @@ def build(modified=None, log=print):
             "basic": {"issuer": str(r.issuer), "type": str(r.type), "leverage": lev_txt(r.mult), "fee": None, "inception": first_bar(r.ticker)},
             "text": {"construction": construction(r, sector), "intro": intro(r), "risk": risks(r), "fee": ""},
         }
+    try:                                                          # MM-PRODUCT-INTRO-ENRICH-20261124: 사람 검토 소개·보수 보강분을 다시 덮어쓴다
+        import mm_groups_intro; mm_groups_intro.apply_items(items)
+    except Exception as e: log(f"[groups_pages] 소개 보강분 적용 실패: {type(e).__name__}: {e}")
     json.dump({"meta": {"block": "MM-UNIVERSE-GROUPS-20261123-R3", "generated": modified, "count": len(items), "note": "템플릿 생성(LLM 0) — 사실은 발행사 1차 문서(docs 열)로 확인한 지수명·배수·발행사·유형뿐, 보수는 미수록"}, "items": items},
               open(DATA / "products_page_groups.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     # 해외지수 롱 8종 구성: 1x ETF 상위 보유
@@ -82,6 +85,9 @@ def build(modified=None, log=print):
                 else: log(f"[groups_pages] {r.ticker}({r.onex}) 보유 데이터 없음")
             except Exception as e: log(f"[groups_pages] {r.ticker} 보유 수신 실패: {type(e).__name__}")
     except Exception as e: log(f"[groups_pages] yfinance 불가: {e}")
+    try:
+        import mm_groups_intro; mm_groups_intro.apply_holdings(H)
+    except Exception as e: log(f"[groups_pages] 구성 요약줄 적용 실패: {type(e).__name__}: {e}")
     json.dump({"generated": modified, "items": H}, open(DATA / "holdings_groups.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     return len(items), len(H)
 

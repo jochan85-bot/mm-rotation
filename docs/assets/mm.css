@@ -211,3 +211,4 @@ body>.chartnote+.intro{margin-top:var(--sec-gap)}
 .gbar .gb.lock{cursor:default;border-style:dashed}.gbar .gb.lock:hover{border-color:var(--border)}.gbar .gb .lk{font-size:10px;margin-right:4px;opacity:.85}
 .pstat{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;margin:8px 0 6px;font-size:13px}.pstat b{font-size:15px}.pstat .mu{color:var(--muted);font-size:12px}
 .pstat .pl{color:var(--muted);font-size:11px;margin-right:3px}
+.hsum{list-style:none;margin:6px 0;padding:0}.hsum li{padding:6px 10px;margin:4px 0;background:var(--panel);border:1px solid var(--border);border-radius:6px;font-size:13px;line-height:1.6}

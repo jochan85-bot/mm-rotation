@@ -350,6 +350,10 @@ def holdings_cell(x):
 
 def holdings_html(h):
     """구성 표: 기본 상위 10종 격자(모바일 2열·데스크톱 3열) + 나머지는 '전체 보기'로 펼침. 티커 우선·회사명 작은 글씨·박스 전체가 새 탭 링크(MM-PAGE-V3.2 §3·§4·§6)"""
+    if h and h.get("lines") and not h.get("items"):              # MM-PRODUCT-INTRO-ENRICH-20261124: 크립토·채권은 구성 종목 격자 대신 기준 자산·지수 요약 줄(발행사 공시)
+        src = h.get("source") or {}
+        note = f'기준: {E(h.get("basis", ""))} · {E(str(h.get("as_of", "")))}' + (f' · 출처 {E(str(src["name"]))}' if src.get("name") else "")
+        return '<ul class="hsum">' + "".join(f"<li>{E(x)}</li>" for x in h["lines"]) + f'</ul><div class="chartnote">{note}</div>'
     if not h or not h.get("items"): return '<div class="empty">구성 종목 데이터를 확인하지 못했습니다.</div>'
     items = sorted(h["items"], key=lambda x: -float(x["w"]))
     head, rest = items[:GRID_N], items[GRID_N:]

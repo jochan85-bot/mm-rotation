@@ -408,6 +408,108 @@
      "w": 1.752
     }
    ]
+  },
+  "BITU": {
+   "basis": "기준 지수·기준 자산",
+   "as_of": "2026-11-25",
+   "fetched": "2026-11-25",
+   "total": 0,
+   "scope": "",
+   "lines": [
+    "기준 자산: 비트코인 100% (달러로 거래되는 비트코인 1개의 가격)",
+    "기준 지수: Bloomberg Bitcoin Index — 여러 디지털 자산 거래 플랫폼의 달러-비트코인 거래를 합성, 플랫폼은 분기마다 재평가",
+    "노출 방식: 현물 비트코인 ETF 기준 스왑 · 비트코인 선물 (비트코인 직접 보유 없음)"
+   ],
+   "source": {
+    "name": "ProShares Ultra Bitcoin ETF 요약 투자설명서(497K, 2026-09-28)",
+    "url": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026000975/"
+   },
+   "items": []
+  },
+  "ETHT": {
+   "basis": "기준 지수·기준 자산",
+   "as_of": "2026-11-25",
+   "fetched": "2026-11-25",
+   "total": 0,
+   "scope": "",
+   "lines": [
+    "기준 자산: 이더(ETH) 100% (달러로 거래되는 이더 1개의 가격)",
+    "기준 지수: Bloomberg Ethereum Index — 여러 디지털 자산 거래 플랫폼의 달러-이더 거래를 합성, 플랫폼은 분기마다 재평가",
+    "노출 방식: 이더 선물 · 현물 이더 ETF 기준 스왑 (이더 직접 보유 없음)"
+   ],
+   "source": {
+    "name": "ProShares Ultra Ether ETF 요약 투자설명서(497K, 2026-09-28)",
+    "url": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026000970/"
+   },
+   "items": []
+  },
+  "TMF": {
+   "basis": "기준 지수(발행사 공시)",
+   "as_of": "2026-11-25",
+   "fetched": "2026-11-25",
+   "total": 0,
+   "scope": "",
+   "lines": [
+    "기준 지수: ICE U.S. Treasury 20+ Year Bond Index — 잔존만기 20년 초과 미국 국채 45종(2025-12-31 기준), 시장가치 가중",
+    "편입 요건: 고정금리·달러 표시, 연준 보유분 제외 발행 잔액 3억 달러 이상 / 제외: 물가연동채·단기국채·정부기관채·스트립 제로쿠폰",
+    "재구성: 매월 마지막 영업일 · 노출 방식: 스왑·선물(개별 국채를 직접 담지 않는 지수 추종)"
+   ],
+   "source": {
+    "name": "Direxion Daily 20+ Year Treasury Bull 3X ETF 요약 투자설명서(497K, 2026-02-27)",
+    "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312526078552/"
+   },
+   "items": []
+  },
+  "TYD": {
+   "basis": "기준 지수(발행사 공시)",
+   "as_of": "2026-11-25",
+   "fetched": "2026-11-25",
+   "total": 0,
+   "scope": "",
+   "lines": [
+    "기준 지수: ICE U.S. Treasury 7-10 Year Bond Index — 잔존만기 7년 이상 10년 미만 미국 국채 17종(2025-12-31 기준), 시장가치 가중",
+    "편입 요건: 고정금리·달러 표시, 연준 보유분 제외 발행 잔액 3억 달러 이상 / 제외: 물가연동채·단기국채·정부기관채·스트립 제로쿠폰",
+    "재구성: 매월 마지막 영업일 · 노출 방식: 스왑·선물(개별 국채를 직접 담지 않는 지수 추종)"
+   ],
+   "source": {
+    "name": "Direxion Daily 7-10 Year Treasury Bull 3X ETF 요약 투자설명서(497K, 2026-02-27)",
+    "url": "https://www.sec.gov/Archives/edgar/data/1424958/000119312526078521/"
+   },
+   "items": []
+  },
+  "HYGU": {
+   "basis": "기준 ETF·대상 지수(발행사 공시)",
+   "as_of": "2026-11-25",
+   "fetched": "2026-11-25",
+   "total": 0,
+   "scope": "",
+   "lines": [
+    "기준 ETF: iShares iBoxx $ High Yield Corporate Bond ETF(HYG) 100% — 지수의 유일한 구성 종목(분기 재구성)",
+    "대상 지수: iBoxx USD Liquid High Yield Index — 투자적격 미만 등급 달러 표시 회사채, 시가총액 가중·발행사당 3% 상한, 매월 말 재구성",
+    "편입 요건: 선진국 기업 발행·피치/무디스/S&P 중 1곳 이상 등급, 잔존만기 1년 이상(신규 편입은 1년 6개월 이상) · 지수는 배당 재투자 총수익 방식"
+   ],
+   "source": {
+    "name": "BMO 가격 보충서(424B2, 2026-08-10) HYGU",
+    "url": "https://www.sec.gov/Archives/edgar/data/927971/000121465926009813/"
+   },
+   "items": []
+  },
+  "LQDU": {
+   "basis": "기준 ETF·대상 지수(발행사 공시)",
+   "as_of": "2026-11-25",
+   "fetched": "2026-11-25",
+   "total": 0,
+   "scope": "",
+   "lines": [
+    "기준 ETF: iShares iBoxx $ Investment Grade Corporate Bond ETF(LQD) 100% — 지수의 유일한 구성 종목(분기 재구성)",
+    "대상 지수: iBoxx USD Liquid Investment Grade Index — 투자적격 등급 달러 표시 회사채, 시가총액 가중·발행사당 3% 상한, 매월 말 재구성",
+    "편입 요건: 선진국 기업 발행·피치/무디스/S&P 중 1곳 이상 등급, 발행 잔액 7억 5천만 달러 이상 · 지수는 배당 재투자 총수익 방식"
+   ],
+   "source": {
+    "name": "BMO 가격 보충서(424B2, 2026-08-10) LQDU",
+    "url": "https://www.sec.gov/Archives/edgar/data/927971/000121465926009815/"
+   },
+   "items": []
   }
  }
 }
