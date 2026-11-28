@@ -1390,6 +1390,32 @@
    "source": "https://microsectors.com/",
    "filed": "2026-11-14",
    "owner_override": false
+  },
+  {
+   "key": "proshares ultra lyte proshares com the fund",
+   "ticker": "",
+   "name": "ProShares Ultra LYTE PROSHARES.COM The Fund",
+   "issuer": "ProShares",
+   "leverage": "2x",
+   "rule": "a",
+   "reason": "2배 — +3배 아님",
+   "found": "2026-11-28",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001267/f46802d1.htm",
+   "filed": "2026-11-27",
+   "owner_override": false
+  },
+  {
+   "key": "proshares ultra zcash",
+   "ticker": "",
+   "name": "ProShares Ultra Zcash",
+   "issuer": "ProShares",
+   "leverage": "2x",
+   "rule": "a",
+   "reason": "2배 — +3배 아님",
+   "found": "2026-11-28",
+   "source": "https://www.sec.gov/Archives/edgar/data/1174610/000117461026001260/f46765d1.htm",
+   "filed": "2026-11-23",
+   "owner_override": false
   }
  ]
 }
